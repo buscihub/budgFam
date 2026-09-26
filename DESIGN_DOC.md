@@ -652,7 +652,7 @@ Oltre a misurare, va documentato cosa si è **cambiato grazie ai dati**. Esempio
 Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quando tutti i criteri di uscita sono verificati.
 
 **Fase 0 · Fondamenta**
-- [ ] 0.1 Scaffolding Next.js + TypeScript strict + pnpm; ESLint, Prettier, hook pre-commit
+- [x] 0.1 Scaffolding Next.js + TypeScript strict + pnpm; ESLint, Prettier, hook pre-commit
 - [ ] 0.2 Struttura cartelle `src/domain`, `src/data`, `src/app`; regola lint che vieta import di Next/Supabase dentro `src/domain`
 - [ ] 0.3 Vitest configurato, con un primo test sul dominio (formattazione centesimi → euro)
 - [ ] 0.4 Supabase CLI + Supabase locale (Docker); prima migrazione con lo schema del §6

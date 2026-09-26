@@ -8,7 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
-*(nessun task chiuso ancora)*
+### 2026-09-26 — Task 0.1: Scaffolding Next.js
+- Creato il progetto Next.js (App Router, TypeScript strict con `noUncheckedIndexedAccess`) con `create-next-app`, gestito con pnpm.
+- Configurati ESLint (`eslint-config-next` + `eslint-config-prettier`) e Prettier; script `lint`, `typecheck`, `build`.
+- Aggiunto hook pre-commit (Husky + lint-staged) che lancia `eslint --fix`/`prettier --write` sui file staged; verificato che blocca un commit con un errore reale (`react-hooks/rules-of-hooks`).
+- Rimossa la pagina/asset di default di `create-next-app`, sostituita con un placeholder minimo.
+- Repository Git inizializzato e pubblicato su GitHub (`buscihub/budgFam`, privato).
 
 ## Pianificazione (prima della Fase 0)
 
