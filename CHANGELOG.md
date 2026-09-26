@@ -8,6 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-09-26 — Task 0.4: Supabase locale + prima migrazione
+- `supabase init`; Supabase locale avviato su Docker.
+- Prima migrazione (`supabase/migrations/20260926161938_initial_schema.sql`) con le 9 tabelle del §6 (households, members, accounts, categories, imports, transactions, category_rules, budgets, tasks), copiate fedelmente dallo schema normativo.
+- Verificato con `supabase db reset` e ispezione diretta di Postgres (`\dt`, `\d transactions`) che tabelle, tipi, `unique`, `check` e foreign key corrispondono al §6.
+- Nessuna policy RLS ancora: arriva nel task 0.5.
+
 ### 2026-09-26 — Task 0.3: Vitest + primo test sul dominio
 - Configurato Vitest (`vitest.config.ts`, ambiente `node`) e aggiunto lo script `test`.
 - Scritta `src/domain/budget/format-currency.ts` (`formatCents`), che converte centesimi interi in una stringa euro con `Intl.NumberFormat('it-IT', ...)`.

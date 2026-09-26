@@ -655,7 +655,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.1 Scaffolding Next.js + TypeScript strict + pnpm; ESLint, Prettier, hook pre-commit
 - [x] 0.2 Struttura cartelle `src/domain`, `src/data`, `src/app`; regola lint che vieta import di Next/Supabase dentro `src/domain`
 - [x] 0.3 Vitest configurato, con un primo test sul dominio (formattazione centesimi → euro)
-- [ ] 0.4 Supabase CLI + Supabase locale (Docker); prima migrazione con lo schema del §6
+- [x] 0.4 Supabase CLI + Supabase locale (Docker); prima migrazione con lo schema del §6
 - [ ] 0.5 Funzioni `is_member` / `is_admin` e policy RLS del §7 per tutte le tabelle
 - [ ] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
 - [ ] 0.7 Autenticazione (`@supabase/ssr`): login, logout, pagina protetta; onboarding "crea nucleo" / "unisciti con invito"
