@@ -8,6 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-09-26 — Task 0.3: Vitest + primo test sul dominio
+- Configurato Vitest (`vitest.config.ts`, ambiente `node`) e aggiunto lo script `test`.
+- Scritta `src/domain/budget/format-currency.ts` (`formatCents`), che converte centesimi interi in una stringa euro con `Intl.NumberFormat('it-IT', ...)`.
+- Scoperto e documentato nei test un comportamento non ovvio di `Intl.NumberFormat` per `it-IT`: raggruppa le migliaia solo da 5 cifre in su (regola CLDR "min2") e usa uno spazio non-breaking prima di "€".
+- Aggiunto `"type": "module"` a `package.json` per eliminare il warning di Vitest sul caricamento ESM/CommonJS di `vitest.config.ts`.
+
 ### 2026-09-26 — Task 0.2: Struttura src/domain, src/data, src/app
 - Spostato `app/` in `src/app/`; aggiornato l'alias TypeScript `@/*` per puntare a `src/*`.
 - Create `src/domain/import/`, `src/domain/classify/`, `src/domain/budget/`, `src/data/` con un README per cartella che ne spiega lo scopo e i vincoli (CLAUDE.md §Regole non negoziabili).
