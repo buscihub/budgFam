@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Riepilogo — Stile C dati densi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .bf-btn { font-family: inherit; cursor: pointer; }
+</style>
+</head>
+<body style="margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#EFDBC1; padding:24px; box-sizing:border-box;">
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0B1220; color: #E6EAF0; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+  <!-- Header -->
+  <div style="padding: 18px 18px 2px; display: flex; align-items: center; justify-content: space-between;">
+    <button aria-label="Mese precedente" class="bf-btn" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid #1E293B; background: #121B2E; color: #E6EAF0; font-size: 16px; display: flex; align-items: center; justify-content: center;">‹</button>
+    <div style="font-weight: 700; font-size: 14px; letter-spacing: 0.02em;">SETTEMBRE 2026</div>
+    <button aria-label="Mese successivo" class="bf-btn" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid #1E293B; background: #121B2E; color: #E6EAF0; font-size: 16px; display: flex; align-items: center; justify-content: center;">›</button>
+  </div>
+
+  <!-- Content -->
+  <div style="flex-grow: 1; padding: 4px 18px 0; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
+
+    <!-- Saldo -->
+    <div style="background: #121B2E; border: 1px solid #1E293B; border-radius: 10px; padding: 14px 16px; text-align: center;">
+      <div style="font-size: 11px; color: #93A0B4; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;">Saldo di settembre</div>
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 700; color: #33D6A6; margin-top: 4px;">+1.240&nbsp;€</div>
+    </div>
+
+    <!-- Entrate / Uscite -->
+    <div style="display: flex; gap: 10px;">
+      <div style="flex: 1; background: #121B2E; border: 1px solid #1E293B; border-radius: 10px; padding: 12px 14px;">
+        <div style="font-size: 11px; color: #93A0B4; font-weight: 600;">ENTRATE</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600; margin-top: 3px;">3.200&nbsp;€</div>
+      </div>
+      <div style="flex: 1; background: #121B2E; border: 1px solid #1E293B; border-radius: 10px; padding: 12px 14px;">
+        <div style="font-size: 11px; color: #93A0B4; font-weight: 600;">USCITE</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600; margin-top: 3px;">1.960&nbsp;€</div>
+      </div>
+    </div>
+
+    <!-- Budget per categoria -->
+    <div style="background: #121B2E; border: 1px solid #1E293B; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 12px; font-weight: 700; color: #93A0B4; letter-spacing: 0.04em; text-transform: uppercase;">Budget per categoria</div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+          <span style="font-weight: 600;">Spesa</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; color: #93A0B4;">420 / 500&nbsp;€</span>
+        </div>
+        <div style="height: 5px; border-radius: 3px; background: #1E293B; overflow: hidden;">
+          <div style="width: 84%; height: 100%; background: #33D6A6;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+          <span style="font-weight: 600;">Bollette</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; color: #93A0B4;">180 / 200&nbsp;€</span>
+        </div>
+        <div style="height: 5px; border-radius: 3px; background: #1E293B; overflow: hidden;">
+          <div style="width: 90%; height: 100%; background: #33D6A6;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+          <span style="font-weight: 600;">Trasporti</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; color: #93A0B4;">90 / 150&nbsp;€</span>
+        </div>
+        <div style="height: 5px; border-radius: 3px; background: #1E293B; overflow: hidden;">
+          <div style="width: 60%; height: 100%; background: #33D6A6;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+          <span style="font-weight: 600;">Svago</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; color: #E2A93B; font-weight: 700;">140 / 100&nbsp;€</span>
+        </div>
+        <div style="height: 5px; border-radius: 3px; background: #1E293B; overflow: hidden;">
+          <div style="width: 100%; height: 100%; background: #E2A93B;"></div>
+        </div>
+        <div style="font-size: 10px; color: #E2A93B; font-weight: 600;">+40 € oltre budget</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <div style="display: flex; background: #121B2E; border-top: 1px solid #1E293B; flex-shrink: 0;">
+    <button class="bf-btn" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 0 7px; background: none; border: none; color: #33D6A6; font-weight: 700; font-size: 10px; letter-spacing: 0.02em;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="12" width="4" height="8" rx="1"></rect><rect x="10" y="7" width="4" height="13" rx="1"></rect><rect x="16" y="3" width="4" height="17" rx="1"></rect></svg>
+      RIEPILOGO
+    </button>
+    <button class="bf-btn" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 0 7px; background: none; border: none; color: #93A0B4; font-weight: 600; font-size: 10px; letter-spacing: 0.02em;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+      MOVIMENTI
+    </button>
+    <button class="bf-btn" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 0 7px; background: none; border: none; color: #93A0B4; font-weight: 600; font-size: 10px; letter-spacing: 0.02em;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"></path><path d="M7 9l5-5 5 5"></path><path d="M4 20h16"></path></svg>
+      IMPORTA
+    </button>
+    <button class="bf-btn" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 0 7px; background: none; border: none; color: #93A0B4; font-weight: 600; font-size: 10px; letter-spacing: 0.02em;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8 12l3 3 5-6"></path></svg>
+      COSE DA FARE
+    </button>
+  </div>
+</div>
+</body>
+</html>
