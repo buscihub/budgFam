@@ -8,6 +8,11 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-09-26 — Task 0.2: Struttura src/domain, src/data, src/app
+- Spostato `app/` in `src/app/`; aggiornato l'alias TypeScript `@/*` per puntare a `src/*`.
+- Create `src/domain/import/`, `src/domain/classify/`, `src/domain/budget/`, `src/data/` con un README per cartella che ne spiega lo scopo e i vincoli (CLAUDE.md §Regole non negoziabili).
+- Aggiunta una regola ESLint (`no-restricted-imports`, scoped su `src/domain/**`) che blocca import da `next`, `@supabase/*`, `@anthropic-ai/*`; verificato che un import reale da `next/server` fa fallire il lint.
+
 ### 2026-09-26 — Task 0.1: Scaffolding Next.js
 - Creato il progetto Next.js (App Router, TypeScript strict con `noUncheckedIndexedAccess`) con `create-next-app`, gestito con pnpm.
 - Configurati ESLint (`eslint-config-next` + `eslint-config-prettier`) e Prettier; script `lint`, `typecheck`, `build`.
