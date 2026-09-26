@@ -656,7 +656,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.2 Struttura cartelle `src/domain`, `src/data`, `src/app`; regola lint che vieta import di Next/Supabase dentro `src/domain`
 - [x] 0.3 Vitest configurato, con un primo test sul dominio (formattazione centesimi → euro)
 - [x] 0.4 Supabase CLI + Supabase locale (Docker); prima migrazione con lo schema del §6
-- [ ] 0.5 Funzioni `is_member` / `is_admin` e policy RLS del §7 per tutte le tabelle
+- [x] 0.5 Funzioni `is_member` / `is_admin` e policy RLS del §7 per tutte le tabelle
 - [ ] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
 - [ ] 0.7 Autenticazione (`@supabase/ssr`): login, logout, pagina protetta; onboarding "crea nucleo" / "unisciti con invito"
 - [ ] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
@@ -718,6 +718,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-011 | Documentazione in quattro documenti separati (DESIGN_DOC, ADR, CHANGELOG, CLAUDE.md) | Ognuno con un compito e una cadenza di aggiornamento diversi |
 | ADR-012 | Linguaggio visivo "Liquid Glass" (iOS/macOS) sulla palette B1, con campione dark mode | Materiali vetro/blur invece dei colori di sistema iOS; due schermate campione fissano i token del tema scuro |
 | ADR-013 | Unificazione delle schermate "Movimenti" e "Importa" | Un solo "+" per aggiungere un movimento (manuale o import); nav da 4 a 3 voci |
+| ADR-014 | Nessuna policy INSERT su households/members finché non esiste l'onboarding | Evita una finestra di sicurezza; il bootstrap del primo admin è compito del task 0.7 |
 
 ---
 
