@@ -272,10 +272,12 @@ budgFam/
 ├─ tests/                 ← unit, integrazione (RLS), e2e
 ├─ evals/                 ← golden set e script di valutazione
 ├─ fixtures/              ← CSV bancari anonimizzati, uno per formato
-├─ docs/adr/              ← Architecture Decision Records (TEMPLATE.md + un file per decisione)
-├─ CLAUDE.md              ← istruzioni operative per Claude Code
-├─ CHANGELOG.md           ← diario di cosa è stato fatto, task per task
-└─ DESIGN_DOC.md          ← questo documento
+├─ docs/
+│  ├─ DESIGN_DOC.md       ← questo documento
+│  ├─ CHANGELOG.md        ← diario di cosa è stato fatto, task per task
+│  ├─ adr/                ← Architecture Decision Records (TEMPLATE.md + un file per decisione)
+│  └─ design/mockups/     ← istantanee statiche dei mockup (l'originale modificabile è l'artifact Claude Design)
+└─ CLAUDE.md              ← istruzioni operative per Claude Code (in root: Claude Code lo carica da lì)
 ```
 
 ### 5.3 Schermate
@@ -284,7 +286,7 @@ budgFam/
 2. **Movimenti**: lista filtrabile, correzione rapida della categoria, banner dei movimenti "da rivedere"; un unico punto d'ingresso ("+") per aggiungere un movimento, manualmente o importando un estratto conto (vedi ADR-013 — non c'è più una schermata "Importa" separata).
 3. **Cose da fare**: lista condivisa con responsabile, scadenza e ricorrenza; stesso pattern "+" per aggiungere una nuova attività.
 
-Mockup di queste schermate (mobile e desktop, stile "Liquid Glass" sulla palette calda B1, con un primo campione di modalità scura) prototipati su Claude Design — vedi ADR-012. L'originale modificabile resta l'artifact Claude Design; in `design/mockups/` c'è un'istantanea statica (HTML autonomo, apribile nel browser) per consultarli senza riaprire Claude — vedi `design/mockups/README.md`.
+Mockup di queste schermate (mobile e desktop, stile "Liquid Glass" sulla palette calda B1, con un primo campione di modalità scura) prototipati su Claude Design — vedi ADR-012. L'originale modificabile resta l'artifact Claude Design; in `docs/design/mockups/` c'è un'istantanea statica (HTML autonomo, apribile nel browser) per consultarli senza riaprire Claude — vedi `docs/design/mockups/README.md`.
 
 ---
 

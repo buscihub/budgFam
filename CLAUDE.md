@@ -2,7 +2,7 @@
 
 PWA multi-utente per il **budget di famiglia** e le **cose da fare condivise** (4 utenti: Federico, la madre, le sorelle). È anche un progetto portfolio per una candidatura da Software Engineer a Bending Spoons, quindi qualità del codice, decisioni motivate e test contano quanto le funzioni.
 
-La specifica completa è in @DESIGN_DOC.md. Leggila prima di ogni task non banale. Le sezioni normative (4.1, 5, 6, 7, 8, 10, 11, 13) sono vincolanti.
+La specifica completa è in @docs/DESIGN_DOC.md. Leggila prima di ogni task non banale. Le sezioni normative (4.1, 5, 6, 7, 8, 10, 11, 13) sono vincolanti.
 
 ## Come lavorare con me (Federico)
 
@@ -12,19 +12,19 @@ La specifica completa è in @DESIGN_DOC.md. Leggila prima di ogni task non banal
 - **Le parti centrali le scrivo io.** Per parser (`src/domain/import`), deduplica e policy RLS: proponi interfaccia, test e approccio, poi chiedimi se le scrivo io o se procedi tu.
 - **Non inventare le domande aperte** (DESIGN_DOC §17). Se un task dipende da Q1-Q7 senza risposta, fermati e chiedimi.
 - **Non aggiungere funzioni fuori scope** (memoria semantica, note, salute, abitudini, briefing, collegamento diretto alle banche). Se ti sembra utile qualcosa di nuovo, proponilo e basta.
-- **Se devi deviare dalla specifica:** prima proponi la modifica a DESIGN_DOC.md (e l'ADR), poi il codice.
+- **Se devi deviare dalla specifica:** prima proponi la modifica a `docs/DESIGN_DOC.md` (e l'ADR), poi il codice.
 
 ## Documentazione: cosa aggiornare e quando
 
-Quattro documenti, compiti diversi (dettagli in DESIGN_DOC.md → "Come si tiene aggiornata la documentazione"). Regola pratica: *cosa il sistema deve fare* → DESIGN_DOC (+ ADR se è una scelta tecnica); *cosa è successo* → CHANGELOG.md; *come lavoriamo insieme* → questo file.
+Quattro documenti, compiti diversi (dettagli in `docs/DESIGN_DOC.md` → "Come si tiene aggiornata la documentazione"). Regola pratica: *cosa il sistema deve fare* → DESIGN_DOC (+ ADR se è una scelta tecnica); *cosa è successo* → CHANGELOG; *come lavoriamo insieme* → questo file. Tutta la documentazione (DESIGN_DOC, CHANGELOG, ADR, mockup) vive in `docs/`; solo `CLAUDE.md` resta nella root, perché Claude Code lo carica automaticamente da lì a inizio sessione.
 
 **A fine di ogni task del §13.1, sempre:**
-1. Spunta la sua riga in DESIGN_DOC.md §13.1.
-2. Aggiungi una riga a `CHANGELOG.md` (data, task, cosa è cambiato).
-3. Se cambia la fase corrente, aggiorna la riga "Fase corrente" in DESIGN_DOC.md §13 **e** la sezione "Stato" qui sotto.
+1. Spunta la sua riga in `docs/DESIGN_DOC.md` §13.1.
+2. Aggiungi una riga a `docs/CHANGELOG.md` (data, task, cosa è cambiato).
+3. Se cambia la fase corrente, aggiorna la riga "Fase corrente" in `docs/DESIGN_DOC.md` §13 **e** la sezione "Stato" qui sotto.
 
 **Solo se il task ha comportato una decisione tecnica non ovvia** (una scelta con alternative reali, non l'esecuzione di qualcosa già deciso nel DESIGN_DOC):
-4. Crea `docs/adr/NNNN-titolo.md` da `docs/adr/TEMPLATE.md` e aggiungi la riga alla tabella di DESIGN_DOC §14.
+4. Crea `docs/adr/NNNN-titolo.md` da `docs/adr/TEMPLATE.md` e aggiungi la riga alla tabella di `docs/DESIGN_DOC.md` §14.
 
 **Non fare mai il contrario:** codice prima, decisione dopo "giustificata" a posteriori. Se stai per scegliere qualcosa che il DESIGN_DOC non dice, fermati e proponimelo.
 
@@ -54,7 +54,8 @@ Se Next.js dà errori su API che "dovrebbero esserci", leggi prima `node_modules
 src/domain/   logica pura (import, classify, budget) — testata senza mock
 src/data/     unico accesso al database
 src/app/      UI e route, sottili
-supabase/migrations/   tests/   evals/   fixtures/   docs/adr/
+supabase/migrations/   tests/   evals/   fixtures/
+docs/         DESIGN_DOC.md, CHANGELOG.md, adr/, design/mockups/
 ```
 
 ## Comandi
