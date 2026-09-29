@@ -8,6 +8,11 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-09-26 — Task 0.5: Funzioni is_member/is_admin e policy RLS
+- Aggiunte le funzioni `security definer` `is_member`/`is_admin` (§7) e attivata RLS su tutte le 9 tabelle, con policy select/insert/update/delete derivate dalla matrice di accesso del §7.
+- Verificato manualmente con `psql` (due nuclei, tre utenti) che: un membro non vede nulla del nucleo altrui, non vede i movimenti privati di un altro membro, non può cancellare un movimento condiviso che non possiede e di cui non è admin, e non può inserirsi in un nucleo come membro senza essere admin. Test automatizzati arrivano nel task 0.6.
+- Scoperto un gap di bootstrap: `households`/`members` non possono ancora avere una riga inserita da un utente autenticato normale (nessun admin esiste finché non esiste la prima riga in `members`) — documentato in **ADR-014**, risolto dall'onboarding del task 0.7.
+
 ### 2026-09-26 — Task 0.4: Supabase locale + prima migrazione
 - `supabase init`; Supabase locale avviato su Docker.
 - Prima migrazione (`supabase/migrations/20260926161938_initial_schema.sql`) con le 9 tabelle del §6 (households, members, accounts, categories, imports, transactions, category_rules, budgets, tasks), copiate fedelmente dallo schema normativo.
