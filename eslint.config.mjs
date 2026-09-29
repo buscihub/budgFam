@@ -38,7 +38,7 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
     // Static design snapshots, not maintained app code.
-    'design/mockups/**',
+    'docs/design/mockups/**',
   ]),
 ]);
 

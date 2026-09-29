@@ -8,6 +8,10 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-09-29 — Manutenzione: documentazione spostata in docs/
+- Spostati `DESIGN_DOC.md`, `CHANGELOG.md` e `design/mockups/` sotto `docs/` (root: solo codice + `CLAUDE.md`, che resta lì perché Claude Code lo carica automaticamente da quella posizione).
+- Aggiornati i riferimenti ai nuovi percorsi in `CLAUDE.md`, `docs/DESIGN_DOC.md`, `eslint.config.mjs`, `.prettierignore`. I riferimenti storici nelle voci già scritte di questo changelog e negli ADR restano invariati (raccontano lo stato di allora).
+
 ### 2026-09-26 — Task 0.5: Funzioni is_member/is_admin e policy RLS
 - Aggiunte le funzioni `security definer` `is_member`/`is_admin` (§7) e attivata RLS su tutte le 9 tabelle, con policy select/insert/update/delete derivate dalla matrice di accesso del §7.
 - Verificato manualmente con `psql` (due nuclei, tre utenti) che: un membro non vede nulla del nucleo altrui, non vede i movimenti privati di un altro membro, non può cancellare un movimento condiviso che non possiede e di cui non è admin, e non può inserirsi in un nucleo come membro senza essere admin. Test automatizzati arrivano nel task 0.6.
