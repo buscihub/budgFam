@@ -55,7 +55,7 @@ Un task del §13.1 si considera chiuso solo quando: il codice passa `lint`/`type
 
 1. [Contesto e problema](#1-contesto-e-problema)
 2. [Obiettivi e non-obiettivi](#2-obiettivi-e-non-obiettivi)
-3. [Opzioni valutate e decisione](#3-opzioni-valutate-e-decisione)
+3. [Decisione](#3-decisione)
 4. [Principi di ingegneria](#4-principi-di-ingegneria)
 5. [Architettura](#5-architettura)
 6. [Modello dati](#6-modello-dati)
@@ -107,80 +107,18 @@ Il progetto ha anche un secondo scopo: essere un **progetto di ingegneria del so
 - Funzioni "da assistente personale": memoria semantica, note, salute, abitudini, briefing mattutino.
 - App native iOS/Android pubblicate sugli store.
 - Più di un nucleo familiare (il modello dati lo permette, il prodotto no).
-- Gestione della contabilità del B&B: se passa dagli stessi conti, va **tenuta separata** (vedi [Domande aperte](#17-domande-aperte)).
+- Gestione della contabilità del B&B: passa dagli stessi conti, quindi è **esclusa dai riepiloghi** tramite una categoria dedicata (vedi [Domande aperte](#17-domande-aperte), Q5).
 
 ---
 
-## 3. Opzioni valutate e decisione
+## 3. Decisione
 
-> *Sezione di contesto.* La decisione (§3.4) è presa. Le funzioni di A escluse qui (memoria semantica, note, salute, abitudini, briefing) **NON DEVONO** essere aggiunte senza una decisione esplicita dell'autore.
+> *Sezione di contesto.* La decisione è presa. Le funzioni escluse (memoria semantica, note, salute, abitudini, briefing) **NON DEVONO** essere aggiunte senza una decisione esplicita dell'autore.
 
-### 3.1 Primo livello: che tipo di strumento
-
-| Opzione | Pro | Contro |
-|---|---|---|
-| **Foglio condiviso** (Google Sheets) | Gratis, flessibile, subito | Inserimento manuale o import a mano |
-| **App di budgeting** (es. Wallet by BudgetBakers, YNAB, analisi spese della banca) | Sync automatico con la banca | Categorie automatiche spesso sbagliate, sync fragile, multi-conto non sempre supportato, costi, niente cose da fare condivise |
-| **Ibrido**: foglio + estratto conto mensile classificato con l'AI | Nessuno deve segnare ogni spesa | Resta un passaggio manuale mensile |
-| **App costruita da noi** | Fa esattamente quello che serve; vale anche come progetto | Tempo di sviluppo e manutenzione |
-
-Scelta: **app costruita da noi**, che incorpora l'idea dell'ibrido: import dell'estratto conto e classificazione automatica.
-
-### 3.2 Punto di partenza valutato: la guida "PersonalOS"
-
-La guida *PersonalOS* (G. Castagna, v1.0, agosto 2026) descrive come costruire con Claude Code una dashboard personale: task, calendario, finanze, abitudini, memoria. Ha due percorsi:
-
-- **Locale** (30-60 min): dati in un file JSON sul computer di chi la installa.
-- **Completo** (10-15 h): Next.js + Supabase + Vercel + Telegram + OpenAI, online, con password unica.
-
-**Perché non va bene così com'è per una famiglia:**
-
-- È progettata per **un solo utente**. Installata sui computer di quattro persone, il Percorso Locale produce **quattro sistemi separati** che non condividono dati.
-- Il Percorso Completo ha un cancello a **password unica**. La guida stessa (Parte 9, voce 9 "Più utenti") avverte che il multi-utente richiede *"diverse serate"* e *"cambia la natura del progetto"*: filtri per utente, regole di accesso per riga, responsabilità sui dati altrui.
-
-**Cosa ne riprendiamo:**
-
-- lo stack di base (Next.js, Supabase, Vercel);
-- la regola *"tutte le letture e scritture passano da un modulo solo"*;
-- la regola *"il caricamento della pagina non chiama mai il modello"*;
-- l'avvertenza sul **limite di spesa della chiave API**.
-
-### 3.3 Opzione A vs Opzione B
-
-- **A. PersonalOS completo adattato alla famiglia.** Tutte le funzioni della guida (cattura a voce, smistamento AI su 7 destinazioni, bot Telegram, memoria semantica, briefing) più il multi-utente.
-- **B. App di famiglia essenziale.** Solo budget e cose da fare condivise. L'AI si usa in un solo punto: la classificazione dei movimenti importati.
-
-| | **A · PersonalOS famiglia** | **B · App essenziale** |
-|---|---|---|
-| Cosa fa | Task, calendario, finanze, abitudini, salute, memoria, cattura voce/Telegram, briefing | Budget (movimenti, categorie, riepiloghi) + cose da fare |
-| Tempo di costruzione | 25-40 h | 10-15 h |
-| Servizi da gestire | Supabase, Vercel, Anthropic, OpenAI, Telegram | Supabase, Vercel, Anthropic |
-| Chiamate AI | Molte: ogni cattura, ogni domanda, briefing giornaliero | Poche: solo all'import |
-| Costo mensile API (stima) | Qualche euro, cresce con 4 utenti | Centesimi |
-| Dati sensibili online | Soldi, salute, riflessioni personali | Soldi e cose da fare |
-| Punti di rottura | Webhook Telegram, trascrizione, embedding, cron, smistamento | Import CSV |
-| Curva di apprendimento | Ripida | Bassa (due schede) |
-
-**Valutazione delle funzioni di A per una famiglia:**
-
-| Funzione | Complessità tecnica | Utile per la famiglia? |
-|---|---|---|
-| Cattura con smistamento AI | Una chiamata al modello per ogni frase | Solo per spese veloci |
-| Bot Telegram | Webhook, mappa chat_id → utente, token | **Sì, è la funzione più utile di A** |
-| Note vocali | Trascrizione OpenAI, dettatura del browser inaffidabile su iPhone | Comoda, non indispensabile |
-| Memoria semantica | pgvector, embedding, ricerca per somiglianza | No: pensata per una persona |
-| Salute / abitudini / riflessioni | Tabelle aggiuntive con RLS stretta | No, e crea un problema di privacy (sotto) |
-| Briefing mattutino | Cron giornaliero con chiamata AI per utente | Carino, costa ogni giorno |
-
-**Il problema di A che B non ha:** l'amministratore del database può leggere tutto dal pannello di Supabase, perché scavalca la RLS. In B si tratta di spese e faccende di casa. In A sarebbero note personali e dati di salute dei familiari: una responsabilità da non prendersi.
-
-### 3.4 Decisione
-
-**Opzione B**, progettata per poter crescere senza riscritture:
+App di famiglia essenziale, **costruita da noi**: solo budget e cose da fare condivise. L'AI si usa in un solo punto: la classificazione dei movimenti importati.
 
 - **Fase 1**: budget + import + cose da fare, login per ognuna, PWA.
 - **Fase 2** (solo se l'uso lo richiede): **bot Telegram** per registrare spese e cose da fare al volo, agganciato allo stesso database.
-- Le funzioni personali di PersonalOS, se qualcuno le vuole, restano **fuori** dal sistema di famiglia: ognuno se le fa in locale.
 
 ---
 
@@ -240,7 +178,7 @@ Valgono per tutto il codice. Ogni violazione è un bug.
 | Livello | Scelta | Perché | Alternativa scartata |
 |---|---|---|---|
 | Framework | **Next.js (App Router)** | UI e logica server nello stesso progetto; la chiave API non arriva mai al browser | Frontend e backend separati: due deploy e un contratto API per 4 utenti |
-| Linguaggio | **TypeScript strict** | I tipi sono documentazione verificata; il codice lo leggeranno altri | JavaScript (scelta della guida): va bene per uso personale, non per un portfolio |
+| Linguaggio | **TypeScript strict** | I tipi sono documentazione verificata; il codice lo leggeranno altri | JavaScript: va bene per uso personale, non per un portfolio |
 | Database | **Supabase** (Postgres + Auth) | Postgres vero, autenticazione e RLS inclusi, piano gratuito | GCP + Cloud SQL: più vicino allo stack BS, sproporzionato qui |
 | Hosting | **Vercel** | Deploy da git, anteprima per ogni PR | Server gestito a mano |
 | Client | **PWA** | Una codebase, installabile su iOS e Android | App native: tre codebase + store |
@@ -282,7 +220,7 @@ budgFam/
 
 ### 5.3 Schermate
 
-1. **Riepilogo del mese**: entrate, uscite, saldo, categorie confrontate con il budget.
+1. **Riepilogo del mese**, in due viste (ADR-018): **Famiglia** (movimenti condivisi di tutti: entrate, uscite, saldo, categorie confrontate con il budget familiare, riga informativa *Trasferiti ai familiari* per persona) e **Personale** (tutti i movimenti dei **miei conti**, privati e condivisi, confrontati con il mio budget personale). Sono due lenti sugli stessi dati: la spesa di famiglia pagata con la mia carta è un'uscita sia per la famiglia sia per me, ma le due viste non si sommano mai.
 2. **Movimenti**: lista filtrabile, correzione rapida della categoria, banner dei movimenti "da rivedere"; un unico punto d'ingresso ("+") per aggiungere un movimento, manualmente o importando un estratto conto (vedi ADR-013 — non c'è più una schermata "Importa" separata).
 3. **Cose da fare**: lista condivisa con responsabile, scadenza e ricorrenza; stesso pattern "+" per aggiungere una nuova attività.
 
@@ -304,6 +242,7 @@ Schema di riferimento. È il punto di partenza per la prima migrazione: i nomi p
 create table households (
   id         uuid primary key default gen_random_uuid(),
   name       text not null,
+  owner_id   uuid not null references auth.users,  -- admin principale (ADR-016)
   created_at timestamptz not null default now()
 );
 
@@ -321,6 +260,9 @@ create table accounts (          -- conto corrente, carta, contanti
   household_id uuid not null references households on delete cascade,
   name         text not null,
   kind         text not null check (kind in ('bank','card','cash')),
+  owner_id     uuid not null references auth.users,  -- chi lo gestisce e vi importa gli estratti (ADR-015)
+  visibility   text not null default 'private'
+               check (visibility in ('shared','private')),  -- default dei suoi movimenti
   bank_format  jsonb,             -- mappatura colonne salvata (§8.1); null finché non rilevata
   created_at   timestamptz not null default now()
 );
@@ -329,7 +271,8 @@ create table categories (
   id           uuid primary key default gen_random_uuid(),
   household_id uuid not null references households on delete cascade,
   name         text not null,
-  kind         text not null check (kind in ('income','expense','transfer')),
+  kind         text not null check (kind in ('income','expense','transfer','excluded')),
+  is_hidden    boolean not null default false,  -- nascosta dai selettori e dall'AI, ma resta sui movimenti esistenti (ADR-017)
   unique (household_id, name)
 );
 
@@ -367,8 +310,10 @@ create table transactions (
   category_source text check (category_source in ('rule','ai','user')),
   ai_confidence   numeric check (ai_confidence between 0 and 1),
   needs_review    boolean not null default false,
-  visibility      text not null default 'shared'
-                  check (visibility in ('shared','private')),
+  visibility      text not null default 'private'
+                  check (visibility in ('shared','private')),  -- ereditata dal conto alla creazione; sovrascrivibile
+  visibility_overridden boolean not null default false,  -- true se l'utente l'ha scelta a mano: mai toccata da cambi di visibilità del conto
+  transfer_member_id uuid references auth.users,  -- destinatario/mittente (solo membri) per le categorie kind='transfer'; coerenza imposta in src/data
   import_hash     text,
   created_at      timestamptz not null default now(),
   unique (household_id, import_hash)        -- idempotenza degli import
@@ -385,13 +330,16 @@ create table category_rules (      -- "CONAD" → Spesa, imparate dalle correzio
   unique (household_id, pattern)
 );
 
-create table budgets (
+create table budgets (            -- member_id null = budget familiare; valorizzato = budget personale (ADR-018)
+  id           uuid primary key default gen_random_uuid(),
   household_id uuid not null references households on delete cascade,
+  member_id    uuid references auth.users,
   category_id  uuid not null references categories on delete cascade,
   month        date not null check (extract(day from month) = 1),  -- primo del mese
-  limit_cents  bigint not null check (limit_cents >= 0),
-  primary key (household_id, category_id, month)
+  limit_cents  bigint not null check (limit_cents >= 0)
 );
+create unique index budgets_scope_uq on budgets
+  (household_id, coalesce(member_id, '00000000-0000-0000-0000-000000000000'), category_id, month);
 
 create table tasks (
   id           uuid primary key default gen_random_uuid(),
@@ -408,6 +356,21 @@ create table tasks (
 ```
 
 La **precedenza delle regole** in caso di più pattern corrispondenti: vince il pattern **più lungo** (più specifico). Da documentare nei test del motore di regole.
+
+### 6.1 Categorie iniziali (seed)
+
+**Trasferimenti.** Il `kind = 'transfer'` non entra in *Uscite* né in *Entrate*: nel riepilogo famiglia compare come riga a parte, per destinatario (`transfer_member_id`) e per categoria. Il destinatario può essere **solo un membro registrato**. Un bonifico a una **persona esterna** è una normale **uscita**, catalogata in una categoria di spesa in base a cosa è (Regali, Casa, Altro…), senza destinatario.
+
+Nella vista **Personale** (ADR-018) i trasferimenti **inviati** a un familiare restano una riga a parte; quelli **ricevuti** contano come **entrata**.
+
+Create all'onboarding del nucleo; ogni nucleo può **nascondere** quelle che non usa e **aggiungerne di personalizzate** (ADR-017). Le categorie con movimenti non si eliminano, si nascondono.
+
+| `kind` | Categorie |
+|---|---|
+| `expense` | Casa, Utenze, Spesa alimentare, Ristoranti e bar, Trasporti, Auto, Salute, Svago, Abbonamenti, Abbigliamento, Viaggi, Istruzione, Regali, Rate e finanziamenti, Altro |
+| `income` | Stipendio, Altre entrate, Investimenti |
+| `transfer` | Giroconto tra conti; trasferimenti ai familiari: Paghetta, Aiuto economico, Rimborso spese, Regalo in denaro |
+| `excluded` | B&B (fuori da riepiloghi e budget) |
 
 ---
 
@@ -431,6 +394,8 @@ $$;
 
 alter table transactions enable row level security;
 
+-- `visibility` del movimento è l'unica fonte per la RLS: il conto dà solo il default,
+-- l'override vale in entrambe le direzioni (vedi ADR-015).
 create policy tx_select on transactions for select using (
   is_member(household_id) and (visibility = 'shared' or owner_id = auth.uid())
 );
@@ -446,23 +411,30 @@ create policy tx_update on transactions for update using (
 
 | Tabella | Leggere | Creare / modificare | Eliminare |
 |---|---|---|---|
-| `households` | membri | — (creazione tramite funzione di onboarding) | admin |
-| `members` | membri dello stesso nucleo | admin | admin |
-| `accounts`, `categories`, `budgets`, `category_rules` | membri | membri | admin |
+| `households` | membri | — (creazione tramite funzione di onboarding) | admin principale (`owner_id`) |
+| `members` | membri dello stesso nucleo | admin; **solo l'admin principale** promuove/declassa altri admin | admin |
+| `accounts` | membri: condivisi + i propri privati | membri (come proprietari di quel conto) | proprietario o admin |
+| `categories`, `category_rules` | membri | membri (nascondere = update) | admin |
+| `budgets` familiari (`member_id` null) | membri | admin | admin |
+| `budgets` personali | **solo il proprietario** | proprietario | proprietario |
 | `imports` | membri | membri (tramite il server) | admin |
 | `transactions` | membri: condivisi + i propri privati | membri: stessa regola | proprietario o admin |
 | `tasks` | membri | membri | creatore o admin |
 | Chi non è membro | **niente, su nessuna tabella** | niente | niente |
 
-Regole di visibilità:
+Regole di visibilità (ADR-015):
 
+- **ogni membro registra i propri conti/carte**, privati o condivisi. «Condiviso» non significa cointestato: il conto della madre che paga la spesa per tutti è condiviso, anche se è solo suo;
+- la visibilità del **conto** è il default dei suoi movimenti; ogni movimento può essere **sovrascritto in entrambe le direzioni**: un acquisto personale su un conto condiviso → privato; la spesa per tutta la famiglia fatta con la propria carta privata → condiviso. Il conto di un movimento condiviso resta invisibile agli altri: vedono il movimento, non il conto;
+- gli import si **indirizzano a un conto**; l'estratto conto eredita proprietario e visibilità di quel conto;
 - movimento **condiviso** → lo vede tutto il nucleo familiare;
-- movimento **privato** → solo chi lo possiede;
+- movimento **privato** → solo chi lo possiede (gli admin **non** fanno eccezione);
 - nei totali di casa i privati possono comparire come **cifra aggregata**, senza dettaglio.
 
 Altre misure:
 
-- **Autenticazione vera** (Supabase Auth: email + password o link magico), non la password unica della guida PersonalOS.
+- **Admin multipli, con un principale** (ADR-016): il ruolo `admin` è assegnabile a più membri; `households.owner_id` indica l'admin principale, l'unico che può promuovere/declassare altri admin, trasferire il ruolo e eliminare il nucleo.
+- **Autenticazione vera** (Supabase Auth: email + password o link magico), non una password unica condivisa.
 - La **service role key** di Supabase si usa solo lato server, mai nel browser.
 - Le policy RLS sono **coperte da test** in CI ([§10](#10-qualità-del-codice-e-test)).
 - **Limite noto e dichiarato:** l'amministratore del progetto Supabase scavalca la RLS e può leggere tutti i dati dal pannello. Va scritto nel README e detto ai membri della famiglia.
@@ -659,6 +631,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.3 Vitest configurato, con un primo test sul dominio (formattazione centesimi → euro)
 - [x] 0.4 Supabase CLI + Supabase locale (Docker); prima migrazione con lo schema del §6
 - [x] 0.5 Funzioni `is_member` / `is_admin` e policy RLS del §7 per tutte le tabelle
+- [ ] 0.5b Migrazione per ADR-015/016/017/018: `accounts.owner_id`/`visibility`, `households.owner_id`, `categories.is_hidden` e `kind 'excluded'`, `transactions.visibility_overridden`/`transfer_member_id`, `budgets.member_id`, default `private`, policy aggiornate; poi `supabase gen types`
 - [ ] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
 - [ ] 0.7 Autenticazione (`@supabase/ssr`): login, logout, pagina protetta; onboarding "crea nucleo" / "unisciti con invito"
 - [ ] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
@@ -684,10 +657,13 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - **Uscita:** accuratezza e costo misurati e salvati in `evals/results/`.
 
 **Fase 3 · Uso in famiglia**
-- [ ] 3.1 Tutti i conti/carte (dipende da **Q1**, **Q2**); inserimento manuale rapido per i contanti
-- [ ] 3.2 Budget per categoria e confronto nel riepilogo
+- [ ] 3.1 Tutti i conti/carte (Revolut, UniCredit, Findomestic, Trade Republic; **Q1**); inserimento manuale rapido per i contanti (**Q2**)
+- [ ] 3.2 Budget familiare per categoria (modificabile dagli admin) e confronto nel riepilogo Famiglia
+- [ ] 3.2b Budget personale e vista Personale (ADR-018)
+- [ ] 3.2c Gestione categorie: nascondi / aggiungi personalizzate (ADR-017)
+- [ ] 3.4b Trasferimenti ai familiari: destinatario, categorie `transfer`, riga nel riepilogo (ADR-015)
 - [ ] 3.3 Cose da fare: lista, responsabile, scadenza, ricorrenza
-- [ ] 3.4 Visibilità privata dei movimenti (dipende da **Q4**)
+- [ ] 3.4 UI per conti personali/condivisi, override per singolo movimento e cambio di visibilità di un conto con anteprima (ADR-015)
 - [ ] 3.5 PWA: manifest, icone, service worker; istruzioni di installazione (dipende da **Q3**)
 - [ ] 3.6 Deploy su Vercel + progetto Supabase di produzione
 - **Uscita:** tutte e 4 hanno l'app sulla schermata home e l'hanno usata per un mese.
@@ -707,7 +683,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 
 | # | Titolo | Decisione in breve |
 |---|---|---|
-| ADR-001 | Opzione B invece di PersonalOS completo | Scope ridotto a budget + cose da fare; niente dati personali sensibili nel sistema condiviso |
+| ADR-001 | App essenziale (budget + cose da fare) invece di un assistente personale completo | Scope ridotto a budget + cose da fare; niente dati personali sensibili nel sistema condiviso |
 | ADR-002 | Monolite Next.js | Un solo deployable; niente backend separato |
 | ADR-003 | TypeScript strict | Leggibilità e verifica per un codice destinato ad altri lettori |
 | ADR-004 | Supabase con RLS | Sicurezza nel database; autenticazione inclusa |
@@ -720,6 +696,10 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-011 | Documentazione in quattro documenti separati (DESIGN_DOC, ADR, CHANGELOG, CLAUDE.md) | Ognuno con un compito e una cadenza di aggiornamento diversi |
 | ADR-012 | Linguaggio visivo "Liquid Glass" (iOS/macOS) sulla palette B1, con campione dark mode | Materiali vetro/blur invece dei colori di sistema iOS; due schermate campione fissano i token del tema scuro |
 | ADR-013 | Unificazione delle schermate "Movimenti" e "Importa" | Un solo "+" per aggiungere un movimento (manuale o import); nav da 4 a 3 voci |
+| ADR-015 | Conti personali/condivisi, visibilità ereditata dal conto con override per movimento | Modella la famiglia italiana (un conto paga per tutti); import indirizzati al conto |
+| ADR-016 | Admin multipli con un admin principale (`households.owner_id`) | Più admin senza cambiare `is_admin()`; azioni distruttive riservate al principale |
+| ADR-018 | Vista Personale e budget personali (`budgets.member_id`) | Ogni membro ha il proprio budget su tutti i movimenti dei propri conti; Famiglia e Personale sono lenti diverse, mai sommate |
+| ADR-017 | Categorie nascoste (`is_hidden`) e `kind = 'excluded'` | Personalizzabili senza perdere lo storico; B&B fuori dai riepiloghi |
 | ADR-014 | Nessuna policy INSERT su households/members finché non esiste l'onboarding | Evita una finestra di sicurezza; il bootstrap del primo admin è compito del task 0.7 |
 
 ---
@@ -782,19 +762,18 @@ Quando una domanda riceve risposta: aggiornare lo stato e scrivere la risposta q
 
 | # | Domanda | Perché serve | Blocca | Stato |
 |---|---|---|---|---|
-| Q1 | Quali **banche e carte** usiamo? | Formati di import e fixture | 1.1, 3.1 | Aperta |
-| Q2 | Quanto usiamo i **contanti**? | Serve un inserimento manuale rapido? | 3.1 | Aperta |
-| Q3 | Che **telefoni** hanno mamma e sorelle (iPhone/Android)? | Istruzioni PWA, notifiche | 3.5 | Aperta |
-| Q4 | **Chi vede cosa**: tutto condiviso o anche spese private? | Default di `visibility` | 3.4 | Aperta (lo schema supporta già entrambi) |
-| Q5 | Le entrate/uscite del **B&B** passano dagli stessi conti? | Va tenuto separato: conto dedicato o categoria di esclusione | 3.1 | Aperta |
-| Q6 | Quali **categorie** iniziali? | Seed del database e golden set | 1.6, 2.6 | Aperta |
-| Q7 | Budget mensile per categoria: chi lo decide e con quali cifre? | Funzione budget | 3.2 | Aperta |
+| Q1 | Quali **banche e carte** usiamo? | Formati di import e fixture | 1.1, 3.1 | **Risolta**: in famiglia Revolut, UniCredit, Findomestic, Trade Republic. Il parser DEVE restare estensibile (un `BankFormat` per banca) per riconoscere il maggior numero possibile di formati |
+| Q2 | Quanto usiamo i **contanti**? | Serve un inserimento manuale rapido? | 3.1 | **Risolta**: uso frequente, serve inserimento rapidissimo (importo + categoria, a portata di mano) |
+| Q3 | Che **telefoni** hanno mamma e sorelle (iPhone/Android)? | Istruzioni PWA, notifiche | 3.5 | **Risolta**: tutti iPhone. PWA da Safari ("Aggiungi a Home"); notifiche push limitate, non farci affidamento |
+| Q4 | **Chi vede cosa**: tutto condiviso o anche spese private? | Default di `visibility` | 3.4 | **Risolta**: privato di default, ma con **conti** personali o condivisi (anche se non cointestati) che fanno da default per i loro movimenti; override per singolo movimento. Vedi ADR-015 |
+| Q5 | Le entrate/uscite del **B&B** passano dagli stessi conti? | Va tenuto separato: conto dedicato o categoria di esclusione | 3.1 | **Risolta**: stessi conti, si usa una **categoria di esclusione** (i movimenti B&B restano importati ma fuori dai riepiloghi) |
+| Q6 | Quali **categorie** iniziali? | Seed del database e golden set | 1.6, 2.6 | **Risolta**: elenco standard in §6.1; personalizzabile (aggiungere/nascondere, ADR-017) |
+| Q7 | Budget mensile per categoria: chi lo decide e con quali cifre? | Funzione budget | 3.2 | **Risolta in parte**: i budget **familiari** li modificano gli **admin**, quelli **personali** solo il proprietario (più admin, uno principale: ADR-016). Le cifre si fissano nel task 3.2, guardando le spese reali |
 
 ---
 
 ## 18. Fonti
 
-- *PersonalOS — Come costruirti il sistema che tiene insieme la tua vita, parlando a un agente*, G. Castagna, v1.0, agosto 2026 (materiale di terzi, non nel repository; tutto ciò che serve al progetto è già in questo documento).
 - [How do I pay for my Claude API usage? — Claude Help Center](https://support.claude.com/en/articles/8977456-how-do-i-pay-for-my-claude-api-usage)
 - [Workspaces — Claude Platform Docs](https://platform.claude.com/docs/en/manage-claude/workspaces)
 - [Spend Limits API — Claude Platform Docs](https://platform.claude.com/docs/en/manage-claude/spend-limits-api)

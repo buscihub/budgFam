@@ -8,6 +8,11 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-06 — Domande aperte Q1-Q7 risolte
+- Registrate le risposte nel §17 del DESIGN_DOC (banche Revolut/UniCredit/Findomestic/Trade Republic, contanti con inserimento rapido, iPhone, B&B come categoria di esclusione, categorie seed in §6.1).
+- Proposti (stato *Proposta*) **ADR-015** (conti personali/condivisi), **ADR-016** (admin multipli con principale) e **ADR-017** (categorie nascoste, `excluded`); aggiunto il task 0.5b per la migrazione. Nessun codice toccato.
+- Aggiunti **ADR-018** (vista Personale e budget personali) e, in ADR-015, regole per i trasferimenti ai familiari e per il cambio di visibilità di un conto; task 3.2 spezzato in 3.2/3.2b/3.2c, aggiunto 3.4b.
+
 ### 2026-09-29 — Manutenzione: documentazione spostata in docs/
 - Spostati `DESIGN_DOC.md`, `CHANGELOG.md` e `design/mockups/` sotto `docs/` (root: solo codice + `CLAUDE.md`, che resta lì perché Claude Code lo carica automaticamente da quella posizione).
 - Aggiornati i riferimenti ai nuovi percorsi in `CLAUDE.md`, `docs/DESIGN_DOC.md`, `eslint.config.mjs`, `.prettierignore`. I riferimenti storici nelle voci già scritte di questo changelog e negli ADR restano invariati (raccontano lo stato di allora).
