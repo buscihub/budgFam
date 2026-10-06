@@ -8,6 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-06 — Task 0.5b: schema e RLS per conti personali, admin principale, budget personali
+- Migrazione di schema: `households.owner_id`, `accounts.owner_id`/`visibility`, `categories.is_hidden` e `kind 'excluded'`, `transactions.visibility_overridden`/`transfer_member_id` (default `visibility` → `private`), `budgets.id`/`member_id` con indice unico.
+- Migrazione RLS: funzioni `is_owner`/`owns_account`; policy nuove per `accounts`, `members`, `households` (delete solo principale), `budgets` (familiari/personali) e insert di `transactions` solo sui propri conti; colonne immutabili (`owner_id`, `account_id`…) protette con grant a livello di colonna.
+- Verificato con 46 casi in `psql` (due nuclei, cinque utenti); diventeranno i test automatici del task 0.6. Primo `src/data/database.types.ts` generato.
+- ADR-015, 016, 017, 018 → *Accettata*; nuovo **ADR-019** (colonne immutabili con grant).
+
 ### 2026-10-06 — Domande aperte Q1-Q7 risolte
 - Registrate le risposte nel §17 del DESIGN_DOC (banche Revolut/UniCredit/Findomestic/Trade Republic, contanti con inserimento rapido, iPhone, B&B come categoria di esclusione, categorie seed in §6.1).
 - Proposti (stato *Proposta*) **ADR-015** (conti personali/condivisi), **ADR-016** (admin multipli con principale) e **ADR-017** (categorie nascoste, `excluded`); aggiunto il task 0.5b per la migrazione. Nessun codice toccato.

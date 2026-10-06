@@ -1,7 +1,7 @@
 # ADR-0016: Admin multipli con un admin principale
 
 - **Data:** 2026-10-06
-- **Stato:** Proposta
+- **Stato:** Accettata
 - **Task collegato:** §13.1 · 0.5b (risolve Q7)
 
 ## Contesto

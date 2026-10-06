@@ -1,7 +1,7 @@
 # ADR-0018: Vista Personale e budget personali
 
 - **Data:** 2026-10-06
-- **Stato:** Proposta
+- **Stato:** Accettata
 - **Task collegato:** §13.1 · 0.5b, 3.2b
 
 ## Contesto
