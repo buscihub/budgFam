@@ -8,6 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-06 — Task 0.7a: sessione, login, logout, pagina protetta
+- Registrazione, login e logout con email + password (Supabase Auth, `@supabase/ssr`); pagina `/` protetta; `proxy.ts` con redirect ottimistico e `getCurrentUser()`/`requireUser()` (basati su `getUser()`) come controllo autorevole — **ADR-021**.
+- Nuovo `src/data/auth.ts`, `src/data/supabase/{server,proxy}.ts`, `src/data/env.ts`; schemi Zod in `src/domain/auth/` con test; password minima 8 caratteri (anche in `supabase/config.toml`); `.env.example`.
+- Task 0.7 spezzato in 0.7a/0.7b/0.7c; aggiunto 3.5b (reset password e conferma email prima del deploy).
+- Verificato con uno script sul flusso reale (registrazione, login, logout, errori generici, redirect) e con `pnpm build`.
+
 ### 2026-10-06 — Task 0.6: test di integrazione RLS
 - Aggiunti 116 test in `tests/rls/` (`pnpm test:rls`): matrice di accesso del §7 per tutte le 9 tabelle, isolamento tra nuclei, utente senza nucleo e anonimo, vincoli (idempotenza, `kind`, budget), più 3 smoke test via API con utenti veri.
 - Errori verificati per SQLSTATE e messaggio; ogni test in una transazione annullata. Controllato rompendo di proposito policy e grant: i test se ne accorgono (**ADR-020**).

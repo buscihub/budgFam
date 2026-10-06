@@ -434,7 +434,7 @@ Regole di visibilità (ADR-015):
 Altre misure:
 
 - **Admin multipli, con un principale** (ADR-016): il ruolo `admin` è assegnabile a più membri; `households.owner_id` indica l'admin principale, l'unico che può promuovere/declassare altri admin, trasferire il ruolo e eliminare il nucleo.
-- **Autenticazione vera** (Supabase Auth: email + password o link magico), non una password unica condivisa.
+- **Autenticazione vera** (Supabase Auth, **email + password**, ADR-021), non una password unica condivisa.
 - La **service role key** di Supabase si usa solo lato server, mai nel browser.
 - Le policy RLS sono **coperte da test** in CI ([§10](#10-qualità-del-codice-e-test)).
 - **Limite noto e dichiarato:** l'amministratore del progetto Supabase scavalca la RLS e può leggere tutti i dati dal pannello. Va scritto nel README e detto ai membri della famiglia.
@@ -633,7 +633,9 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.5 Funzioni `is_member` / `is_admin` e policy RLS del §7 per tutte le tabelle
 - [x] 0.5b Migrazione per ADR-015/016/017/018: `accounts.owner_id`/`visibility`, `households.owner_id`, `categories.is_hidden` e `kind 'excluded'`, `transactions.visibility_overridden`/`transfer_member_id`, `budgets.member_id`, default `private`, policy aggiornate; poi `supabase gen types`
 - [x] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
-- [ ] 0.7 Autenticazione (`@supabase/ssr`): login, logout, pagina protetta; onboarding "crea nucleo" / "unisciti con invito"
+- [x] 0.7a Autenticazione (`@supabase/ssr`): registrazione, login, logout, pagina protetta (ADR-021)
+- [ ] 0.7b Onboarding «crea nucleo»: funzione `create_household` (un solo nucleo ammesso) + categorie seed (§6.1)
+- [ ] 0.7c Inviti: link monouso per «unisciti con invito» (tabella `invites`, `accept_invite`)
 - [ ] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
 - [ ] 0.9 `.env.example`, README minimo (come avviare in locale)
 - **Uscita:** CI verde; test dimostrano che l'utente del nucleo A non vede nulla del nucleo B e non vede i privati degli altri membri.
@@ -665,6 +667,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [ ] 3.3 Cose da fare: lista, responsabile, scadenza, ricorrenza
 - [ ] 3.4 UI per conti personali/condivisi, override per singolo movimento e cambio di visibilità di un conto con anteprima (ADR-015)
 - [ ] 3.5 PWA: manifest, icone, service worker; istruzioni di installazione (dipende da **Q3**)
+- [ ] 3.5b Reset password via email e conferma email attiva in produzione (prerequisito del deploy)
 - [ ] 3.6 Deploy su Vercel + progetto Supabase di produzione
 - **Uscita:** tutte e 4 hanno l'app sulla schermata home e l'hanno usata per un mese.
 
@@ -703,6 +706,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-018 | Vista Personale e budget personali (`budgets.member_id`) | Ogni membro ha il proprio budget su tutti i movimenti dei propri conti; Famiglia e Personale sono lenti diverse, mai sommate |
 | ADR-019 | Colonne immutabili con grant a livello di colonna | La RLS sceglie le righe, i grant scelgono le colonne: nessuno riassegna `owner_id` e simili |
 | ADR-020 | Test RLS con Postgres diretto (`SET ROLE`) più smoke test via API | Veloci, errori verificati per SQLSTATE; la catena JWT→`auth.uid()` provata da pochi test end-to-end |
+| ADR-021 | Email + password; sessione con `@supabase/ssr`; `getUser()` come controllo autorevole | Funziona nella PWA iOS; il proxy filtra solo in modo ottimistico |
 
 ---
 
