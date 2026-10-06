@@ -1,7 +1,7 @@
 # ADR-0015: Conti personali/condivisi, visibilità ereditata dal conto con override per movimento
 
 - **Data:** 2026-10-06
-- **Stato:** Proposta
+- **Stato:** Accettata
 - **Task collegato:** §13.1 · 0.5b, 3.4 (risolve Q4)
 
 ## Contesto

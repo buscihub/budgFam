@@ -1,7 +1,7 @@
 # ADR-0017: Categorie nascoste e `kind = 'excluded'`
 
 - **Data:** 2026-10-06
-- **Stato:** Proposta
+- **Stato:** Accettata
 - **Task collegato:** §13.1 · 0.5b (risolve Q5, Q6)
 
 ## Contesto
