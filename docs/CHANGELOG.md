@@ -8,6 +8,11 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-06 — Task 0.6: test di integrazione RLS
+- Aggiunti 116 test in `tests/rls/` (`pnpm test:rls`): matrice di accesso del §7 per tutte le 9 tabelle, isolamento tra nuclei, utente senza nucleo e anonimo, vincoli (idempotenza, `kind`, budget), più 3 smoke test via API con utenti veri.
+- Errori verificati per SQLSTATE e messaggio; ogni test in una transazione annullata. Controllato rompendo di proposito policy e grant: i test se ne accorgono (**ADR-020**).
+- Config separata `vitest.rls.config.ts`: `pnpm test` non richiede Docker.
+
 ### 2026-10-06 — Task 0.5b: schema e RLS per conti personali, admin principale, budget personali
 - Migrazione di schema: `households.owner_id`, `accounts.owner_id`/`visibility`, `categories.is_hidden` e `kind 'excluded'`, `transactions.visibility_overridden`/`transfer_member_id` (default `visibility` → `private`), `budgets.id`/`member_id` con indice unico.
 - Migrazione RLS: funzioni `is_owner`/`owns_account`; policy nuove per `accounts`, `members`, `households` (delete solo principale), `budgets` (familiari/personali) e insert di `transactions` solo sui propri conti; colonne immutabili (`owner_id`, `account_id`…) protette con grant a livello di colonna.
