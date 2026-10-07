@@ -449,6 +449,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      create_household: { Args: { household_name: string; member_name: string }; Returns: string };
       is_admin: { Args: { hh: string }; Returns: boolean };
       is_member: { Args: { hh: string }; Returns: boolean };
       is_owner: { Args: { hh: string; uid?: string }; Returns: boolean };

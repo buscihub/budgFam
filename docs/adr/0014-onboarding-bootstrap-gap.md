@@ -23,3 +23,4 @@ Per ora `households` e `members` **non hanno una policy INSERT** per il ruolo `a
 
 - Il task 0.6 (test di integrazione RLS) dovrà creare nuclei e membri di test **come `postgres`/service role** (bypassando RLS), non simulando un utente autenticato che si registra da solo — è così che verranno scritte le fixture di test.
 - Il task 0.7 deve esplicitamente risolvere questo gap: la funzione di onboarding sarà `security definer` (o userà la service role lato server) per poter inserire la prima riga in `households` e `members` senza violare le policy appena scritte.
+- **Risolto da ADR-022** (task 0.7b): la funzione `create_household` è l'unico punto di ingresso.

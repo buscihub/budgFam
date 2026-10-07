@@ -411,7 +411,7 @@ create policy tx_update on transactions for update using (
 
 | Tabella | Leggere | Creare / modificare | Eliminare |
 |---|---|---|---|
-| `households` | membri | — (creazione tramite funzione di onboarding) | admin principale (`owner_id`) |
+| `households` | membri | — (solo tramite `create_household`, vedi sotto) | admin principale (`owner_id`) |
 | `members` | membri dello stesso nucleo | admin; **solo l'admin principale** promuove/declassa altri admin | admin |
 | `accounts` | membri: condivisi + i propri privati | membri (come proprietari di quel conto) | proprietario o admin |
 | `categories`, `category_rules` | membri | membri (nascondere = update) | admin |
@@ -430,6 +430,8 @@ Regole di visibilità (ADR-015):
 - movimento **condiviso** → lo vede tutto il nucleo familiare;
 - movimento **privato** → solo chi lo possiede (gli admin **non** fanno eccezione);
 - nei totali di casa i privati possono comparire come **cifra aggregata**, senza dettaglio.
+
+**Creazione del nucleo (ADR-022).** Nessun utente può inserire direttamente in `households`/`members` (ADR-014). Il nucleo nasce con la funzione `security definer` `create_household(household_name, member_name)`, eseguibile solo da utenti autenticati, che in un'unica transazione: crea il nucleo con `owner_id` = chiamante, inserisce il chiamante come primo `admin` e le categorie seed del §6.1. **Rifiuta** se esiste già un nucleo (il prodotto è per una sola famiglia, §2): chi si registra dopo entra solo con invito (task 0.7c). Le chiamate concorrenti sono serializzate con un advisory lock, così due registrazioni simultanee non creano due nuclei.
 
 Altre misure:
 
@@ -634,7 +636,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.5b Migrazione per ADR-015/016/017/018: `accounts.owner_id`/`visibility`, `households.owner_id`, `categories.is_hidden` e `kind 'excluded'`, `transactions.visibility_overridden`/`transfer_member_id`, `budgets.member_id`, default `private`, policy aggiornate; poi `supabase gen types`
 - [x] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
 - [x] 0.7a Autenticazione (`@supabase/ssr`): registrazione, login, logout, pagina protetta (ADR-021)
-- [ ] 0.7b Onboarding «crea nucleo»: funzione `create_household` (un solo nucleo ammesso) + categorie seed (§6.1)
+- [x] 0.7b Onboarding «crea nucleo»: funzione `create_household` (un solo nucleo ammesso) + categorie seed (§6.1)
 - [ ] 0.7c Inviti: link monouso per «unisciti con invito» (tabella `invites`, `accept_invite`)
 - [ ] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
 - [ ] 0.9 `.env.example`, README minimo (come avviare in locale)
@@ -707,6 +709,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-019 | Colonne immutabili con grant a livello di colonna | La RLS sceglie le righe, i grant scelgono le colonne: nessuno riassegna `owner_id` e simili |
 | ADR-020 | Test RLS con Postgres diretto (`SET ROLE`) più smoke test via API | Veloci, errori verificati per SQLSTATE; la catena JWT→`auth.uid()` provata da pochi test end-to-end |
 | ADR-021 | Email + password; sessione con `@supabase/ssr`; `getUser()` come controllo autorevole | Funziona nella PWA iOS; il proxy filtra solo in modo ottimistico |
+| ADR-022 | Funzione `create_household` (`security definer`) con regola «un solo nucleo» | Onboarding senza service role nell'app; l'estraneo che trova l'app non può aprire un nucleo |
 
 ---
 

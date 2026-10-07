@@ -8,6 +8,11 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-07 — Task 0.7b: onboarding «crea nucleo» e categorie seed
+- Funzione `create_household(household_name, member_name)` (`security definer`, solo `authenticated`): crea nucleo, primo admin e le 24 categorie del §6.1 in un'unica transazione; rifiuta se esiste già un nucleo; chiamate concorrenti serializzate con advisory lock — **ADR-022** (chiude il gap di ADR-014).
+- Pagina `/onboarding` e `requireMembership()` (`src/data/households.ts`): chi è loggato ma senza nucleo viene mandato lì; la home mostra nome e famiglia.
+- 13 nuovi test RLS (`tests/rls/create-household.test.ts`), 3 unit (schema Zod); verificata a mano la concorrenza (due creazioni simultanee → una sola riuscita) e il flusso reale con uno script (9/9).
+
 ### 2026-10-06 — Task 0.7a: sessione, login, logout, pagina protetta
 - Registrazione, login e logout con email + password (Supabase Auth, `@supabase/ssr`); pagina `/` protetta; `proxy.ts` con redirect ottimistico e `getCurrentUser()`/`requireUser()` (basati su `getUser()`) come controllo autorevole — **ADR-021**.
 - Nuovo `src/data/auth.ts`, `src/data/supabase/{server,proxy}.ts`, `src/data/env.ts`; schemi Zod in `src/domain/auth/` con test; password minima 8 caratteri (anche in `supabase/config.toml`); `.env.example`.
