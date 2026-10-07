@@ -36,6 +36,39 @@ export async function as<T>(actor: Actor, fn: (db: pg.PoolClient) => Promise<T>)
   }
 }
 
+// Like `as`, but first empties the instance (as postgres, rolled back at the
+// end), for rules about the very first household: the committed fixtures
+// always contain two.
+export async function asOnEmptyInstance<T>(
+  actor: Actor,
+  fn: (db: pg.PoolClient) => Promise<T>,
+): Promise<T> {
+  return as('service', async (db) => {
+    await db.query('delete from households');
+    if (actor !== 'service') {
+      const claims = JSON.stringify({
+        sub: actor === 'anon' ? null : actor,
+        role: actor === 'anon' ? 'anon' : 'authenticated',
+      });
+      await db.query(`select set_config('request.jwt.claims', $1, true)`, [claims]);
+      await db.query(`set local role ${actor === 'anon' ? 'anon' : 'authenticated'}`);
+    }
+    return fn(db);
+  });
+}
+
+// Runs a statement that is expected to fail and returns the database error.
+export async function failure(db: pg.PoolClient, sql: string, params: Params = []) {
+  await db.query('savepoint before_failure');
+  try {
+    await db.query(sql, params);
+  } catch (e) {
+    await db.query('rollback to savepoint before_failure');
+    return e as pg.DatabaseError;
+  }
+  throw new Error('the statement should have failed');
+}
+
 // Rows the actor can see.
 export async function rows(actor: Actor, sql: string, params: Params = []) {
   return as(actor, async (db) => (await db.query(sql, params)).rows);
