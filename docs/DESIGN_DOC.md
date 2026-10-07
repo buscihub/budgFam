@@ -632,7 +632,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.4 Supabase CLI + Supabase locale (Docker); prima migrazione con lo schema del §6
 - [x] 0.5 Funzioni `is_member` / `is_admin` e policy RLS del §7 per tutte le tabelle
 - [x] 0.5b Migrazione per ADR-015/016/017/018: `accounts.owner_id`/`visibility`, `households.owner_id`, `categories.is_hidden` e `kind 'excluded'`, `transactions.visibility_overridden`/`transfer_member_id`, `budgets.member_id`, default `private`, policy aggiornate; poi `supabase gen types`
-- [ ] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
+- [x] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
 - [ ] 0.7 Autenticazione (`@supabase/ssr`): login, logout, pagina protetta; onboarding "crea nucleo" / "unisciti con invito"
 - [ ] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
 - [ ] 0.9 `.env.example`, README minimo (come avviare in locale)
@@ -702,6 +702,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-017 | Categorie nascoste (`is_hidden`) e `kind = 'excluded'` | Personalizzabili senza perdere lo storico; B&B fuori dai riepiloghi |
 | ADR-018 | Vista Personale e budget personali (`budgets.member_id`) | Ogni membro ha il proprio budget su tutti i movimenti dei propri conti; Famiglia e Personale sono lenti diverse, mai sommate |
 | ADR-019 | Colonne immutabili con grant a livello di colonna | La RLS sceglie le righe, i grant scelgono le colonne: nessuno riassegna `owner_id` e simili |
+| ADR-020 | Test RLS con Postgres diretto (`SET ROLE`) più smoke test via API | Veloci, errori verificati per SQLSTATE; la catena JWT→`auth.uid()` provata da pochi test end-to-end |
 
 ---
 

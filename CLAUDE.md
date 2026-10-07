@@ -67,7 +67,7 @@ pnpm dev              # avvio locale
 pnpm lint             # ESLint
 pnpm typecheck        # tsc --noEmit
 pnpm test             # Vitest (unit)
-pnpm test:rls         # test di integrazione RLS su Supabase locale
+pnpm test:rls         # test di integrazione RLS (richiede `supabase start`)
 pnpm test:e2e         # Playwright
 supabase start        # Supabase locale (Docker)
 supabase db reset     # riapplica tutte le migrazioni
