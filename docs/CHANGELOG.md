@@ -9,8 +9,8 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 ## Fase 0 · Fondamenta
 
 ### 2026-10-08 — Task 0.8: GitHub Actions
-- `.github/workflows/ci.yml`, due job: `lint-typecheck-unit` (lint, typecheck, `pnpm test`) e `migrations-and-rls` (`supabase start` su un runner effimero — applica tutte le migrazioni da zero, una fallita blocca qui — poi `pnpm test:rls`); entrambi su push a `main` e su ogni pull request.
-- Verificato in locale lo stesso percorso di un runner CI: `supabase stop --no-backup` (nessun volume residuo) seguito da `supabase start` da zero, poi `pnpm test:rls` (154 test verdi); `pnpm install --frozen-lockfile` conferma che il lockfile è coerente.
+- `.github/workflows/ci.yml`, due job: `lint-typecheck-unit` (lint, build, typecheck, `pnpm test`) e `migrations-and-rls` (`supabase start` su un runner effimero — applica tutte le migrazioni da zero, una fallita blocca qui — poi `pnpm test:rls`); entrambi su push a `main` e su ogni pull request.
+- Verificato in locale lo stesso percorso di un runner CI (`supabase stop --no-backup` poi `supabase start` da zero, `pnpm install --frozen-lockfile`), ma la prima esecuzione reale su GitHub ha trovato due problemi che la simulazione locale non poteva vedere: `pnpm/action-setup` andava in conflitto con `packageManager` di `package.json` (bastava non passargli una versione), e `tsc --noEmit` da solo falliva su `LayoutProps` perché Next.js 16 genera i tipi delle route durante `next build`/`next dev`, non con `tsc` isolato — risolto anteponendo `pnpm build` a `pnpm typecheck`. Entrambi i job sono verdi sulla PR.
 
 ### 2026-10-08 — Task 0.7c: inviti con link monouso
 - Tabella `invites` (codice a 256 bit, scadenza 24h, uso singolo) con RLS admin-only su select/insert/delete; `with check` sull'insert impedisce di superare le 24h o di pre-marcare un invito come usato. Solo **creare** un invito resta un INSERT ordinario: solo **accettarlo** usa la funzione `security definer` `accept_invite(invite_code, member_name)` — **ADR-023**.
