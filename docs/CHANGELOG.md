@@ -8,6 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-08 — Task 0.7c: inviti con link monouso
+- Tabella `invites` (codice a 256 bit, scadenza 24h, uso singolo) con RLS admin-only su select/insert/delete; `with check` sull'insert impedisce di superare le 24h o di pre-marcare un invito come usato. Solo **creare** un invito resta un INSERT ordinario: solo **accettarlo** usa la funzione `security definer` `accept_invite(invite_code, member_name)` — **ADR-023**.
+- `src/data/invites.ts` (`createInvite`/`acceptInvite`), schemi Zod in `src/domain/household/schemas.ts`, pagina `/invite/[code]` per accettare, form admin-only nella home per generarne uno (ruolo scelto da chi invita, link assoluto costruito da `x-forwarded-proto`/`host`).
+- 22 nuovi test RLS dedicati (`tests/rls/invites.test.ts`, policy + funzione; `tests/rls/invites-smoke.test.ts`, end-to-end attraverso l'API reale Auth→PostgREST→Postgres) più la sweep di isolamento tra nuclei estesa alla nuova tabella; 8 unit sugli schemi Zod. Verificato a mano con `psql` prima di scrivere i test automatici. `pnpm build` genera correttamente `/invite/[code]` come route dinamica.
+- `docs/DESIGN_DOC.md` §6 e §7 aggiornati con la tabella `invites` e la logica di accettazione.
+
 ### 2026-10-07 — Task 0.7b: onboarding «crea nucleo» e categorie seed ([#11](https://github.com/buscihub/budgFam/pull/11))
 - Funzione `create_household(household_name, member_name)` (`security definer`, solo `authenticated`): crea nucleo, primo admin e le 24 categorie del §6.1 in un'unica transazione; rifiuta se esiste già un nucleo; chiamate concorrenti serializzate con advisory lock — **ADR-022** (chiude il gap di ADR-014).
 - Pagina `/onboarding` e `requireMembership()` (`src/data/households.ts`): chi è loggato ma senza nucleo viene mandato lì; la home mostra nome e famiglia.

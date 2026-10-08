@@ -273,6 +273,50 @@ export type Database = {
           },
         ];
       };
+      invites: {
+        Row: {
+          code: string;
+          created_at: string;
+          created_by: string;
+          expires_at: string;
+          household_id: string;
+          id: string;
+          role: string;
+          used_at: string | null;
+          used_by: string | null;
+        };
+        Insert: {
+          code?: string;
+          created_at?: string;
+          created_by: string;
+          expires_at?: string;
+          household_id: string;
+          id?: string;
+          role: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Update: {
+          code?: string;
+          created_at?: string;
+          created_by?: string;
+          expires_at?: string;
+          household_id?: string;
+          id?: string;
+          role?: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'invites_household_id_fkey';
+            columns: ['household_id'];
+            isOneToOne: false;
+            referencedRelation: 'households';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       members: {
         Row: {
           created_at: string;
@@ -449,6 +493,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      accept_invite: { Args: { invite_code: string; member_name: string }; Returns: string };
       create_household: { Args: { household_name: string; member_name: string }; Returns: string };
       is_admin: { Args: { hh: string }; Returns: boolean };
       is_member: { Args: { hh: string }; Returns: boolean };

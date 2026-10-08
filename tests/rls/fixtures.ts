@@ -44,6 +44,7 @@ export const BUDGET = {
 export const TASK = { byMember: id(6, 1), byOwner: id(6, 2), h2: id(6, 3) } as const;
 export const IMPORT = { h1: id(7, 1), h2: id(7, 2) } as const;
 export const RULE = { h1: id(8, 1), h2: id(8, 2) } as const;
+export const INVITE = { h1: id(9, 1), h2: id(9, 2) } as const;
 
 export const ALL_USERS = Object.values(USER);
 
@@ -58,6 +59,7 @@ export const TABLES = [
   'category_rules',
   'budgets',
   'tasks',
+  'invites',
 ] as const;
 
 export async function removeFixtures(db: pg.ClientBase): Promise<void> {
@@ -171,5 +173,10 @@ export async function seedFixtures(db: pg.ClientBase): Promise<void> {
     `insert into category_rules (id, household_id, pattern, category_id, created_by) values
        ($1, $3, 'CONAD', $4, $5), ($2, $6, 'COOP', $7, $8)`,
     [RULE.h1, RULE.h2, H1, CATEGORY.h1, USER.owner, H2, CATEGORY.h2, USER.owner2],
+  );
+  await db.query(
+    `insert into invites (id, household_id, role, created_by) values
+       ($1, $3, 'member', $5), ($2, $4, 'member', $6)`,
+    [INVITE.h1, INVITE.h2, H1, H2, USER.owner, USER.owner2],
   );
 }
