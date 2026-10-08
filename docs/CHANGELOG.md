@@ -8,6 +8,10 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-08 — Task 0.8: GitHub Actions
+- `.github/workflows/ci.yml`, due job: `lint-typecheck-unit` (lint, typecheck, `pnpm test`) e `migrations-and-rls` (`supabase start` su un runner effimero — applica tutte le migrazioni da zero, una fallita blocca qui — poi `pnpm test:rls`); entrambi su push a `main` e su ogni pull request.
+- Verificato in locale lo stesso percorso di un runner CI: `supabase stop --no-backup` (nessun volume residuo) seguito da `supabase start` da zero, poi `pnpm test:rls` (154 test verdi); `pnpm install --frozen-lockfile` conferma che il lockfile è coerente.
+
 ### 2026-10-08 — Task 0.7c: inviti con link monouso
 - Tabella `invites` (codice a 256 bit, scadenza 24h, uso singolo) con RLS admin-only su select/insert/delete; `with check` sull'insert impedisce di superare le 24h o di pre-marcare un invito come usato. Solo **creare** un invito resta un INSERT ordinario: solo **accettarlo** usa la funzione `security definer` `accept_invite(invite_code, member_name)` — **ADR-023**.
 - `src/data/invites.ts` (`createInvite`/`acceptInvite`), schemi Zod in `src/domain/household/schemas.ts`, pagina `/invite/[code]` per accettare, form admin-only nella home per generarne uno (ruolo scelto da chi invita, link assoluto costruito da `x-forwarded-proto`/`host`).
