@@ -255,6 +255,18 @@ create table members (
   primary key (household_id, user_id)
 );
 
+create table invites (           -- link monouso per unirsi al nucleo (task 0.7c)
+  id           uuid primary key default gen_random_uuid(),
+  household_id uuid not null references households on delete cascade,
+  code         text not null unique default encode(gen_random_bytes(32), 'hex'),
+  role         text not null check (role in ('admin','member')),  -- ruolo che l'invitato riceverà
+  created_by   uuid not null references auth.users,
+  expires_at   timestamptz not null default (now() + interval '24 hours'),
+  used_at      timestamptz,
+  used_by      uuid references auth.users,
+  created_at   timestamptz not null default now()
+);
+
 create table accounts (          -- conto corrente, carta, contanti
   id           uuid primary key default gen_random_uuid(),
   household_id uuid not null references households on delete cascade,
@@ -420,6 +432,7 @@ create policy tx_update on transactions for update using (
 | `imports` | membri | membri (tramite il server) | admin |
 | `transactions` | membri: condivisi + i propri privati | membri: stessa regola | proprietario o admin |
 | `tasks` | membri | membri | creatore o admin |
+| `invites` | **solo admin** | admin (vedi sotto per l'accettazione) | admin |
 | Chi non è membro | **niente, su nessuna tabella** | niente | niente |
 
 Regole di visibilità (ADR-015):
@@ -432,6 +445,8 @@ Regole di visibilità (ADR-015):
 - nei totali di casa i privati possono comparire come **cifra aggregata**, senza dettaglio.
 
 **Creazione del nucleo (ADR-022).** Nessun utente può inserire direttamente in `households`/`members` (ADR-014). Il nucleo nasce con la funzione `security definer` `create_household(household_name, member_name)`, eseguibile solo da utenti autenticati, che in un'unica transazione: crea il nucleo con `owner_id` = chiamante, inserisce il chiamante come primo `admin` e le categorie seed del §6.1. **Rifiuta** se esiste già un nucleo (il prodotto è per una sola famiglia, §2): chi si registra dopo entra solo con invito (task 0.7c). Le chiamate concorrenti sono serializzate con un advisory lock, così due registrazioni simultanee non creano due nuclei.
+
+**Inviti (ADR-023, task 0.7c).** Un admin crea un invito con un normale `insert` su `invites` (è già membro, non serve `security definer`): la `with check` fissa la scadenza a 24 ore e impedisce di marcarlo già usato. Chi **accetta** non è ancora membro, quindi usa la funzione `security definer` `accept_invite(invite_code, member_name)`, che verifica codice/scadenza/uso, rifiuta chi è già membro di un nucleo, e inserisce la riga in `members` col ruolo scelto da chi ha creato l'invito (modificabile dopo, come ogni ruolo). La select su `invites` è admin-only, non member-only: un codice valido equivale a una password temporanea.
 
 Altre misure:
 
@@ -637,7 +652,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.6 Test di integrazione RLS: due nuclei, tre utenti, ogni riga della matrice di accesso
 - [x] 0.7a Autenticazione (`@supabase/ssr`): registrazione, login, logout, pagina protetta (ADR-021)
 - [x] 0.7b Onboarding «crea nucleo»: funzione `create_household` (un solo nucleo ammesso) + categorie seed (§6.1)
-- [ ] 0.7c Inviti: link monouso per «unisciti con invito» (tabella `invites`, `accept_invite`)
+- [x] 0.7c Inviti: link monouso per «unisciti con invito» (tabella `invites`, `accept_invite`)
 - [ ] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
 - [ ] 0.9 `.env.example`, README minimo (come avviare in locale)
 - **Uscita:** CI verde; test dimostrano che l'utente del nucleo A non vede nulla del nucleo B e non vede i privati degli altri membri.
@@ -710,6 +725,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-020 | Test RLS con Postgres diretto (`SET ROLE`) più smoke test via API | Veloci, errori verificati per SQLSTATE; la catena JWT→`auth.uid()` provata da pochi test end-to-end |
 | ADR-021 | Email + password; sessione con `@supabase/ssr`; `getUser()` come controllo autorevole | Funziona nella PWA iOS; il proxy filtra solo in modo ottimistico |
 | ADR-022 | Funzione `create_household` (`security definer`) con regola «un solo nucleo» | Onboarding senza service role nell'app; l'estraneo che trova l'app non può aprire un nucleo |
+| ADR-023 | Creare un invito è un INSERT ordinario; solo `accept_invite` è `security definer` | Solo chi accetta ha il problema di bootstrap di ADR-022; creare un invito lo fa già un admin |
 
 ---
 
