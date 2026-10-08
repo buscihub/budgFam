@@ -8,32 +8,37 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
-### 2026-10-07 — Task 0.7b: onboarding «crea nucleo» e categorie seed
+### 2026-10-07 — Task 0.7b: onboarding «crea nucleo» e categorie seed ([#11](https://github.com/buscihub/budgFam/pull/11))
 - Funzione `create_household(household_name, member_name)` (`security definer`, solo `authenticated`): crea nucleo, primo admin e le 24 categorie del §6.1 in un'unica transazione; rifiuta se esiste già un nucleo; chiamate concorrenti serializzate con advisory lock — **ADR-022** (chiude il gap di ADR-014).
 - Pagina `/onboarding` e `requireMembership()` (`src/data/households.ts`): chi è loggato ma senza nucleo viene mandato lì; la home mostra nome e famiglia.
 - 13 nuovi test RLS (`tests/rls/create-household.test.ts`), 3 unit (schema Zod); verificata a mano la concorrenza (due creazioni simultanee → una sola riuscita) e il flusso reale con uno script (9/9).
+- I file di test RLS ora girano in sequenza (`fileParallelism: false`): un test era fallito una volta senza motivo riproducibile, causa più probabile un deadlock tra file paralleli che svuotano e scrivono lo stesso database; dopo la modifica 8 esecuzioni consecutive verdi (ipotesi, non dimostrata).
 
-### 2026-10-06 — Task 0.7a: sessione, login, logout, pagina protetta
+### 2026-10-06 — Task 0.7a: sessione, login, logout, pagina protetta ([#10](https://github.com/buscihub/budgFam/pull/10))
 - Registrazione, login e logout con email + password (Supabase Auth, `@supabase/ssr`); pagina `/` protetta; `proxy.ts` con redirect ottimistico e `getCurrentUser()`/`requireUser()` (basati su `getUser()`) come controllo autorevole — **ADR-021**.
 - Nuovo `src/data/auth.ts`, `src/data/supabase/{server,proxy}.ts`, `src/data/env.ts`; schemi Zod in `src/domain/auth/` con test; password minima 8 caratteri (anche in `supabase/config.toml`); `.env.example`.
 - Task 0.7 spezzato in 0.7a/0.7b/0.7c; aggiunto 3.5b (reset password e conferma email prima del deploy).
 - Verificato con uno script sul flusso reale (registrazione, login, logout, errori generici, redirect) e con `pnpm build`.
 
-### 2026-10-06 — Task 0.6: test di integrazione RLS
+### 2026-10-06 — Task 0.6: test di integrazione RLS ([#9](https://github.com/buscihub/budgFam/pull/9))
 - Aggiunti 116 test in `tests/rls/` (`pnpm test:rls`): matrice di accesso del §7 per tutte le 9 tabelle, isolamento tra nuclei, utente senza nucleo e anonimo, vincoli (idempotenza, `kind`, budget), più 3 smoke test via API con utenti veri.
 - Errori verificati per SQLSTATE e messaggio; ogni test in una transazione annullata. Controllato rompendo di proposito policy e grant: i test se ne accorgono (**ADR-020**).
 - Config separata `vitest.rls.config.ts`: `pnpm test` non richiede Docker.
 
-### 2026-10-06 — Task 0.5b: schema e RLS per conti personali, admin principale, budget personali
+### 2026-10-06 — Task 0.5b: schema e RLS per conti personali, admin principale, budget personali ([#8](https://github.com/buscihub/budgFam/pull/8))
 - Migrazione di schema: `households.owner_id`, `accounts.owner_id`/`visibility`, `categories.is_hidden` e `kind 'excluded'`, `transactions.visibility_overridden`/`transfer_member_id` (default `visibility` → `private`), `budgets.id`/`member_id` con indice unico.
 - Migrazione RLS: funzioni `is_owner`/`owns_account`; policy nuove per `accounts`, `members`, `households` (delete solo principale), `budgets` (familiari/personali) e insert di `transactions` solo sui propri conti; colonne immutabili (`owner_id`, `account_id`…) protette con grant a livello di colonna.
 - Verificato con 46 casi in `psql` (due nuclei, cinque utenti); diventeranno i test automatici del task 0.6. Primo `src/data/database.types.ts` generato.
 - ADR-015, 016, 017, 018 → *Accettata*; nuovo **ADR-019** (colonne immutabili con grant).
 
-### 2026-10-06 — Domande aperte Q1-Q7 risolte
-- Registrate le risposte nel §17 del DESIGN_DOC (banche Revolut/UniCredit/Findomestic/Trade Republic, contanti con inserimento rapido, iPhone, B&B come categoria di esclusione, categorie seed in §6.1).
-- Proposti (stato *Proposta*) **ADR-015** (conti personali/condivisi), **ADR-016** (admin multipli con principale) e **ADR-017** (categorie nascoste, `excluded`); aggiunto il task 0.5b per la migrazione. Nessun codice toccato.
+### 2026-10-06 — Specifica: rimossa la valutazione di PersonalOS e le scelte preliminari
+- Dal DESIGN_DOC tolti §3.1-3.3 (confronto tra strumenti, guida PersonalOS di terzi, Opzione A vs B) e la fonte nel §18; il §3 ora è la sola «Decisione» (app essenziale, Fase 1 e 2). Ripuliti i riferimenti nel §5.1, nel §7 e in ADR-001 (rititolato).
+
+### 2026-10-06 — Domande aperte Q1-Q7 risolte ([#7](https://github.com/buscihub/budgFam/pull/7))
+- Registrate le risposte nel §17 del DESIGN_DOC (banche Revolut/UniCredit/Findomestic/Trade Republic, contanti con inserimento rapido, iPhone, privato di default con conti personali/condivisi, B&B come categoria di esclusione, categorie seed in §6.1, budget familiari agli admin).
+- Proposti **ADR-015** (conti personali/condivisi), **ADR-016** (admin multipli con principale) e **ADR-017** (categorie nascoste, `excluded`); aggiunto il task 0.5b per la migrazione. Nessun codice toccato.
 - Aggiunti **ADR-018** (vista Personale e budget personali) e, in ADR-015, regole per i trasferimenti ai familiari e per il cambio di visibilità di un conto; task 3.2 spezzato in 3.2/3.2b/3.2c, aggiunto 3.4b.
+- Decisioni di dettaglio registrate: la vista Personale include tutti i movimenti dei propri conti (privati e condivisi); i trasferimenti ai familiari sono una riga a parte, quelli inviati restano fuori dalle uscite e quelli ricevuti contano come entrata personale; un bonifico a un esterno è una normale uscita; il cambio di visibilità di un conto chiede se estendere allo storico (mai sulle scelte esplicite).
 
 ### 2026-09-29 — Manutenzione: documentazione spostata in docs/
 - Spostati `DESIGN_DOC.md`, `CHANGELOG.md` e `design/mockups/` sotto `docs/` (root: solo codice + `CLAUDE.md`, che resta lì perché Claude Code lo carica automaticamente da quella posizione).
