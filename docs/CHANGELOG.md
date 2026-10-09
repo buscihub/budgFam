@@ -8,6 +8,10 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 0 · Fondamenta
 
+### 2026-10-08 — Task 0.9: README minimo
+- `README.md`: cos'è il progetto, prerequisiti, avvio in locale, comandi, limite di sicurezza noto (l'admin Supabase scavalca la RLS), struttura del repository. `.env.example` era già completo dal task 0.7a, nessuna modifica.
+- Tolto da `CLAUDE.md` il placeholder "da completare a fine Fase 0" sui comandi: ora elenca solo quelli reali (`pnpm test:e2e`/Playwright non esiste ancora, rimandato alla Fase 3).
+
 ### 2026-10-08 — Task 0.7c: inviti con link monouso
 - Tabella `invites` (codice a 256 bit, scadenza 24h, uso singolo) con RLS admin-only su select/insert/delete; `with check` sull'insert impedisce di superare le 24h o di pre-marcare un invito come usato. Solo **creare** un invito resta un INSERT ordinario: solo **accettarlo** usa la funzione `security definer` `accept_invite(invite_code, member_name)` — **ADR-023**.
 - `src/data/invites.ts` (`createInvite`/`acceptInvite`), schemi Zod in `src/domain/household/schemas.ts`, pagina `/invite/[code]` per accettare, form admin-only nella home per generarne uno (ruolo scelto da chi invita, link assoluto costruito da `x-forwarded-proto`/`host`).

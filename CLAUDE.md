@@ -60,19 +60,19 @@ docs/         DESIGN_DOC.md, CHANGELOG.md, adr/, design/mockups/
 
 ## Comandi
 
-> Da completare alla fine della Fase 0 con i comandi reali.
-
 ```
 pnpm dev              # avvio locale
+pnpm build            # build di produzione
 pnpm lint             # ESLint
 pnpm typecheck        # tsc --noEmit
-pnpm test             # Vitest (unit)
+pnpm test             # Vitest (unit, dominio puro)
 pnpm test:rls         # test di integrazione RLS (richiede `supabase start`)
-pnpm test:e2e         # Playwright
 supabase start        # Supabase locale (Docker)
 supabase db reset     # riapplica tutte le migrazioni
 supabase gen types typescript --local > src/data/database.types.ts
 ```
+
+`pnpm test:e2e` (Playwright) non esiste ancora: arriva quando ci sarà una UI da testare end-to-end (Fase 3).
 
 Prima di dire che un task è finito: `lint`, `typecheck` e `test` devono passare. Se hai toccato schema o policy, anche `test:rls`.
 
