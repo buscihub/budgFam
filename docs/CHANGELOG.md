@@ -11,6 +11,9 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 ### 2026-10-08 — Task 0.8: GitHub Actions
 - `.github/workflows/ci.yml`, due job: `lint-typecheck-unit` (lint, build, typecheck, `pnpm test`) e `migrations-and-rls` (`supabase start` su un runner effimero — applica tutte le migrazioni da zero, una fallita blocca qui — poi `pnpm test:rls`); entrambi su push a `main` e su ogni pull request.
 - Verificato in locale lo stesso percorso di un runner CI (`supabase stop --no-backup` poi `supabase start` da zero, `pnpm install --frozen-lockfile`), ma la prima esecuzione reale su GitHub ha trovato due problemi che la simulazione locale non poteva vedere: `pnpm/action-setup` andava in conflitto con `packageManager` di `package.json` (bastava non passargli una versione), e `tsc --noEmit` da solo falliva su `LayoutProps` perché Next.js 16 genera i tipi delle route durante `next build`/`next dev`, non con `tsc` isolato — risolto anteponendo `pnpm build` a `pnpm typecheck`. Entrambi i job sono verdi sulla PR.
+### 2026-10-08 — Task 0.9: README minimo
+- `README.md`: cos'è il progetto, prerequisiti, avvio in locale, comandi, limite di sicurezza noto (l'admin Supabase scavalca la RLS), struttura del repository. `.env.example` era già completo dal task 0.7a, nessuna modifica.
+- Tolto da `CLAUDE.md` il placeholder "da completare a fine Fase 0" sui comandi: ora elenca solo quelli reali (`pnpm test:e2e`/Playwright non esiste ancora, rimandato alla Fase 3).
 
 ### 2026-10-08 — Task 0.7c: inviti con link monouso
 - Tabella `invites` (codice a 256 bit, scadenza 24h, uso singolo) con RLS admin-only su select/insert/delete; `with check` sull'insert impedisce di superare le 24h o di pre-marcare un invito come usato. Solo **creare** un invito resta un INSERT ordinario: solo **accettarlo** usa la funzione `security definer` `accept_invite(invite_code, member_name)` — **ADR-023**.
