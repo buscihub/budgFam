@@ -2,12 +2,13 @@
 
 PWA multi-utente per il **budget di famiglia** e le **cose da fare condivise** (4 utenti: Federico, la madre, le sorelle). È anche un progetto portfolio per una candidatura da Software Engineer a Bending Spoons, quindi qualità del codice, decisioni motivate e test contano quanto le funzioni.
 
-La specifica completa è in @docs/DESIGN_DOC.md. Leggila prima di ogni task non banale. Le sezioni normative (4.1, 5, 6, 7, 8, 10, 11, 13) sono vincolanti.
+La specifica completa è in `docs/DESIGN_DOC.md`. È lunga e non viene caricata in automatico: prima di ogni task non banale leggi il §4.1, la riga del task nel §13.1 e le sezioni che quel task realizza (indice: `grep -n '^## \|^### ' docs/DESIGN_DOC.md`, poi leggi per intervalli di righe). `/task-start N.N` fa esattamente questo. Le sezioni normative (4.1, 5, 6, 7, 8, 10, 11, 13) sono vincolanti.
 
 ## Come lavorare con me (Federico)
 
 - **Parla in italiano.** Codice, identificatori, commit e commenti nel codice in **inglese**; testi dell'interfaccia in italiano.
 - **Passi piccoli.** Un task del §13.1 alla volta, come se fosse una PR: prima un piano breve (file toccati, approccio, test), poi il codice.
+- **Un task, una sessione.** Si apre con `/task-start N.N`, si chiude con `/task-close N.N`; tra un task e l'altro si riparte con `/clear`.
 - **Spiegami le scelte.** Devo saper difendere ogni riga a un colloquio. Per ogni pezzo non ovvio spiega il perché in due righe, e segnala le alternative scartate.
 - **Le parti centrali le scrivo io.** Per parser (`src/domain/import`), deduplica e policy RLS: proponi interfaccia, test e approccio, poi chiedimi se le scrivo io o se procedi tu.
 - **Non inventare le domande aperte** (DESIGN_DOC §17). Se un task dipende da Q1-Q7 senza risposta, fermati e chiedimi.
@@ -18,17 +19,22 @@ La specifica completa è in @docs/DESIGN_DOC.md. Leggila prima di ogni task non 
 
 Quattro documenti, compiti diversi (dettagli in `docs/DESIGN_DOC.md` → "Come si tiene aggiornata la documentazione"). Regola pratica: *cosa il sistema deve fare* → DESIGN_DOC (+ ADR se è una scelta tecnica); *cosa è successo* → CHANGELOG; *come lavoriamo insieme* → questo file. Tutta la documentazione (DESIGN_DOC, CHANGELOG, ADR, mockup) vive in `docs/`; solo `CLAUDE.md` resta nella root, perché Claude Code lo carica automaticamente da lì a inizio sessione.
 
-**A fine di ogni task del §13.1, sempre:**
-1. Spunta la sua riga in `docs/DESIGN_DOC.md` §13.1.
-2. Aggiungi una riga a `docs/CHANGELOG.md` (data, task, cosa è cambiato).
-3. Se cambia la fase corrente, aggiorna la riga "Fase corrente" in `docs/DESIGN_DOC.md` §13 **e** la sezione "Stato" qui sotto.
+**A fine di ogni task del §13.1:** `/task-close N.N`. Lancia i check, spunta la riga nel §13.1, aggiunge la voce al CHANGELOG e fa rivedere il diff. Un task non è chiuso finché `node scripts/check-task-docs.mjs --strict` non passa (gira anche in CI).
 
-**Solo se il task ha comportato una decisione tecnica non ovvia** (una scelta con alternative reali, non l'esecuzione di qualcosa già deciso nel DESIGN_DOC):
-4. Crea `docs/adr/NNNN-titolo.md` da `docs/adr/TEMPLATE.md` e aggiungi la riga alla tabella di `docs/DESIGN_DOC.md` §14.
+**Solo se il task ha comportato una decisione tecnica non ovvia** (una scelta con alternative reali, non l'esecuzione di qualcosa già deciso nel DESIGN_DOC): un ADR in `docs/adr/NNNN-titolo.md` da `docs/adr/TEMPLATE.md`, più la riga nella tabella di `docs/DESIGN_DOC.md` §14.
 
 **Non fare mai il contrario:** codice prima, decisione dopo "giustificata" a posteriori. Se stai per scegliere qualcosa che il DESIGN_DOC non dice, fermati e proponimelo.
 
-**A fine di ogni FASE** (non di ogni task — quando l'ultimo task del §13.1 di quella fase è chiuso e il criterio d'uscita è verificato): aggiorna `study/budgFam-studio.pdf`, il diario di studio personale (rigenerabile con `python3 study/build_pdf.py` dentro un venv con `reportlab`), con un capitolo nuovo sulla fase appena chiusa — teoria, riferimenti al codice reale, domande da colloquio. Vive in `study/`, **non su Git** (in `.gitignore`): è materiale di apprendimento personale, non documentazione del progetto, quindi non segue la regola dei quattro documenti sopra.
+**A fine di ogni FASE** (quando l'ultimo task della fase è chiuso e il criterio d'uscita è verificato): `/phase-close N`. Aggiorna la fase corrente nel DESIGN_DOC §13 e nella sezione "Stato" qui sotto, e aggiunge un capitolo a `study/budgFam-studio.pdf`, il diario di studio personale. `study/` non è su Git: è materiale di apprendimento, non documentazione del progetto.
+
+## Automazioni di Claude Code
+
+Tutto in `.claude/`, versionato con il progetto.
+
+- **Comandi** (`.claude/skills/`): `/task-start`, `/task-close`, `/phase-close`.
+- **Agenti** (`.claude/agents/`): `doc-keeper` scrive la documentazione di fine task; `spec-reviewer` e `rls-reviewer` rivedono il diff in sola lettura. Li lancia `/task-close`, in parallelo.
+- **Permessi** (`.claude/settings.json`): i check girano senza conferma; ogni modifica a `src/domain/import/` e `supabase/migrations/` chiede conferma; `.env.local` non si legge; `supabase db push` e `supabase link` sono vietati.
+- **Hook `Stop`**: `scripts/check-task-docs.mjs` blocca la chiusura del turno se il §13.1 ha righe doppie o un task spuntato senza voce nel CHANGELOG.
 
 ## Regole non negoziabili (sintesi di DESIGN_DOC §4.1)
 
