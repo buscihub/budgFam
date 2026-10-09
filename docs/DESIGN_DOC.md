@@ -636,7 +636,7 @@ Oltre a misurare, va documentato cosa si è **cambiato grazie ai dati**. Esempio
 | **4 · Produzione e presentazione** | Osservabilità, backup testati, metriche, ADR, README, demo con dati finti | Repository presentabile |
 | **5 · Estensione (opzionale)** | Bot Telegram per spese e cose da fare al volo | Solo se l'uso reale lo richiede |
 
-**Fase corrente: 0 · Fondamenta** *(aggiornare questa riga a ogni cambio di fase)*
+**Fase corrente: 1 · Primo import** *(aggiornare questa riga a ogni cambio di fase)*
 
 ### 13.1 Task per fase
 
