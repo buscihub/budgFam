@@ -654,8 +654,6 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 0.7b Onboarding «crea nucleo»: funzione `create_household` (un solo nucleo ammesso) + categorie seed (§6.1)
 - [x] 0.7c Inviti: link monouso per «unisciti con invito» (tabella `invites`, `accept_invite`)
 - [x] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
-- [ ] 0.9 `.env.example`, README minimo (come avviare in locale)
-- [ ] 0.8 GitHub Actions: lint, tipi, unit, migrazioni + test RLS su DB effimero
 - [x] 0.9 `.env.example`, README minimo (come avviare in locale)
 - **Uscita:** CI verde; test dimostrano che l'utente del nucleo A non vede nulla del nucleo B e non vede i privati degli altri membri.
 

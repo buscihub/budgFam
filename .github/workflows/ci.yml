@@ -30,6 +30,23 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
+  # Documentation must move with the code (DESIGN_DOC "Come si tiene aggiornata
+  # la documentazione"): a PR that changes src/ or a migration needs a CHANGELOG
+  # entry, and §13.1 must not list a task twice. Needs the full history to find
+  # where the branch left main.
+  docs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: node scripts/check-task-docs.mjs --strict --base "origin/${{ github.base_ref || 'main' }}"
+
   migrations-and-rls:
     runs-on: ubuntu-latest
     steps:

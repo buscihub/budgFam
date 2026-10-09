@@ -30,6 +30,26 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // Database access lives in src/data only (CLAUDE.md, non-negotiable rule 2):
+    // components and routes go through it, they never import a Supabase client.
+    // src/domain is excluded here because the block above already covers it.
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/data/**', 'src/domain/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@supabase/*'],
+              message: 'Only src/data may talk to Supabase: call a function from src/data instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
