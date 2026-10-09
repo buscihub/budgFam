@@ -665,7 +665,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [ ] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
 - [ ] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
 - [ ] 1.5 Pagina Importa: upload, anteprima, conferma; record in `imports` con i contatori
-- [ ] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
+- [x] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
 - **Uscita:** un mese reale importato due volte senza doppioni; totali uguali all'estratto conto.
 
 **Fase 2 · Classificazione**
