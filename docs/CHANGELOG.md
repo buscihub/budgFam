@@ -8,6 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-09 — Task 1.6: riepilogo mensile
+- `src/domain/budget/monthly-summary.ts` (`computeMonthlySummary`, puro, testato): entrate, uscite, saldo e totale per categoria in centesimi interi; esclude le categorie `kind = 'excluded'` (ADR-017) e `kind = 'transfer'`, che per §6.1 non entrano in Entrate/Uscite (la riga per destinatario resta nel task 3.4b, fuori scope qui); i movimenti senza categoria confluiscono in una riga "Non categorizzato".
+- `src/data/transactions.ts` (`getMonthlySummary`, `getCurrentMonthRome`): legge le transazioni `visibility = 'shared'` del mese per il nucleo corrente (mese corrente in fuso `Europe/Rome` di default) e le passa al dominio.
+- Pagina `/riepilogo` (Server Component): entrate, uscite, saldo e tabella per categoria, testo in italiano.
+- 8 nuovi test Vitest sul dominio (mese vuoto, solo entrate, solo uscite, categorie escluse/transfer ignorate, non categorizzati, ordinamento).
+
 ### 2026-10-09 — Manutenzione: Fase 0 chiusa, diario di studio personale
 - Tutti i task 0.1→0.9 chiusi, CI verde, isolamento tra nuclei dimostrato dai test RLS: **Fase 0 · Fondamenta chiusa**. Aggiornata la riga "Fase corrente" in `docs/DESIGN_DOC.md` §13 e in `CLAUDE.md`.
 - Aggiunta `study/`: un diario di studio personale in PDF (`study/budgFam-studio.pdf`, generato da `study/build_pdf.py`) che spiega a livello teorico, con riferimenti al codice reale, cosa è stato fatto — non è documentazione del progetto, vive fuori da `docs/` e non è su Git (`.gitignore`). `CLAUDE.md` aggiornato con la regola: si aggiorna con un capitolo nuovo a fine di ogni fase, non a ogni task.
