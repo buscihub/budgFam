@@ -28,6 +28,8 @@ Quattro documenti, compiti diversi (dettagli in `docs/DESIGN_DOC.md` → "Come s
 
 **Non fare mai il contrario:** codice prima, decisione dopo "giustificata" a posteriori. Se stai per scegliere qualcosa che il DESIGN_DOC non dice, fermati e proponimelo.
 
+**A fine di ogni FASE** (non di ogni task — quando l'ultimo task del §13.1 di quella fase è chiuso e il criterio d'uscita è verificato): aggiorna `study/budgFam-studio.pdf`, il diario di studio personale (rigenerabile con `python3 study/build_pdf.py` dentro un venv con `reportlab`), con un capitolo nuovo sulla fase appena chiusa — teoria, riferimenti al codice reale, domande da colloquio. Vive in `study/`, **non su Git** (in `.gitignore`): è materiale di apprendimento personale, non documentazione del progetto, quindi non segue la regola dei quattro documenti sopra.
+
 ## Regole non negoziabili (sintesi di DESIGN_DOC §4.1)
 
 1. Importi **sempre in centesimi interi**. Mai float per i soldi.
@@ -56,6 +58,7 @@ src/data/     unico accesso al database
 src/app/      UI e route, sottili
 supabase/migrations/   tests/   evals/   fixtures/
 docs/         DESIGN_DOC.md, CHANGELOG.md, adr/, design/mockups/
+study/        diario di studio personale (PDF + script) — non su Git
 ```
 
 ## Comandi
@@ -78,7 +81,7 @@ Prima di dire che un task è finito: `lint`, `typecheck` e `test` devono passare
 
 ## Stato
 
-Fase corrente: **0 · Fondamenta** (DESIGN_DOC §13.1). Nessun codice ancora scritto.
+Fase corrente: **1 · Primo import** (DESIGN_DOC §13.1). Fase 0 · Fondamenta chiusa (CI verde, isolamento tra nuclei dimostrato dai test RLS).
 
 *(Questa riga si aggiorna solo quando cambia la fase, non a ogni task — vedi sopra.)*
 

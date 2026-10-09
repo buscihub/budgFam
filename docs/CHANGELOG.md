@@ -6,11 +6,18 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ---
 
+## Fase 1 · Primo import
+
+### 2026-10-09 — Manutenzione: Fase 0 chiusa, diario di studio personale
+- Tutti i task 0.1→0.9 chiusi, CI verde, isolamento tra nuclei dimostrato dai test RLS: **Fase 0 · Fondamenta chiusa**. Aggiornata la riga "Fase corrente" in `docs/DESIGN_DOC.md` §13 e in `CLAUDE.md`.
+- Aggiunta `study/`: un diario di studio personale in PDF (`study/budgFam-studio.pdf`, generato da `study/build_pdf.py`) che spiega a livello teorico, con riferimenti al codice reale, cosa è stato fatto — non è documentazione del progetto, vive fuori da `docs/` e non è su Git (`.gitignore`). `CLAUDE.md` aggiornato con la regola: si aggiorna con un capitolo nuovo a fine di ogni fase, non a ogni task.
+
 ## Fase 0 · Fondamenta
 
 ### 2026-10-08 — Task 0.8: GitHub Actions
 - `.github/workflows/ci.yml`, due job: `lint-typecheck-unit` (lint, build, typecheck, `pnpm test`) e `migrations-and-rls` (`supabase start` su un runner effimero — applica tutte le migrazioni da zero, una fallita blocca qui — poi `pnpm test:rls`); entrambi su push a `main` e su ogni pull request.
 - Verificato in locale lo stesso percorso di un runner CI (`supabase stop --no-backup` poi `supabase start` da zero, `pnpm install --frozen-lockfile`), ma la prima esecuzione reale su GitHub ha trovato due problemi che la simulazione locale non poteva vedere: `pnpm/action-setup` andava in conflitto con `packageManager` di `package.json` (bastava non passargli una versione), e `tsc --noEmit` da solo falliva su `LayoutProps` perché Next.js 16 genera i tipi delle route durante `next build`/`next dev`, non con `tsc` isolato — risolto anteponendo `pnpm build` a `pnpm typecheck`. Entrambi i job sono verdi sulla PR.
+
 ### 2026-10-08 — Task 0.9: README minimo
 - `README.md`: cos'è il progetto, prerequisiti, avvio in locale, comandi, limite di sicurezza noto (l'admin Supabase scavalca la RLS), struttura del repository. `.env.example` era già completo dal task 0.7a, nessuna modifica.
 - Tolto da `CLAUDE.md` il placeholder "da completare a fine Fase 0" sui comandi: ora elenca solo quelli reali (`pnpm test:e2e`/Playwright non esiste ancora, rimandato alla Fase 3).
