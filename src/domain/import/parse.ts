@@ -1,4 +1,5 @@
 import { parse as parseCsv } from 'csv-parse/sync';
+import { parseAmountToCents, toRomeDate } from './normalize';
 import type { BankFormat, ParsedTransaction, ParseResult } from './types';
 
 const MONTHS: Record<string, string> = {
@@ -42,6 +43,8 @@ function parseDate(raw: string, format: BankFormat['dateFormat']): string | null
       const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(value);
       return m ? `${m[3]}-${pad2(m[2]!)}-${pad2(m[1]!)}` : null;
     }
+    case 'ISO_DATETIME_UTC':
+      return toRomeDate(value);
     case 'MMM D, YYYY': {
       const m = /^([A-Za-z]{3}) (\d{1,2}), (\d{4})$/.exec(value);
       if (!m) return null;
@@ -51,36 +54,31 @@ function parseDate(raw: string, format: BankFormat['dateFormat']): string | null
   }
 }
 
-// Strips everything that isn't a digit, sign or decimal point (currency
-// symbols, spaces, "€", "$"...) rather than adding a dedicated field to
-// BankFormat: most bank exports embed a currency symbol in the amount
-// column, and the set of possible symbols isn't worth modelling explicitly.
-function parseAmountToCents(raw: string, format: BankFormat): number | null {
-  const value = raw.trim();
-  if (!value) return null;
-  const isNegative = value.includes('-');
-  let cleaned = value.replace(/-/g, '');
-  if (format.thousandsSeparator) {
-    cleaned = cleaned.split(format.thousandsSeparator).join('');
-  }
-  if (format.decimalSeparator !== '.') {
-    cleaned = cleaned.replace(format.decimalSeparator, '.');
-  }
-  cleaned = cleaned.replace(/[^0-9.]/g, '');
-  if (!cleaned) return null;
-  const amount = Number(cleaned);
-  if (!Number.isFinite(amount)) return null;
-  const cents = Math.round(amount * 100);
-  return isNegative ? -cents : cents;
-}
-
 type Row = Record<string, string>;
+
+// Net amount over several columns. An empty cell counts as 0, but a
+// non-empty cell that isn't an amount fails the row, and so does a row where
+// every cell is empty (that's not a movement, e.g. a footer).
+function sumCells(row: Row, columns: string[], format: BankFormat): number | null {
+  let total = 0;
+  let anyValue = false;
+  for (const column of columns) {
+    const cell = (row[column] ?? '').trim();
+    if (!cell) continue;
+    const cents = parseAmountToCents(cell, format);
+    if (cents === null) return null;
+    total += cents;
+    anyValue = true;
+  }
+  return anyValue ? total : null;
+}
 
 function readAmountCents(row: Row, format: BankFormat): number | null {
   if (format.amount.mode === 'signed') {
     const raw = row[format.amount.column];
     return raw === undefined ? null : parseAmountToCents(raw, format);
   }
+  if (format.amount.mode === 'sum') return sumCells(row, format.amount.columns, format);
   const debit = parseAmountToCents(row[format.amount.debitColumn] ?? '', format);
   const credit = parseAmountToCents(row[format.amount.creditColumn] ?? '', format);
   if (!debit && !credit) return null;
@@ -120,12 +118,20 @@ export function parseBankCsv(csvText: string, format: BankFormat): ParseResult {
     if (bookedOn === null) return null;
     const amountCents = readAmountCents(row, format);
     if (amountCents === null) return null;
-    const rawDescription = format.descriptionColumns
-      .map((col) => row[col] ?? '')
-      .filter(Boolean)
-      .join(' ')
-      .trim();
-    return { bookedOn, rawDescription, amountCents };
+    const descriptionCells = format.descriptionColumns.map((col) => (row[col] ?? '').trim());
+    const rawDescription =
+      format.descriptionMode === 'firstNonEmpty'
+        ? (descriptionCells.find(Boolean) ?? '')
+        : descriptionCells.filter(Boolean).join(' ');
+    const externalId = format.externalIdColumn ? row[format.externalIdColumn]?.trim() : undefined;
+    const kind = format.kindColumn ? row[format.kindColumn]?.trim() : undefined;
+    return {
+      bookedOn,
+      rawDescription,
+      amountCents,
+      ...(externalId && { externalId }),
+      ...(kind && { kind }),
+    };
   });
 
   // The last successfully-parsed row is the end of real data; everything

@@ -495,21 +495,26 @@ type BankFormat = {
   delimiter: ";" | "," | "\t";
   skipRows: number;                 // righe di intestazione spazzatura
   dateColumn: string;
-  dateFormat: "DD/MM/YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY" | "DD.MM.YYYY" | "MMM D, YYYY"; // Revolut usa "Jan 2, 2025" (task 1.1/1.2)
+  dateFormat: "DD/MM/YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY" | "DD.MM.YYYY" | "MMM D, YYYY" // Revolut usa "Jan 2, 2025" (task 1.1/1.2)
+    | "ISO_DATETIME_UTC";           // istante UTC ("2026-02-16T23:06:14Z"): la data contabile è quella in Europe/Rome (ADR-024)
   descriptionColumns: string[];     // a volte la descrizione è divisa su più colonne
+  descriptionMode?: "join" | "firstNonEmpty"; // default "join"; "firstNonEmpty": la prima colonna non vuota (ADR-024)
   amount:
     | { mode: "signed"; column: string }
-    | { mode: "split"; debitColumn: string; creditColumn: string };
+    | { mode: "split"; debitColumn: string; creditColumn: string }
+    | { mode: "sum"; columns: string[] };  // importo netto = somma di più colonne (importo + commissioni + imposte), celle vuote = 0 (ADR-024)
   decimalSeparator: "," | ".";
   thousandsSeparator: "." | "," | "" ;
+  externalIdColumn?: string;        // id univoco assegnato dalla banca, se esiste (uso nella deduplica: task 1.4)
+  kindColumn?: string;              // tipo grezzo del movimento (es. BUY, CARD_TRANSACTION), passato alla classificazione (§8.4)
 };
 ```
 
 ### 8.2 Normalizzazione
 
-- Importi → centesimi interi con segno.
-- Date → ISO, fuso `Europe/Rome`.
-- Descrizioni → maiuscole uniformi, spazi compressi, codici variabili rimossi (numeri di operazione, orari), in modo che le regole funzionino.
+- Importi → centesimi interi con segno, con aritmetica sulle stringhe (nessun float). Zeri finali oltre i centesimi (`-39.500000`) sono accettati; cifre significative oltre i centesimi no (il file viene rifiutato, non arrotondato).
+- Date → ISO, fuso `Europe/Rome`: un istante UTC si converte, quindi un movimento delle 23:06 UTC del 16 è del 17 (ADR-024).
+- Descrizioni → maiuscole uniformi, spazi compressi, codici variabili rimossi (token solo numerici di almeno 6 cifre), in modo che le regole funzionino. Gli IBAN vengono rimossi dalla descrizione (regola 4.1.5).
 
 ### 8.3 Deduplica (idempotenza)
 
@@ -726,6 +731,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-021 | Email + password; sessione con `@supabase/ssr`; `getUser()` come controllo autorevole | Funziona nella PWA iOS; il proxy filtra solo in modo ottimistico |
 | ADR-022 | Funzione `create_household` (`security definer`) con regola «un solo nucleo» | Onboarding senza service role nell'app; l'estraneo che trova l'app non può aprire un nucleo |
 | ADR-023 | Creare un invito è un INSERT ordinario; solo `accept_invite` è `security definer` | Solo chi accetta ha il problema di bootstrap di ADR-022; creare un invito lo fa già un admin |
+| ADR-024 | `BankFormat` esteso in modo additivo (importo `sum`, istante UTC → Rome, descrizione «prima non vuota», id esterno, tipo grezzo) | Il secondo formato reale (Trade Republic) non rientrava in dare/avere + data; il parsing resta dichiarativo, senza codice per banca |
 
 ---
 
