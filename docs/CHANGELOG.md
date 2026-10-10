@@ -8,6 +8,13 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-10 — Task 1.3: normalizzazione descrizioni e importi, adattamento Trade Republic ([#21](https://github.com/buscihub/budgFam/pull/21))
+- `src/domain/import/normalize.ts` (puro): `normalizeDescription` (maiuscole, IBAN e codici numerici di 6+ cifre rimossi, spazi compattati, idempotente), `parseAmountToCents` (importi con virgola o punto decimale e separatore delle migliaia, in centesimi interi), `toRomeDate` (istante UTC → data `Europe/Rome`), `normalizeTransactions` (→ `NormalizedTransaction[]`).
+- `src/domain/import/parse.ts`: usa il parser importi di `normalize.ts`; supporta la colonna importo `sum` (importo netto = amount + fee + tax, cella vuota = 0), `descriptionMode: 'firstNonEmpty'`, `ISO_DATETIME_UTC` come formato data, e i campi opzionali `externalIdColumn` e `kindColumn` (letti e passati ai movimenti come `externalId` e `kind`, senza ancora usarli).
+- `src/domain/import/types.ts`: estesi `BankFormat` (campi additivi, ADR-024) e `ParsedTransaction`; nuovo tipo `NormalizedTransaction`.
+- `fixtures/trade-republic-2026.csv`: fixture anonimizzata di Trade Republic (copre commissioni, imposte, data UTC a cavallo di mezzanotte).
+- Test Vitest: `normalize.test.ts` (20 casi) e `parse.test.ts` esteso con il caso Trade Republic e la somma di celle non valide. Lint, typecheck e test verdi (66 test in totale).
+
 ### 2026-10-10 — Task 1.2: parser deterministico guidato da `BankFormat`
 - `src/domain/import/types.ts`: tipi condivisi della pipeline (`BankFormat`, `ParsedTransaction`, `ParseResult`) — un unico posto per il contratto dati tra parsing (1.2), normalizzazione (1.3) e deduplica (1.4), invece di uno per file. `dateFormat` esteso a `"MMM D, YYYY"` (Revolut usa `"Jan 2, 2025"`, mese testuale — non previsto nell'enum originale, aggiunto prima del codice).
 - `src/domain/import/parse.ts` (`parseBankCsv`, puro): CSV → `ParsedTransaction[]` (data ISO, descrizione grezza, importo in centesimi con segno). Tokenizing CSV con `csv-parse` (solo per il quoting, non per la logica di business); importo spogliato di qualunque simbolo valuta invece di aggiungere un campo dedicato al `BankFormat`.

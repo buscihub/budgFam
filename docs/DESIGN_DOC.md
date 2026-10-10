@@ -665,7 +665,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 **Fase 1 · Primo import**
 - [x] 1.1 Fixture anonimizzata della prima banca (dipende da **Q1**)
 - [x] 1.2 Parser deterministico guidato da `BankFormat` + test sulla fixture
-- [ ] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
+- [x] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
 - [ ] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
 - [ ] 1.5 Pagina Importa: upload, anteprima, conferma; record in `imports` con i contatori
 - [x] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
