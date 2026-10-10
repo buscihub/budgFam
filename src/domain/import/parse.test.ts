@@ -128,3 +128,68 @@ describe('parseBankCsv — CSV quoting and malformed rows', () => {
     expect(result.skippedRows).toBe(1);
   });
 });
+
+describe('parseBankCsv — Trade Republic fixture (ADR-024)', () => {
+  const tradeFormat: BankFormat = {
+    encoding: 'utf-8',
+    delimiter: ',',
+    skipRows: 0,
+    dateColumn: 'datetime',
+    dateFormat: 'ISO_DATETIME_UTC',
+    descriptionColumns: ['name', 'description'],
+    descriptionMode: 'firstNonEmpty',
+    amount: { mode: 'sum', columns: ['amount', 'fee', 'tax'] },
+    decimalSeparator: '.',
+    thousandsSeparator: '',
+    externalIdColumn: 'transaction_id',
+    kindColumn: 'type',
+  };
+  const tradeFixture = readFileSync(
+    join(import.meta.dirname, '..', '..', '..', 'fixtures', 'trade-republic-2026.csv'),
+    'utf-8',
+  );
+
+  function parseOk() {
+    const result = parseBankCsv(tradeFixture, tradeFormat);
+    if (!result.ok) throw new Error(`expected ok, got: ${result.error}`);
+    return result.transactions;
+  }
+
+  it('parses all 10 rows', () => {
+    expect(parseOk()).toHaveLength(10);
+  });
+
+  it('nets fees and taxes into the amount', () => {
+    const byId = Object.fromEntries(parseOk().map((t) => [t.externalId, t.amountCents]));
+    expect(byId['id-0001']).toBe(60); // interest 0.81 - 0.21 tax
+    expect(byId['id-0003']).toBe(-16); // amount 0, tax only
+    expect(byId['id-0005']).toBe(-5000); // amount 0, card fee only
+    expect(byId['id-0007']).toBe(10000); // top-up 101 - 1 fee
+    expect(byId['id-0010']).toBe(1316); // sell 15.29 - 1.00 fee - 1.13 tax
+    expect(byId['id-0002']).toBe(-3950); // plain card payment
+  });
+
+  it('books a movement at 23:06 UTC on the 16th on the 17th (Europe/Rome)', () => {
+    const topUp = parseOk().find((t) => t.externalId === 'id-0007')!;
+    expect(topUp.bookedOn).toBe('2026-02-17');
+  });
+
+  it('uses the merchant name for cards and the description for transfers', () => {
+    const txs = parseOk();
+    expect(txs.find((t) => t.externalId === 'id-0009')!.rawDescription).toBe('TABACCHERIA ESEMPIO');
+    expect(txs.find((t) => t.externalId === 'id-0006')!.rawDescription).toMatch(
+      /^Incoming transfer from/,
+    );
+  });
+
+  it('carries the external id and the raw kind', () => {
+    const buy = parseOk().find((t) => t.externalId === 'id-0004')!;
+    expect(buy.kind).toBe('BUY');
+  });
+
+  it('fails the row when a summed cell is not an amount', () => {
+    const bad = tradeFixture.replace('"-0.21"', '"abc"');
+    const result = parseBankCsv(bad, tradeFormat);
+    expect(result.ok).toBe(false);
+  });
+});
