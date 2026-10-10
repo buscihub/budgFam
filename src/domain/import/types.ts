@@ -46,3 +46,8 @@ export type NormalizedTransaction = {
   externalId?: string;
   kind?: string;
 };
+
+// Output of computeImportHashes (1.4). `importHash` is persisted in
+// transactions.import_hash: the unique (household_id, import_hash) constraint
+// is what drops already-imported rows (§8.3, ADR-009).
+export type HashedTransaction = NormalizedTransaction & { importHash: string };

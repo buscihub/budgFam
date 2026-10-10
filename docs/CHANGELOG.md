@@ -8,6 +8,13 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-10 — Task 1.4: hash di deduplica con indice di occorrenza
+- `src/domain/import/dedup.ts` (`computeImportHashes`, puro, SHA-256 via `node:crypto`): calcola `importHash` per ogni movimento. Con id esterno della banca (`externalId`) l'hash è `hash(account_id, id_esterno)`; senza, `hash(account_id, data, importo, descrizione, n-esima occorrenza)`, così due caffè identici restano due movimenti e il reimport dello stesso file produce gli stessi hash.
+- `src/domain/import/types.ts`: nuovo tipo `HashedTransaction` (movimento normalizzato + `importHash`).
+- `docs/adr/0009-hash-con-indice-di-occorrenza.md`: ADR-009 (hash con indice di occorrenza, id della banca se presente); aggiornati §8.3 e la riga ADR-009 in `docs/DESIGN_DOC.md`.
+- `src/domain/import/README.md` aggiornato con la nuova funzione.
+- Test Vitest `dedup.test.ts` (19 casi, incluso un test golden che fissa il formato dell'input dell'hash, perché gli hash sono persistiti in `transactions.import_hash`). Lint, typecheck e test verdi (85 test in totale).
+
 ### 2026-10-10 — Task 1.3: normalizzazione descrizioni e importi, adattamento Trade Republic ([#21](https://github.com/buscihub/budgFam/pull/21))
 - `src/domain/import/normalize.ts` (puro): `normalizeDescription` (maiuscole, IBAN e codici numerici di 6+ cifre rimossi, spazi compattati, idempotente), `parseAmountToCents` (importi con virgola o punto decimale e separatore delle migliaia, in centesimi interi), `toRomeDate` (istante UTC → data `Europe/Rome`), `normalizeTransactions` (→ `NormalizedTransaction[]`).
 - `src/domain/import/parse.ts`: usa il parser importi di `normalize.ts`; supporta la colonna importo `sum` (importo netto = amount + fee + tax, cella vuota = 0), `descriptionMode: 'firstNonEmpty'`, `ISO_DATETIME_UTC` come formato data, e i campi opzionali `externalIdColumn` e `kindColumn` (letti e passati ai movimenti come `externalId` e `kind`, senza ancora usarli).
