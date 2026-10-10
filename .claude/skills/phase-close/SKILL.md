@@ -14,5 +14,5 @@ Chiudi la fase **$ARGUMENTS**. Una fase è chiusa solo quando tutti i suoi task 
    - la riga "Fase corrente" in `docs/DESIGN_DOC.md` §13;
    - la sezione "Stato" di `CLAUDE.md`;
    - una voce in `docs/CHANGELOG.md` che registra la chiusura.
-5. **Diario di studio.** Aggiungi a `study/build_pdf.py` un capitolo sulla fase appena chiusa: teoria, riferimenti al codice reale (file e funzioni), domande da colloquio con risposta. Rigenera il PDF con `python3 study/build_pdf.py` dentro un venv con `reportlab`. `study/` non è su Git: è materiale personale, non documentazione del progetto, quindi non va committato né citato nel CHANGELOG.
+5. **Diario di studio.** Lancia l'agente `study-keeper` passandogli il numero della fase: aggiunge a `study/build_pdf.py` teoria, tabella dei task, domande da colloquio e mappa teoria → codice, poi rigenera il PDF. `study/` non è su Git: non va committato né citato nel CHANGELOG. Riporta a Federico il riepilogo dell'agente.
 6. **Consegna.** Riepilogo in italiano e proposta di commit e PR, come in `/task-close`.

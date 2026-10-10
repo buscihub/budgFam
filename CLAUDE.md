@@ -32,8 +32,8 @@ Quattro documenti, compiti diversi (dettagli in `docs/DESIGN_DOC.md` → "Come s
 Tutto in `.claude/`, versionato con il progetto.
 
 - **Comandi** (`.claude/skills/`): `/task-start`, `/task-close`, `/phase-close`.
-- **Agenti** (`.claude/agents/`): `doc-keeper` scrive la documentazione di fine task; `spec-reviewer` e `rls-reviewer` rivedono il diff in sola lettura. Li lancia `/task-close`, in parallelo.
-- **Permessi** (`.claude/settings.json`): i check girano senza conferma; ogni modifica a `src/domain/import/` e `supabase/migrations/` chiede conferma; `.env.local` non si legge; `supabase db push` e `supabase link` sono vietati.
+- **Agenti** (`.claude/agents/`): `doc-keeper` scrive la documentazione di fine task; `spec-reviewer` e `rls-reviewer` rivedono il diff in sola lettura. Li lancia `/task-close`, in parallelo. `study-keeper` aggiorna il diario di studio in `study/`; lo lancia `/phase-close`.
+- **Permessi** (`.claude/settings.json`): le modifiche ai file sono accettate in automatico (`acceptEdits`); check, git locale e Supabase locale girano senza conferma; chiedono conferma le modifiche a `supabase/migrations/`, `git push` e l'apertura delle PR; `.env.local` non si legge; `supabase db push`, `supabase link`, push forzato e `git reset --hard` sono vietati.
 - **Hook `Stop`**: `scripts/check-task-docs.mjs` blocca la chiusura del turno se il §13.1 ha righe doppie o un task spuntato senza voce nel CHANGELOG.
 
 ## Regole non negoziabili (sintesi di DESIGN_DOC §4.1)
