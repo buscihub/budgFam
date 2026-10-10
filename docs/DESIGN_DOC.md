@@ -495,7 +495,7 @@ type BankFormat = {
   delimiter: ";" | "," | "\t";
   skipRows: number;                 // righe di intestazione spazzatura
   dateColumn: string;
-  dateFormat: "DD/MM/YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY" | "DD.MM.YYYY";
+  dateFormat: "DD/MM/YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY" | "DD.MM.YYYY" | "MMM D, YYYY"; // Revolut usa "Jan 2, 2025" (task 1.1/1.2)
   descriptionColumns: string[];     // a volte la descrizione è divisa su più colonne
   amount:
     | { mode: "signed"; column: string }
@@ -658,8 +658,8 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - **Uscita:** CI verde; test dimostrano che l'utente del nucleo A non vede nulla del nucleo B e non vede i privati degli altri membri.
 
 **Fase 1 · Primo import**
-- [ ] 1.1 Fixture anonimizzata della prima banca (dipende da **Q1**)
-- [ ] 1.2 Parser deterministico guidato da `BankFormat` + test sulla fixture
+- [x] 1.1 Fixture anonimizzata della prima banca (dipende da **Q1**)
+- [x] 1.2 Parser deterministico guidato da `BankFormat` + test sulla fixture
 - [ ] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
 - [ ] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
 - [ ] 1.5 Pagina Importa: upload, anteprima, conferma; record in `imports` con i contatori

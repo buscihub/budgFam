@@ -8,6 +8,19 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-10 — Task 1.2: parser deterministico guidato da `BankFormat`
+- `src/domain/import/types.ts`: tipi condivisi della pipeline (`BankFormat`, `ParsedTransaction`, `ParseResult`) — un unico posto per il contratto dati tra parsing (1.2), normalizzazione (1.3) e deduplica (1.4), invece di uno per file. `dateFormat` esteso a `"MMM D, YYYY"` (Revolut usa `"Jan 2, 2025"`, mese testuale — non previsto nell'enum originale, aggiunto prima del codice).
+- `src/domain/import/parse.ts` (`parseBankCsv`, puro): CSV → `ParsedTransaction[]` (data ISO, descrizione grezza, importo in centesimi con segno). Tokenizing CSV con `csv-parse` (solo per il quoting, non per la logica di business); importo spogliato di qualunque simbolo valuta invece di aggiungere un campo dedicato al `BankFormat`.
+- Regola di fine-dati: la prima riga dopo l'ultima transazione valida (es. `Total,,,...`) è considerata footer e ignorata (`skippedRows`); una riga non valida **in mezzo** ai dati fa invece fallire tutto il parsing (`ok: false` con l'indice di riga), per non perdere movimenti veri in silenzio.
+- 10 test Vitest: fixture Revolut completa, formati data (`MMM D, YYYY`, `DD/MM/YYYY`), separatore delle migliaia, modalità `split` dare/avere, CSV con virgole quotate, riga centrale non valida, footer finale.
+- Scritto da Claude su richiesta di Federico, dopo revisione e approvazione dell'interfaccia proposta (regola "le parti centrali le scrivo io" di CLAUDE.md).
+
+### 2026-10-09 — Task 1.1: fixture anonimizzata Revolut
+- `fixtures/revolut-personal-eur-2025-01.csv`: un mese di movimenti del conto "Personal Account (EUR)", struttura reale dell'estratto conto Revolut (sezione "Transaction statement": `Date, Description, Category, Money in/out, Balance, Tax withheld, Other taxes, Fees`).
+- Anonimizzata da un estratto reale: nomi di persone sostituiti con nomi finti, importi e saldo ricalcolati da zero (consistenti riga per riga: saldo[n] = saldo[n-1] + importo[n]); nomi di esercenti (Amazon, iliad, ecc.) lasciati reali perché non sono dati personali.
+- Scope: solo la tabella movimenti del conto corrente EUR. Escluse le sezioni di riepilogo saldi, investimenti e crypto dell'estratto consolidato Revolut — non sono movimenti bancari da importare nel budget (§8 del DESIGN_DOC parla solo di CSV banca).
+- Varietà di casi coperta per il parser (1.2): spesa con commissione (piano Metal), bonifico in/out verso persone, deposito Apple Pay, rimborso, prelievo ATM con fee, cambio valuta, trasferimento interno tra "pocket", reward.
+
 ### 2026-10-09 — Task 1.6: riepilogo mensile
 - `src/domain/budget/monthly-summary.ts` (`computeMonthlySummary`, puro, testato): entrate, uscite, saldo e totale per categoria in centesimi interi; esclude le categorie `kind = 'excluded'` (ADR-017) e `kind = 'transfer'`, che per §6.1 non entrano in Entrate/Uscite (la riga per destinatario resta nel task 3.4b, fuori scope qui); i movimenti senza categoria confluiscono in una riga "Non categorizzato".
 - `src/data/transactions.ts` (`getMonthlySummary`, `getCurrentMonthRome`): legge le transazioni `visibility = 'shared'` del mese per il nucleo corrente (mese corrente in fuso `Europe/Rome` di default) e le passa al dominio.
