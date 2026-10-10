@@ -524,9 +524,18 @@ Il caso limite: **due caffè da 1,20 € lo stesso giorno allo stesso bar sono d
 import_hash = hash(account_id, booked_on, amount_cents, descrizione_normalizzata, n-esima occorrenza)
 ```
 
+Se il formato ha un id assegnato dalla banca (`externalIdColumn`, es. `transaction_id` di Trade Republic) **e la riga lo valorizza**, l'hash usa quello e l'indice di occorrenza non serve:
+
+```
+import_hash = hash(account_id, id_esterno)
+```
+
+Le due forme non possono collidere (la forma è parte dell'input dell'hash). L'`account_id` è quello della carta da cui si importa: il file si carica nella sezione del conto, quindi non lo si deduce dal file (ADR-009).
+
 - Reimportare lo stesso mese **non crea doppioni**: il vincolo `unique` fa scartare le righe già presenti.
 - I movimenti identici ma legittimi **non si perdono**.
-- *Limite noto:* se due estratti conto si sovrappongono solo in parte e contengono movimenti identici, l'indice di occorrenza può non coincidere. Il caso va coperto da test e documentato.
+- *Limite noto (solo senza id esterno):* se due estratti conto si sovrappongono solo in parte e contengono movimenti identici, l'indice di occorrenza può non coincidere. Il caso va coperto da test e documentato. Con l'id della banca non si presenta.
+- *Ipotesi con l'id esterno:* la banca non lo riusa né lo rigenera a ogni export. Da verificare col primo export reale. Un controllo in anteprima (file con tutte righe «nuove» ma date e importi già presenti) è un'idea da valutare quando si pianifica il task 1.5.
 
 ### 8.4 Classificazione ibrida
 
@@ -666,7 +675,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 1.1 Fixture anonimizzata della prima banca (dipende da **Q1**)
 - [x] 1.2 Parser deterministico guidato da `BankFormat` + test sulla fixture
 - [x] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
-- [ ] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
+- [x] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
 - [ ] 1.5 Pagina Importa: upload, anteprima, conferma; record in `imports` con i contatori
 - [x] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
 - **Uscita:** un mese reale importato due volte senza doppioni; totali uguali all'estratto conto.
@@ -716,7 +725,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-006 | Import CSV invece di PSD2 | Universale, gratuito, senza contratti |
 | ADR-007 | Classificazione ibrida regole + LLM | Costo decrescente nel tempo, output controllato |
 | ADR-008 | Mappatura del formato via AI una sola volta per banca | Parsing deterministico dopo il primo import |
-| ADR-009 | Hash con indice di occorrenza | Idempotenza senza perdere i movimenti identici legittimi |
+| ADR-009 | Hash con indice di occorrenza; id della banca se presente | Idempotenza senza perdere i movimenti identici legittimi; con l'id esterno anche i file sovrapposti sono sicuri |
 | ADR-010 | PWA invece di app native | Una codebase, niente store |
 | ADR-011 | Documentazione in quattro documenti separati (DESIGN_DOC, ADR, CHANGELOG, CLAUDE.md) | Ognuno con un compito e una cadenza di aggiornamento diversi |
 | ADR-012 | Linguaggio visivo "Liquid Glass" (iOS/macOS) sulla palette B1, con campione dark mode | Materiali vetro/blur invece dei colori di sistema iOS; due schermate campione fissano i token del tema scuro |
