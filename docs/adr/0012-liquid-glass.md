@@ -21,4 +21,5 @@ Adottare il linguaggio visivo "Liquid Glass" di Apple (iOS/macOS): superfici tra
 
 - L'implementazione dovrà usare `backdrop-filter`/`-webkit-backdrop-filter` (blur + saturate); da verificare il supporto e il costo prestazionale su dispositivi meno recenti, con fallback a superfici opache se necessario.
 - Servono due set di token colore (chiaro/scuro) per superfici, testo, bordi e accento; per ora fissati solo su 2 schermate campione (Riepilogo e Movimenti mobile) — le altre 8 schermate vanno derivate con lo stesso schema quando si passa al codice, non sono ancora mockuppate in dark.
+- **Aggiornamento (2026-10-12):** il campione è superato: tutte le schermate esistono ora anche in versione scura (vedi ADR-026 e `docs/design/mockups/README.md`).
 - I mockup vivono nell'artifact Claude Design (non nel repository); questo ADR e il changelog sono il riferimento scritto della decisione.

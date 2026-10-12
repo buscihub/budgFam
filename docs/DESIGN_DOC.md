@@ -221,10 +221,14 @@ budgFam/
 ### 5.3 Schermate
 
 1. **Riepilogo del mese**, in due viste (ADR-018): **Famiglia** (movimenti condivisi di tutti: entrate, uscite, saldo, categorie confrontate con il budget familiare, riga informativa *Trasferiti ai familiari* per persona) e **Personale** (tutti i movimenti dei **miei conti**, privati e condivisi, confrontati con il mio budget personale). Sono due lenti sugli stessi dati: la spesa di famiglia pagata con la mia carta è un'uscita sia per la famiglia sia per me, ma le due viste non si sommano mai.
-2. **Movimenti**: lista filtrabile, correzione rapida della categoria, banner dei movimenti "da rivedere"; un unico punto d'ingresso ("+") per aggiungere un movimento, manualmente o importando un estratto conto (vedi ADR-013 — non c'è più una schermata "Importa" separata).
+2. **Movimenti**: lista filtrabile (anche per conto), correzione rapida della categoria, banner dei movimenti "da rivedere"; un unico punto d'ingresso ("+") per aggiungere un movimento, manualmente o importando un estratto conto (vedi ADR-013 — non c'è più una schermata "Importa" separata). Il **dettaglio movimento** (tocco su una riga) permette di cambiare categoria con «applica sempre questa regola», la visibilità del singolo movimento e, per la categoria «Trasferimento», il destinatario.
 3. **Cose da fare**: lista condivisa con responsabile, scadenza e ricorrenza; stesso pattern "+" per aggiungere una nuova attività.
+4. **Import** (dentro "+"): scelta del conto, formato riconosciuto da confermare, anteprima con contatori (pronti, da rivedere, duplicati), esito con «Annulla questo import», errori di file e di categorizzazione.
+5. **Da rivedere**: coda dei movimenti con confidenza bassa o senza categoria.
+6. **Conti** (ADR-025): «I miei conti» e «Condivisi dalla famiglia» (sola lettura); creazione e modifica con nome, tipo, visibilità e formato file. Si raggiunge dal filtro di Movimenti e dalle Impostazioni.
+7. **Impostazioni, famiglia e accesso** (ADR-026): budget familiare e personale, categorie, famiglia e membri (inviti da 24 ore, ruoli), installazione su iPhone, accesso, registrazione, reset password, «crea la famiglia», «unisciti con invito»; stati vuoti, offline ed errore. Punti d'accesso e comportamenti sono nella mappa dell'ADR-026; la navigazione resta a tre voci (ADR-013).
 
-Mockup di queste schermate (mobile e desktop, stile "Liquid Glass" sulla palette calda B1, con un primo campione di modalità scura) prototipati su Claude Design — vedi ADR-012. L'originale modificabile resta l'artifact Claude Design; in `docs/design/mockups/` c'è un'istantanea statica (HTML autonomo, apribile nel browser) per consultarli senza riaprire Claude — vedi `docs/design/mockups/README.md`.
+Mockup di queste schermate (mobile e desktop, stile "Liquid Glass" sulla palette calda B1, con la versione chiara e scura di tutte le schermate) prototipati su Claude Design — vedi ADR-012. L'originale modificabile resta l'artifact Claude Design; in `docs/design/mockups/` c'è un'istantanea statica (HTML autonomo, apribile nel browser) per consultarli senza riaprire Claude — vedi `docs/design/mockups/README.md`.
 
 ---
 
@@ -275,7 +279,7 @@ create table accounts (          -- conto corrente, carta, contanti
   owner_id     uuid not null references auth.users,  -- chi lo gestisce e vi importa gli estratti (ADR-015)
   visibility   text not null default 'private'
                check (visibility in ('shared','private')),  -- default dei suoi movimenti
-  bank_format  jsonb,             -- mappatura colonne salvata (§8.1); null finché non rilevata
+  bank_format  jsonb,             -- mappatura colonne salvata (§8.1); null finché non rilevata. Da decidere (ADR-025): identificatore del preset («Revolut», «Trade Republic», «automatico»); i conti `cash` non hanno formato (check)
   created_at   timestamptz not null default now()
 );
 
@@ -676,7 +680,8 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 1.2 Parser deterministico guidato da `BankFormat` + test sulla fixture
 - [x] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
 - [x] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
-- [ ] 1.5 Pagina Importa: upload, anteprima, conferma; record in `imports` con i contatori
+- [ ] 1.5a Creazione base dei conti (nome, tipo, visibilità, formato) con «Nuovo conto» dentro l'import: serve al passo «scegli il conto» (ADR-025)
+- [ ] 1.5 Pagina Importa: scelta del conto, upload, formato riconosciuto, anteprima con contatori, conferma, esito con «Annulla import»; record in `imports` con i contatori (schermate: ADR-026)
 - [x] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
 - **Uscita:** un mese reale importato due volte senza doppioni; totali uguali all'estratto conto.
 
@@ -698,6 +703,8 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [ ] 3.3 Cose da fare: lista, responsabile, scadenza, ricorrenza
 - [ ] 3.4 UI per conti personali/condivisi, override per singolo movimento e cambio di visibilità di un conto con anteprima (ADR-015)
 - [ ] 3.5 PWA: manifest, icone, service worker; istruzioni di installazione (dipende da **Q3**)
+- [ ] 3.4c Famiglia e membri: inviti da 24 ore, ruoli, promozione e rimozione (ADR-016, ADR-026)
+- [ ] 3.5c Impostazioni (hub), stati vuoti, offline ed errore (ADR-026)
 - [ ] 3.5b Reset password via email e conferma email attiva in produzione (prerequisito del deploy)
 - [ ] 3.6 Deploy su Vercel + progetto Supabase di produzione
 - **Uscita:** tutte e 4 hanno l'app sulla schermata home e l'hanno usata per un mese.
@@ -741,6 +748,8 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-022 | Funzione `create_household` (`security definer`) con regola «un solo nucleo» | Onboarding senza service role nell'app; l'estraneo che trova l'app non può aprire un nucleo |
 | ADR-023 | Creare un invito è un INSERT ordinario; solo `accept_invite` è `security definer` | Solo chi accetta ha il problema di bootstrap di ADR-022; creare un invito lo fa già un admin |
 | ADR-024 | `BankFormat` esteso in modo additivo (importo `sum`, istante UTC → Rome, descrizione «prima non vuota», id esterno, tipo grezzo) | Il secondo formato reale (Trade Republic) non rientrava in dare/avere + data; il parsing resta dichiarativo, senza codice per banca |
+| ADR-025 | Schermata Conti, accesso da Movimenti, formato banca scelto dall'utente *(Proposta)* | Nessuna quarta voce di navigazione; «Nuovo conto» dentro l'import; il tipo di conto non si modifica |
+| ADR-026 | Mappa delle schermate e punti d'accesso *(Proposta)* | Tre voci di navigazione; impostazioni dall'avatar (iPhone) o dalla barra laterale (Mac); tutto il resto da un punto d'accesso preciso |
 
 ---
 

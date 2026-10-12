@@ -8,6 +8,22 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-12 — Documentazione allineata ai mockup
+- `DESIGN_DOC.md`: §5.3 con tutte le schermate (7 aree), tabella §14 con ADR-025 e ADR-026 (Proposta), nota «da decidere» sul preset di formato in `accounts.bank_format` (§6), nuovi task 1.5a (creazione base dei conti), 3.4c (famiglia e membri), 3.5c (impostazioni e stati vuoti/offline/errore); 1.5 ampliato.
+- ADR-012: nota che il campione dark è superato. ADR-025/026 restano «Proposta» fino a decisione.
+
+### 2026-10-11 — Mockup: tutte le schermate dell'app, chiare e scure (Claude Design)
+- Verificate le schermate rispetto a ADR e `DESIGN_DOC.md` e disegnate quelle mancanti: Riepilogo con vista Famiglia/Personale e «Trasferiti ai familiari» (ADR-018); dettaglio movimento (categoria, «applica sempre questa regola», visibilità del singolo movimento, destinatario del trasferimento); import completo (formato riconosciuto, anteprima con contatori, esito, annulla import, errori file e categorizzazione, coda «Da rivedere»); impostazioni, budget famiglia e personale, categorie (nascoste, «B&B» esclusa); famiglia e membri (inviti da 24 ore, ruoli, amministratore principale); accesso, registrazione, password, crea la famiglia, unisciti con invito; installazione su iPhone; stati vuoti, offline ed errore.
+- Aggiunta la versione scura di tutte le schermate, comprese quelle esistenti (Aggiungi, Task, Conti su desktop).
+- Eliminate le 5 esplorazioni di stile (`Main`, `Style-B`, `Style-B1`, `Style-B2`, `Style-C`): l'esito è già in ADR-012. Canvas riordinato per area (chiaro sopra, scuro sotto).
+- 136 file in `docs/design/mockups/`; README riscritto. `docs/adr/0026-mappa-schermate.md` (Proposta). `DESIGN_DOC.md` non ancora aggiornato (§5.3 schermate, tabella ADR §14).
+
+### 2026-10-10 — Mockup: schermata Conti (Claude Design)
+- Disegnata la schermata **Conti** (mobile chiaro e scuro, desktop): elenco «I miei conti» / «Condivisi dalla famiglia» (sola lettura, col proprietario), creazione e modifica (sheet su mobile, pannello su desktop) con nome, tipo, visibilità e formato file, stato vuoto, anteprima del cambio di visibilità (ADR-015), caso contanti (nessun formato, nessun import).
+- Disegnato il passo «scegli il conto» di Aggiungi → Importa file, con scelta del formato per i conti nati senza e «Nuovo conto» che non esce dall'import. Accesso a Conti dal filtro di Movimenti («Gestisci conti»), nessuna quarta voce in navigazione.
+- Aggiornate Movimenti (mobile, mobile scuro, desktop) e Aggiungi movimento (mobile, desktop): nomi dei conti, filtro per conto, conto e visibilità del movimento che seguono il conto; un movimento condiviso di un conto privato mostra solo l'autore.
+- 24 file in `docs/design/mockups/` (19 nuovi, 5 aggiornati); README aggiornato. `docs/adr/0025-schermata-conti.md` (Proposta). `DESIGN_DOC.md` non ancora aggiornato (§5.3 schermate, §6 `accounts`, §8.1 formati, §14 tabella ADR).
+
 ### 2026-10-10 — Task 1.4: hash di deduplica con indice di occorrenza
 - `src/domain/import/dedup.ts` (`computeImportHashes`, puro, SHA-256 via `node:crypto`): calcola `importHash` per ogni movimento. Con id esterno della banca (`externalId`) l'hash è `hash(account_id, id_esterno)`; senza, `hash(account_id, data, importo, descrizione, n-esima occorrenza)`, così due caffè identici restano due movimenti e il reimport dello stesso file produce gli stessi hash.
 - `src/domain/import/types.ts`: nuovo tipo `HashedTransaction` (movimento normalizzato + `importHash`).
