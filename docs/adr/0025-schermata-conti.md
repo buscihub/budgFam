@@ -26,6 +26,6 @@ Una schermata **Conti** con «I miei conti» e «Condivisi dalla famiglia» (que
 - Il **cambio di visibilità** usa l'anteprima dell'ADR-015: solo da ora (preselezionata), da una data, tutto lo storico; i movimenti con `visibility_overridden` non cambiano mai.
 - Un movimento condiviso su un conto privato mostra agli altri solo l'autore: la riga di `accounts` è già nascosta dalla RLS, la UI deve gestire `account` assente e non mostrare né nome né tipo né un segnaposto.
 - `accounts.bank_format` diventa l'identificatore del preset («revolut», «trade_republic», «auto»): vedi ADR-028. La migrazione è nel task 1.5a.
-- **Da decidere:** nome unico per proprietario (`unique (owner_id, lower(name))`); nessuna eliminazione di conti nella v1.
+- **Deciso in 1.5a:** nome unico per proprietario, senza distinguere maiuscole (`unique (owner_id, lower(name))`). L'eliminazione dei conti è decisa nell'ADR-033 (restano solo i movimenti condivisi).
 - «Ultimo import» si ricava da `imports` (massimo `created_at` con `status = 'done'` per conto), non è denormalizzato; un indice su `(account_id, created_at)` evita la scansione.
 - Il passo «scegli il conto» del task 1.5 dipende da questa schermata: la creazione di base dei conti va anticipata rispetto a 3.1/3.4.

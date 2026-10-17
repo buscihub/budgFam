@@ -279,7 +279,7 @@ create table accounts (          -- conto corrente, carta, contanti
   owner_id     uuid not null references auth.users,  -- chi lo gestisce e vi importa gli estratti (ADR-015)
   visibility   text not null default 'private'
                check (visibility in ('shared','private')),  -- default dei suoi movimenti
-  bank_format  text,              -- identificatore del preset di formato: 'revolut' | 'trade_republic' | … | 'auto' (ADR-028); null finché non scelto. Il `BankFormat` vive nel codice (§8.1). I conti `cash` non hanno formato (check)
+  bank_format  text,              -- identificatore del preset di formato: 'revolut' | 'trade_republic' | … | 'auto' (ADR-028); null finché non scelto. Il `BankFormat` vive nel codice (§8.1). I conti `cash` non hanno formato (check). Nome unico per proprietario, senza distinguere maiuscole: `unique (owner_id, lower(name))` (ADR-025)
   created_at   timestamptz not null default now()
 );
 
@@ -295,7 +295,7 @@ create table categories (
 create table imports (           -- un caricamento di file: serve a log, metriche e annullamento
   id             uuid primary key default gen_random_uuid(),
   household_id   uuid not null references households on delete cascade,
-  account_id     uuid not null references accounts,
+  account_id     uuid references accounts on delete set null,  -- null = conto eliminato (ADR-033)
   uploaded_by    uuid not null references auth.users,
   file_name      text not null,
   rows_read      int not null default 0,
@@ -315,7 +315,7 @@ create table imports (           -- un caricamento di file: serve a log, metrich
 create table transactions (
   id              uuid primary key default gen_random_uuid(),
   household_id    uuid not null references households on delete cascade,
-  account_id      uuid not null references accounts,
+  account_id      uuid references accounts on delete set null,  -- null = conto eliminato: restano solo i movimenti condivisi, i privati si cancellano col conto (ADR-033)
   import_id       uuid references imports on delete set null,  -- null = inserito a mano
   owner_id        uuid references auth.users,
   booked_on       date not null,
@@ -682,9 +682,9 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 1.2 Parser deterministico guidato da `BankFormat` + test sulla fixture
 - [x] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
 - [x] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
-- [ ] 1.5a Creazione base dei conti (nome, tipo, visibilità, formato) con «Nuovo conto» dentro l'import: serve al passo «scegli il conto» (ADR-025). Migrazione: `accounts.bank_format` da `jsonb` a `text` (preset, ADR-028)
+- [x] 1.5a Creazione ed eliminazione base dei conti (nome, tipo, visibilità, formato) in `/conti`: serve al passo «scegli il conto» dell'import (ADR-025). Eliminando restano solo i movimenti condivisi (ADR-033). Migrazione: `accounts.bank_format` da `jsonb` a `text` (preset, ADR-028); `account_id` nullable su `transactions` e `imports`
 - [ ] 1.5b Guscio dell'app a tre voci (ADR-013), lista Movimenti con filtri, dettaglio movimento (categoria, nota, visibilità, elimina; colonna `transactions.note`) e «+» per l'inserimento manuale: punto d'ingresso dell'import
-- [ ] 1.5 Pagina Importa: scelta del conto, upload, formato riconosciuto, anteprima con **nuovi e duplicati** (senza classificazione: «pronti / da rivedere» e categorie proposte arrivano con 2.4–2.5), conferma, movimenti importati senza categoria, esito con «Annulla import» (cancella le righe e porta l'import a `undone`, ADR-027); record in `imports` con i contatori (schermate: ADR-026)
+- [ ] 1.5 Pagina Importa: scelta del conto (con «Nuovo conto» che riusa il form di 1.5a, senza uscire dall'import), upload, formato riconosciuto, anteprima con **nuovi e duplicati** (senza classificazione: «pronti / da rivedere» e categorie proposte arrivano con 2.4–2.5), conferma, movimenti importati senza categoria, esito con «Annulla import» (cancella le righe e porta l'import a `undone`, ADR-027); record in `imports` con i contatori (schermate: ADR-026)
 - [x] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
 - **Uscita:** un mese reale importato due volte senza doppioni; totali uguali all'estratto conto.
 
@@ -762,6 +762,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-030 | Il budget vale finché non viene cambiato | Si usa la riga più recente con `month` ≤ mese; lo storico non cambia |
 | ADR-031 | Categorie personalizzabili guidate dal `kind`, mai dal nome | Il seed è un punto di partenza; rinomina, nascondi, aggiungi; «Trasferimento» è un tipo, non un nome |
 | ADR-032 | Lettura offline con service worker | Dati dell'ultimo riepilogo in cache, svuotata al logout; scrivere resta online |
+| ADR-033 | Eliminando un conto restano solo i movimenti condivisi | I privati si cancellano col conto; i condivisi restano senza conto (`account_id` null) |
 
 ---
 
