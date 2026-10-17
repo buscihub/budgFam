@@ -221,10 +221,14 @@ budgFam/
 ### 5.3 Schermate
 
 1. **Riepilogo del mese**, in due viste (ADR-018): **Famiglia** (movimenti condivisi di tutti: entrate, uscite, saldo, categorie confrontate con il budget familiare, riga informativa *Trasferiti ai familiari* per persona) e **Personale** (tutti i movimenti dei **miei conti**, privati e condivisi, confrontati con il mio budget personale). Sono due lenti sugli stessi dati: la spesa di famiglia pagata con la mia carta è un'uscita sia per la famiglia sia per me, ma le due viste non si sommano mai.
-2. **Movimenti**: lista filtrabile, correzione rapida della categoria, banner dei movimenti "da rivedere"; un unico punto d'ingresso ("+") per aggiungere un movimento, manualmente o importando un estratto conto (vedi ADR-013 — non c'è più una schermata "Importa" separata).
-3. **Cose da fare**: lista condivisa con responsabile, scadenza e ricorrenza; stesso pattern "+" per aggiungere una nuova attività.
+2. **Movimenti**: lista filtrabile (anche per conto), correzione rapida della categoria, banner dei movimenti "da rivedere"; un unico punto d'ingresso ("+") per aggiungere un movimento, manualmente o importando un estratto conto (vedi ADR-013 — non c'è più una schermata "Importa" separata). Il **dettaglio movimento** (tocco su una riga) permette di cambiare categoria con «applica sempre questa regola», aggiungere una nota, cambiare la visibilità del singolo movimento, eliminarlo e, per le categorie di tipo trasferimento, scegliere il destinatario. I filtri sono conto, categoria e «solo da rivedere».
+3. **Cose da fare**: lista condivisa con responsabile, scadenza, ricorrenza e note; stesso pattern "+" per aggiungere una nuova attività; il tocco su un'attività apre un pannello di modifica con «Elimina». Completare una ricorrente crea la prossima occorrenza (settimanale o mensile).
+4. **Import** (dentro "+"): scelta del conto, formato riconosciuto da confermare, anteprima con contatori (pronti, da rivedere, duplicati), esito con «Annulla questo import», errori di file e di categorizzazione.
+5. **Da rivedere**: coda dei movimenti con confidenza bassa o senza categoria.
+6. **Conti** (ADR-025): «I miei conti» e «Condivisi dalla famiglia» (sola lettura); creazione e modifica con nome, tipo, visibilità e formato file. Si raggiunge dal filtro di Movimenti e dalle Impostazioni. Le schermate senza versione Mac usano lo stesso layout responsive.
+7. **Impostazioni, famiglia e accesso** (ADR-026): budget familiare e personale, categorie, regole di categoria, profilo (nome e password), famiglia e membri (inviti da 24 ore, ruoli), installazione su iPhone, accesso, registrazione, reset password, «crea la famiglia», «unisciti con invito»; stati vuoti, offline ed errore. Punti d'accesso e comportamenti sono nella mappa dell'ADR-026; la navigazione resta a tre voci (ADR-013).
 
-Mockup di queste schermate (mobile e desktop, stile "Liquid Glass" sulla palette calda B1, con un primo campione di modalità scura) prototipati su Claude Design — vedi ADR-012. L'originale modificabile resta l'artifact Claude Design; in `docs/design/mockups/` c'è un'istantanea statica (HTML autonomo, apribile nel browser) per consultarli senza riaprire Claude — vedi `docs/design/mockups/README.md`.
+Mockup di queste schermate (mobile e desktop, stile "Liquid Glass" sulla palette calda B1, con la versione chiara e scura di tutte le schermate) prototipati su Claude Design — vedi ADR-012. L'originale modificabile resta l'artifact Claude Design; in `docs/design/mockups/` c'è un'istantanea statica (HTML autonomo, apribile nel browser) per consultarli senza riaprire Claude — vedi `docs/design/mockups/README.md`.
 
 ---
 
@@ -275,7 +279,7 @@ create table accounts (          -- conto corrente, carta, contanti
   owner_id     uuid not null references auth.users,  -- chi lo gestisce e vi importa gli estratti (ADR-015)
   visibility   text not null default 'private'
                check (visibility in ('shared','private')),  -- default dei suoi movimenti
-  bank_format  jsonb,             -- mappatura colonne salvata (§8.1); null finché non rilevata
+  bank_format  text,              -- identificatore del preset di formato: 'revolut' | 'trade_republic' | … | 'auto' (ADR-028); null finché non scelto. Il `BankFormat` vive nel codice (§8.1). I conti `cash` non hanno formato (check)
   created_at   timestamptz not null default now()
 );
 
@@ -283,7 +287,7 @@ create table categories (
   id           uuid primary key default gen_random_uuid(),
   household_id uuid not null references households on delete cascade,
   name         text not null,
-  kind         text not null check (kind in ('income','expense','transfer','excluded')),
+  kind         text not null check (kind in ('income','expense','transfer','excluded')),  -- il comportamento dipende dal kind, mai dal nome (ADR-031)
   is_hidden    boolean not null default false,  -- nascosta dai selettori e dall'AI, ma resta sui movimenti esistenti (ADR-017)
   unique (household_id, name)
 );
@@ -303,7 +307,7 @@ create table imports (           -- un caricamento di file: serve a log, metrich
   ai_tokens_in   int not null default 0,
   ai_tokens_out  int not null default 0,
   status         text not null default 'processing'
-                 check (status in ('processing','done','failed')),
+                 check (status in ('processing','done','failed','undone')),  -- 'undone' = import annullato: le righe sono cancellate, i contatori restano (ADR-027)
   error          text,
   created_at     timestamptz not null default now()
 );
@@ -317,6 +321,7 @@ create table transactions (
   booked_on       date not null,
   amount_cents    bigint not null,          -- negativo = uscita
   description     text not null,            -- normalizzata
+  note            text,                     -- nota libera dell'utente; ha la visibilità del movimento e non va mai al modello AI (regola 4.1.5)
   raw_description text not null,            -- originale, per debug e regole
   category_id     uuid references categories,
   category_source text check (category_source in ('rule','ai','user')),
@@ -375,7 +380,7 @@ La **precedenza delle regole** in caso di più pattern corrispondenti: vince il 
 
 Nella vista **Personale** (ADR-018) i trasferimenti **inviati** a un familiare restano una riga a parte; quelli **ricevuti** contano come **entrata**.
 
-Create all'onboarding del nucleo; ogni nucleo può **nascondere** quelle che non usa e **aggiungerne di personalizzate** (ADR-017). Le categorie con movimenti non si eliminano, si nascondono.
+Create all'onboarding del nucleo come **punto di partenza**: nessuna è fissa nel sistema. Ogni nucleo può **rinominare** e **nascondere** quelle che non usa e **aggiungerne di personalizzate**, scegliendone il `kind` (spesa, entrata, trasferimento, esclusa), e il comportamento di una categoria dipende dal suo `kind`, **mai dal nome** (ADR-017, ADR-031). I nomi nei mockup sono esempi. Le categorie con movimenti non si eliminano, si nascondono.
 
 | `kind` | Categorie |
 |---|---|
@@ -450,6 +455,7 @@ Regole di visibilità (ADR-015):
 
 Altre misure:
 
+- **Rimozione di un membro** (ADR-029): si cancella solo la sua riga in `members`. Conti e movimenti restano alla famiglia: quelli condivisi continuano a comparire nei riepiloghi; quelli privati restano nel database ma invisibili a tutti (la RLS li lega a `owner_id`, e chi non è più membro non passa `is_member`). Niente cancellazioni a cascata e storico dei riepiloghi intatto.
 - **Admin multipli, con un principale** (ADR-016): il ruolo `admin` è assegnabile a più membri; `households.owner_id` indica l'admin principale, l'unico che può promuovere/declassare altri admin, trasferire il ruolo e eliminare il nucleo.
 - **Autenticazione vera** (Supabase Auth, **email + password**, ADR-021), non una password unica condivisa.
 - La **service role key** di Supabase si usa solo lato server, mai nel browser.
@@ -483,7 +489,7 @@ Ogni banca esporta a modo suo:
 **Strategia:**
 
 - La **prima volta** che si vede un formato, il modello riceve **solo l'intestazione e 5 righe** e restituisce la mappatura delle colonne (data, importo o dare/avere, descrizione, righe da saltare, formato data e numeri).
-- La mappatura si **salva** (`accounts.bank_format`). Da lì il parsing è **codice deterministico**, senza AI e senza costi.
+- Il formato di ogni banca è un **preset nel codice** (`BankFormat` versionato e testato); il conto ne salva l'identificatore in `accounts.bank_format` (ADR-028). Una mappatura scoperta dall'AI e confermata dall'utente si salva in una tabella a parte, decisa nel task 2.3. Da lì il parsing è **codice deterministico**, senza AI e senza costi.
 - Ogni formato ha un **file di esempio anonimizzato** in `fixtures/` con i relativi test.
 - La mappatura proposta dall'AI viene **mostrata all'utente per conferma** (anteprima delle prime righe interpretate) prima di essere salvata.
 
@@ -676,7 +682,9 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 1.2 Parser deterministico guidato da `BankFormat` + test sulla fixture
 - [x] 1.3 Normalizzazione descrizioni e importi + test (inclusi decimali con virgola e colonne dare/avere)
 - [x] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
-- [ ] 1.5 Pagina Importa: upload, anteprima, conferma; record in `imports` con i contatori
+- [ ] 1.5a Creazione base dei conti (nome, tipo, visibilità, formato) con «Nuovo conto» dentro l'import: serve al passo «scegli il conto» (ADR-025). Migrazione: `accounts.bank_format` da `jsonb` a `text` (preset, ADR-028)
+- [ ] 1.5b Guscio dell'app a tre voci (ADR-013), lista Movimenti con filtri, dettaglio movimento (categoria, nota, visibilità, elimina; colonna `transactions.note`) e «+» per l'inserimento manuale: punto d'ingresso dell'import
+- [ ] 1.5 Pagina Importa: scelta del conto, upload, formato riconosciuto, anteprima con **nuovi e duplicati** (senza classificazione: «pronti / da rivedere» e categorie proposte arrivano con 2.4–2.5), conferma, movimenti importati senza categoria, esito con «Annulla import» (cancella le righe e porta l'import a `undone`, ADR-027); record in `imports` con i contatori (schermate: ADR-026)
 - [x] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
 - **Uscita:** un mese reale importato due volte senza doppioni; totali uguali all'estratto conto.
 
@@ -686,18 +694,23 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [ ] 2.3 Rilevamento formato via AI per banche nuove, con conferma dell'utente
 - [ ] 2.4 Soglia di confidenza, stato `needs_review`, degrado controllato se l'AI fallisce
 - [ ] 2.5 Schermata "Da rivedere" + correzione + proposta "applicare sempre"
+- [ ] 2.5b Gestione delle regole di categoria in Impostazioni (elenco «pattern → categoria», modifica, elimina)
 - [ ] 2.6 Golden set (~200 movimenti anonimizzati) e script di eval in `evals/`
 - **Uscita:** accuratezza e costo misurati e salvati in `evals/results/`.
 
 **Fase 3 · Uso in famiglia**
 - [ ] 3.1 Tutti i conti/carte (Revolut, UniCredit, Findomestic, Trade Republic; **Q1**); inserimento manuale rapido per i contanti (**Q2**)
-- [ ] 3.2 Budget familiare per categoria (modificabile dagli admin) e confronto nel riepilogo Famiglia
+- [ ] 3.2 Budget familiare per categoria (modificabile dagli admin) e confronto nel riepilogo Famiglia; il budget di un mese è la riga più recente con `month` ≤ quel mese (ADR-030)
 - [ ] 3.2b Budget personale e vista Personale (ADR-018)
 - [ ] 3.2c Gestione categorie: nascondi / aggiungi personalizzate (ADR-017)
 - [ ] 3.4b Trasferimenti ai familiari: destinatario, categorie `transfer`, riga nel riepilogo (ADR-015)
-- [ ] 3.3 Cose da fare: lista, responsabile, scadenza, ricorrenza
+- [ ] 3.3 Cose da fare: lista, responsabile, scadenza, ricorrenza, note, pannello di modifica/elimina, prossima occorrenza alla chiusura di una ricorrente
 - [ ] 3.4 UI per conti personali/condivisi, override per singolo movimento e cambio di visibilità di un conto con anteprima (ADR-015)
 - [ ] 3.5 PWA: manifest, icone, service worker; istruzioni di installazione (dipende da **Q3**)
+- [ ] 3.4c Famiglia e membri: inviti da 24 ore (link `/invite/<codice>`; funzione di lettura per codice con mittente, ruolo e scadenza, e annullamento dell'invito: ADR a parte), ruoli, promozione e rimozione (ADR-016, ADR-026, ADR-029)
+- [ ] 3.5c Impostazioni (hub), stati vuoti, offline ed errore (ADR-026)
+- [ ] 3.5d Lettura offline: service worker con cache dei dati dell'ultimo riepilogo, svuotata al logout (ADR-032)
+- [ ] 3.5e Profilo in Impostazioni: cambio nome e cambio password
 - [ ] 3.5b Reset password via email e conferma email attiva in produzione (prerequisito del deploy)
 - [ ] 3.6 Deploy su Vercel + progetto Supabase di produzione
 - **Uscita:** tutte e 4 hanno l'app sulla schermata home e l'hanno usata per un mese.
@@ -741,6 +754,14 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-022 | Funzione `create_household` (`security definer`) con regola «un solo nucleo» | Onboarding senza service role nell'app; l'estraneo che trova l'app non può aprire un nucleo |
 | ADR-023 | Creare un invito è un INSERT ordinario; solo `accept_invite` è `security definer` | Solo chi accetta ha il problema di bootstrap di ADR-022; creare un invito lo fa già un admin |
 | ADR-024 | `BankFormat` esteso in modo additivo (importo `sum`, istante UTC → Rome, descrizione «prima non vuota», id esterno, tipo grezzo) | Il secondo formato reale (Trade Republic) non rientrava in dare/avere + data; il parsing resta dichiarativo, senza codice per banca |
+| ADR-025 | Schermata Conti, accesso da Movimenti, formato banca scelto dall'utente | Nessuna quarta voce di navigazione; «Nuovo conto» dentro l'import; il tipo di conto non si modifica |
+| ADR-026 | Mappa delle schermate e punti d'accesso | Tre voci di navigazione; impostazioni dall'avatar (iPhone) o dalla barra laterale (Mac); tutto il resto da un punto d'accesso preciso |
+| ADR-027 | Annullare un import cancella le righe; stato `undone` | Il reimport del file resta possibile (gli hash spariscono); contatori conservati per log e metriche |
+| ADR-028 | `accounts.bank_format` è l'identificatore di un preset nel codice | Formati versionati e testati; la mappatura scoperta dall'AI vive in una tabella a parte |
+| ADR-029 | Rimozione di un membro: i dati restano alla famiglia | Nessuna cancellazione a cascata; i privati restano invisibili a tutti |
+| ADR-030 | Il budget vale finché non viene cambiato | Si usa la riga più recente con `month` ≤ mese; lo storico non cambia |
+| ADR-031 | Categorie personalizzabili guidate dal `kind`, mai dal nome | Il seed è un punto di partenza; rinomina, nascondi, aggiungi; «Trasferimento» è un tipo, non un nome |
+| ADR-032 | Lettura offline con service worker | Dati dell'ultimo riepilogo in cache, svuotata al logout; scrivere resta online |
 
 ---
 

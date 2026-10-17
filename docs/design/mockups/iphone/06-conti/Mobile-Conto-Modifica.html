@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Modifica conto — Mobile (Liquid Glass)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; }
+  .lg-btn { font-family: inherit; cursor: pointer; }
+  .lg-input { font-family: inherit; }
+  .lg-input::placeholder { color: #9C8B7C; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+  a:focus-visible, button:focus-visible { outline: 2px solid #B85A30; outline-offset: 2px; }
+  .lg-card {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.75);
+    box-shadow: 0 10px 26px rgba(58,46,39,0.10);
+    position: relative;
+  }
+  .lg-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 16px; right: 16px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+  }
+  .lg-navbar {
+    background: rgba(251,247,241,0.68);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid rgba(58,46,39,0.06);
+  }
+  .lg-glassbtn {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 0 4px 10px rgba(58,46,39,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .lg-btn-primary {
+    background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%);
+    box-shadow: 0 8px 20px rgba(184,90,48,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+    border: none;
+  }
+  .lg-btn-primary[aria-disabled="true"] { opacity: 0.45; box-shadow: none; cursor: default; }
+  .lg-tabbar {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.85);
+    box-shadow: 0 14px 34px rgba(58,46,39,0.18), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .lg-tab-active { background: rgba(193,103,58,0.16); border: 1px solid rgba(193,103,58,0.22); }
+  .lg-field {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.8);
+  }
+  .lg-pill-active {
+    background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%);
+    box-shadow: 0 4px 12px rgba(184,90,48,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .lg-segment { background: rgba(58,46,39,0.06); border-radius: 14px; padding: 4px; }
+  .lg-segment-active { background: rgba(255,255,255,0.9); box-shadow: 0 2px 6px rgba(58,46,39,0.14); }
+  .lg-opt-sel { background: rgba(193,103,58,0.10); border: 1px solid rgba(193,103,58,0.55); }
+  .lg-dashed { border: 1.5px dashed rgba(58,46,39,0.28); background: transparent; }
+  .lg-sheet {
+    background: linear-gradient(165deg, #FCF6EC 0%, #F6E8D6 55%, #EFDBC1 100%);
+    box-shadow: 0 -10px 40px rgba(58,46,39,0.25);
+  }
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: linear-gradient(165deg, #FCF6EC 0%, #F6E8D6 55%, #EFDBC1 100%); color: #3A2E27; display: flex; flex-direction: column; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; overflow: hidden; position: relative;">
+<div style="display:flex;justify-content:center;padding:10px 0 2px;flex-shrink:0;"><div style="width:36px;height:5px;border-radius:999px;background:rgba(58,46,39,0.18);"></div></div><div style="padding:10px 16px 4px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;"><a href="Mobile-Conti.html" aria-label="Chiudi" class="lg-btn lg-glassbtn" style="width:34px;height:34px;border-radius:999px;color:#3A2E27;display:flex;align-items:center;justify-content:center;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></a><div style="font-weight:700;font-size:16px;">Modifica conto</div><div style="width:34px;"></div></div><div style="flex-grow:1;min-height:0;overflow:hidden;padding:14px 20px 0;display:flex;flex-direction:column;gap:14px;"><div><div style="font-size:12px;font-weight:600;color:#7A6A5C;margin-bottom:8px;">Nome</div><input class="lg-input lg-field" type="text" aria-label="Nome del conto" value="Revolut di Federico" placeholder="Es. Revolut di Federico" style="width:100%;box-sizing:border-box;outline:none;border-radius:16px;padding:12px 16px;font-size:14px;font-weight:600;color:#3A2E27;"></div><div><div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;color:#7A6A5C;margin-bottom:8px;"><span>Tipo</span><span style="display:inline-flex;align-items:center;gap:4px;font-weight:500;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#7A6A5C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>Non si cambia dopo la creazione</span></div><div class="lg-segment" role="group" aria-disabled="true" style="display:flex;gap:4px;opacity:0.55;"><button class="lg-btn" aria-pressed="false" style="flex:1;padding:9px 0;border-radius:11px;border:none;background:none;color:#7A6A5C;font-weight:600;font-size:13px;">Conto</button><button class="lg-btn lg-segment-active" aria-pressed="true" style="flex:1;padding:9px 0;border-radius:11px;border:none;color:#3A2E27;font-weight:700;font-size:13px;">Carta</button><button class="lg-btn" aria-pressed="false" style="flex:1;padding:9px 0;border-radius:11px;border:none;background:none;color:#7A6A5C;font-weight:600;font-size:13px;">Contanti</button></div></div><div><div style="font-size:12px;font-weight:600;color:#7A6A5C;margin-bottom:8px;">Chi lo vede</div><div role="radiogroup" aria-label="Chi vede il conto" style="display:flex;flex-direction:column;gap:8px;"><button role="radio" aria-checked="false" class="lg-btn lg-field" style="width:100%;text-align:left;border-radius:18px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;color:#3A2E27;"><span style="margin-top:1px;display:flex;flex-shrink:0;"><span aria-hidden="true" style="display:block;width:20px;height:20px;flex-shrink:0;box-sizing:border-box;border-radius:999px;border:1.5px solid #7A6A5C;"></span></span><span style="display:block;"><span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>Privato</span><span style="display:block;font-size:12px;line-height:1.4;color:#7A6A5C;margin-top:3px;">Lo vedi solo tu, con i suoi movimenti.</span></span></button><button role="radio" aria-checked="true" class="lg-btn lg-opt-sel" style="width:100%;text-align:left;border-radius:18px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;color:#3A2E27;"><span style="margin-top:1px;display:flex;flex-shrink:0;"><span aria-hidden="true" style="width:20px;height:20px;flex-shrink:0;border-radius:999px;background:linear-gradient(155deg, #D3835A 0%, #B85A30 100%);display:flex;align-items:center;justify-content:center;"><span style="width:8px;height:8px;border-radius:999px;background:#FFFFFF;"></span></span></span><span style="display:block;"><span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5"></path><circle cx="17" cy="9" r="2.3"></circle><path d="M16 14c2.6.2 4.2 2 4.6 4.5"></path></svg>Condiviso</span><span style="display:block;font-size:12px;line-height:1.4;color:#7A6A5C;margin-top:3px;">La famiglia vede conto e movimenti, anche se lo usi solo tu.</span></span></button></div><div style="font-size:11px;line-height:1.4;color:#7A6A5C;margin-top:8px;">Ogni movimento può comunque avere una visibilità sua.</div><div class="lg-field" style="border-radius:18px;padding:12px 14px;margin-top:10px;"><div style="display:flex;gap:8px;align-items:flex-start;font-weight:700;font-size:13px;line-height:1.35;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B85A30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5"></path><circle cx="17" cy="9" r="2.3"></circle><path d="M16 14c2.6.2 4.2 2 4.6 4.5"></path></svg><span>34 movimenti diventeranno visibili a 3 persone</span></div><div role="radiogroup" aria-label="A quali movimenti si applica" style="margin-top:6px;"><div role="radio" aria-checked="true" style="display:flex;align-items:center;gap:10px;padding:5px 0;"><span aria-hidden="true" style="width:20px;height:20px;flex-shrink:0;border-radius:999px;background:linear-gradient(155deg, #D3835A 0%, #B85A30 100%);display:flex;align-items:center;justify-content:center;"><span style="width:8px;height:8px;border-radius:999px;background:#FFFFFF;"></span></span><span style="font-size:13px;font-weight:700;">Solo da ora<span style="font-weight:500;color:#7A6A5C;"> · consigliato</span></span></div><div role="radio" aria-checked="false" style="display:flex;align-items:center;gap:10px;padding:5px 0;"><span aria-hidden="true" style="display:block;width:20px;height:20px;flex-shrink:0;box-sizing:border-box;border-radius:999px;border:1.5px solid #7A6A5C;"></span><span style="font-size:13px;font-weight:600;">Da una data…<span style="font-weight:500;color:#7A6A5C;"> </span></span></div><div role="radio" aria-checked="false" style="display:flex;align-items:center;gap:10px;padding:5px 0;"><span aria-hidden="true" style="display:block;width:20px;height:20px;flex-shrink:0;box-sizing:border-box;border-radius:999px;border:1.5px solid #7A6A5C;"></span><span style="font-size:13px;font-weight:600;">Tutto lo storico<span style="font-weight:500;color:#7A6A5C;"> </span></span></div></div><div style="font-size:11px;line-height:1.4;color:#7A6A5C;margin-top:4px;">I movimenti che hai impostato a mano non cambiano mai.</div></div></div><div><div style="font-size:12px;font-weight:600;color:#7A6A5C;margin-bottom:8px;">Formato del file</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="lg-btn lg-pill-active" aria-pressed="true" style="padding:8px 14px;border-radius:999px;border:none;color:#FFFFFF;font-weight:700;font-size:12px;">Revolut</button><button class="lg-btn lg-glassbtn" aria-pressed="false" style="padding:8px 14px;border-radius:999px;color:#7A6A5C;font-weight:700;font-size:12px;">Trade Republic</button><button class="lg-btn lg-glassbtn" aria-pressed="false" style="padding:8px 14px;border-radius:999px;color:#7A6A5C;font-weight:700;font-size:12px;">Lo scelgo all’import</button></div><div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;line-height:1.4;color:#7A6A5C;margin-top:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg><span>Cambiare il formato vale dal prossimo import.</span></div></div></div><div style="flex-shrink:0;padding:14px 20px 20px;"><a href="Mobile-Conti.html" class="lg-btn lg-btn-primary" style="display:block;width:100%;box-sizing:border-box;padding:15px 0;border-radius:18px;color:#FFFFFF;font-weight:700;font-size:15px;text-align:center;text-decoration:none;">Salva modifiche</a></div>
+</div>
+</body>
+</html>

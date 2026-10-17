@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Budget della famiglia — Desktop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; }
+  .lg-btn { font-family: inherit; cursor: pointer; }
+  .lg-input { font-family: inherit; }
+  .lg-input::placeholder { color: #9C8B7C; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+  a:focus-visible, button:focus-visible { outline: 2px solid #B85A30; outline-offset: 2px; }
+  .lg-card {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.75);
+    box-shadow: 0 10px 26px rgba(58,46,39,0.10);
+    position: relative;
+  }
+  .lg-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 16px; right: 16px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+  }
+  .lg-navbar {
+    background: rgba(251,247,241,0.68);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid rgba(58,46,39,0.06);
+  }
+  .lg-glassbtn {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 0 4px 10px rgba(58,46,39,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .lg-btn-primary {
+    background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%);
+    box-shadow: 0 8px 20px rgba(184,90,48,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+    border: none;
+  }
+  .lg-btn-primary[aria-disabled="true"] { opacity: 0.45; box-shadow: none; cursor: default; }
+  .lg-tabbar {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.85);
+    box-shadow: 0 14px 34px rgba(58,46,39,0.18), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .lg-tab-active { background: rgba(193,103,58,0.16); border: 1px solid rgba(193,103,58,0.22); }
+  .lg-field {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.8);
+  }
+  .lg-pill-active {
+    background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%);
+    box-shadow: 0 4px 12px rgba(184,90,48,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .lg-segment { background: rgba(58,46,39,0.06); border-radius: 14px; padding: 4px; }
+  .lg-segment-active { background: rgba(255,255,255,0.9); box-shadow: 0 2px 6px rgba(58,46,39,0.14); }
+  .lg-opt-sel { background: rgba(193,103,58,0.10); border: 1px solid rgba(193,103,58,0.55); }
+  .lg-dashed { border: 1.5px dashed rgba(58,46,39,0.28); background: transparent; }
+  .lg-sheet {
+    background: linear-gradient(165deg, #FCF6EC 0%, #F6E8D6 55%, #EFDBC1 100%);
+    box-shadow: 0 -10px 40px rgba(58,46,39,0.25);
+  }
+
+  .lg-track { background: rgba(58,46,39,0.06); }
+  .lg-fill { background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%); }
+  .lg-fill-over { background: linear-gradient(90deg, #E39A4C, #C8472B); }
+  .lg-banner { background: rgba(230,150,90,0.28); backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%); border: 1px solid rgba(230,150,90,0.35); }
+
+  .lg-sidebar { background: rgba(255,255,255,0.5); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border-right: 1px solid rgba(255,255,255,0.7); }
+  .lg-navitem:hover { background: rgba(58,46,39,0.05); }
+  .lg-navitem-active { background: rgba(193,103,58,0.16); border: 1px solid rgba(193,103,58,0.22); }
+  .lg-panel { background: rgba(255,255,255,0.62); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border-left: 1px solid rgba(255,255,255,0.75); box-shadow: -20px 0 60px rgba(58,46,39,0.18); }
+</style>
+</head>
+<body>
+<div style="width: 1280px; height: 832px; box-sizing: border-box; background: linear-gradient(160deg, #FCF6EC 0%, #F6E8D6 55%, #EFDBC1 100%); color: #3A2E27; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; overflow: hidden; position: relative;">
+<div style="display:flex;height:100%;"><div class="lg-sidebar" style="width:240px;flex-shrink:0;box-sizing:border-box;display:flex;flex-direction:column;padding:24px 16px;"><div style="font-weight:700;font-size:18px;padding:0 8px;margin-bottom:28px;letter-spacing:-0.01em;">budgFam</div><nav aria-label="Navigazione principale"><a href="../02-riepilogo/Desktop-Riepilogo.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:14px;margin-bottom:4px;color:#3A2E27;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="12" width="4" height="8" rx="2"></rect><rect x="10" y="7" width="4" height="13" rx="2"></rect><rect x="16" y="3" width="4" height="17" rx="2"></rect></svg>Riepilogo</a><a href="../03-movimenti/Desktop-Movimenti.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:14px;margin-bottom:4px;color:#3A2E27;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>Movimenti</a><a href="../09-cose-da-fare/Desktop-Task.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:14px;margin-bottom:4px;color:#3A2E27;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5"></rect><path d="M8 12l3 3 5-6"></path></svg>Cose da fare</a></nav><div style="flex-grow:1;"></div><nav aria-label="Impostazioni"><a href="Desktop-Impostazioni-Budget.html" aria-current="page" class="lg-navitem-active" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:700;font-size:14px;margin-bottom:4px;color:#B85A30;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v2.2M12 18.8V21M4.2 7.5l1.9 1.1M17.9 15.4l1.9 1.1M4.2 16.5l1.9-1.1M17.9 8.6l1.9-1.1"></path></svg>Impostazioni</a></nav><a href="../08-famiglia-e-membri/Desktop-Impostazioni-Famiglia.html" style="border-top:1px solid rgba(58,46,39,0.08);padding-top:16px;margin-top:8px;display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;"><div style="display:flex;"><div style="width:26px;height:26px;border-radius:999px;background:linear-gradient(155deg, #D3835A 0%, #B85A30 100%);color:#FFFFFF;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.9);">F</div><div style="width:26px;height:26px;margin-left:-8px;border-radius:999px;background:#8A7A6D;color:#FFFFFF;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.9);">M</div><div style="width:26px;height:26px;margin-left:-8px;border-radius:999px;background:#D9C6AE;border:2px solid rgba(255,255,255,0.9);"></div><div style="width:26px;height:26px;margin-left:-8px;border-radius:999px;background:#D9C6AE;border:2px solid rgba(255,255,255,0.9);"></div></div><div style="font-size:12px;color:#7A6A5C;font-weight:600;">4 persone</div></a></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;position:relative;"><div style="display:flex;align-items:center;justify-content:space-between;padding:26px 36px 10px;flex-shrink:0;"><div><h1 style="margin:0;font-size:26px;letter-spacing:-0.02em;">Budget della famiglia</h1><div style="font-size:13px;color:#7A6A5C;margin-top:2px;font-weight:600;">Vale da settembre 2026</div></div><div style="display:flex;align-items:center;gap:10px;"><a href="Desktop-Impostazioni-Budget.html" class="lg-btn lg-btn-primary" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;color:#FFFFFF;font-weight:700;font-size:13px;text-decoration:none;">Salva budget</a></div></div><div style="display:flex;gap:28px;padding:8px 36px 28px;flex:1;min-height:0;"><div style="width:230px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;"><a href="Desktop-Impostazioni-Budget.html" aria-current="page" class="lg-navitem-active" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:700;font-size:13px;color:#B85A30;text-decoration:none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M3.5 11L12 4l8.5 7"></path><path d="M6 10v10h12V10"></path></svg>Budget della famiglia</a><a href="Desktop-Impostazioni-Budget.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:13px;color:#3A2E27;text-decoration:none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.6-3.6 3.1-5.6 6.5-5.6s5.9 2 6.5 5.6"></path></svg>Il mio budget</a><a href="Desktop-Impostazioni-Categorie.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:13px;color:#3A2E27;text-decoration:none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M3 12.5V4h8.5L21 13.5 13.5 21z"></path><circle cx="7.5" cy="8.5" r="1.3"></circle></svg>Categorie</a><a href="../06-conti/Desktop-Conti.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:13px;color:#3A2E27;text-decoration:none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M4 7a3 3 0 013-3h11v4"></path><rect x="3" y="7" width="18" height="13" rx="3"></rect><circle cx="16.5" cy="13.5" r="1.2"></circle></svg>Conti</a><a href="../08-famiglia-e-membri/Desktop-Impostazioni-Famiglia.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:13px;color:#3A2E27;text-decoration:none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5"></path><circle cx="17" cy="9" r="2.3"></circle><path d="M16 14c2.6.2 4.2 2 4.6 4.5"></path></svg>Famiglia e membri</a></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow:hidden;"><div class="lg-card" style="border-radius:24px;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:12px;color:#7A6A5C;font-weight:600;">Totale mensile</div><div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;">1.620&nbsp;€</div></div><span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800;background:rgba(193,103,58,0.16);color:#B85A30;white-space:nowrap;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5"></path><circle cx="17" cy="9" r="2.3"></circle><path d="M16 14c2.6.2 4.2 2 4.6 4.5"></path></svg>Condiviso</span></div><div class="lg-card" style="border-radius:26px;padding:4px 24px;"><div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(58,46,39,0.08);"><div style="flex:1;font-weight:700;font-size:14px;">Spesa</div><div class="lg-field" style="display:flex;align-items:center;gap:4px;border-radius:14px;padding:8px 14px;width:110px;justify-content:flex-end;"><span style="font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">500</span><span style="color:#7A6A5C;font-weight:600;">€</span></div></div><div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(58,46,39,0.08);"><div style="flex:1;font-weight:700;font-size:14px;">Bollette</div><div class="lg-field" style="display:flex;align-items:center;gap:4px;border-radius:14px;padding:8px 14px;width:110px;justify-content:flex-end;"><span style="font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">200</span><span style="color:#7A6A5C;font-weight:600;">€</span></div></div><div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(58,46,39,0.08);"><div style="flex:1;font-weight:700;font-size:14px;">Trasporti</div><div class="lg-field" style="display:flex;align-items:center;gap:4px;border-radius:14px;padding:8px 14px;width:110px;justify-content:flex-end;"><span style="font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">150</span><span style="color:#7A6A5C;font-weight:600;">€</span></div></div><div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(58,46,39,0.08);"><div style="flex:1;font-weight:700;font-size:14px;">Svago</div><div class="lg-field" style="display:flex;align-items:center;gap:4px;border-radius:14px;padding:8px 14px;width:110px;justify-content:flex-end;"><span style="font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">100</span><span style="color:#7A6A5C;font-weight:600;">€</span></div></div><div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(58,46,39,0.08);"><div style="flex:1;font-weight:700;font-size:14px;">Casa</div><div class="lg-field" style="display:flex;align-items:center;gap:4px;border-radius:14px;padding:8px 14px;width:110px;justify-content:flex-end;"><span style="font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">400</span><span style="color:#7A6A5C;font-weight:600;">€</span></div></div><div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(58,46,39,0.08);"><div style="flex:1;font-weight:700;font-size:14px;">Salute</div><div class="lg-field" style="display:flex;align-items:center;gap:4px;border-radius:14px;padding:8px 14px;width:110px;justify-content:flex-end;"><span style="font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">120</span><span style="color:#7A6A5C;font-weight:600;">€</span></div></div><div style="display:flex;align-items:center;gap:14px;padding:11px 0;"><div style="flex:1;font-weight:700;font-size:14px;">Ristoranti</div><div class="lg-field" style="display:flex;align-items:center;gap:4px;border-radius:14px;padding:8px 14px;width:110px;justify-content:flex-end;"><span style="font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">150</span><span style="color:#7A6A5C;font-weight:600;">€</span></div></div></div><div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;line-height:1.4;color:#7A6A5C;margin-top:0px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg><span>Lo modificano solo gli amministratori. Tutta la famiglia vede gli importi.</span></div></div></div></div></div>
+</div>
+</body>
+</html>

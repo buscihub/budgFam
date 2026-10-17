@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Import: anteprima — Desktop (scuro)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; }
+  .lg-btn { font-family: inherit; cursor: pointer; }
+  .lg-input { font-family: inherit; }
+  .lg-input::placeholder { color: #7E7061; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+  a:focus-visible, button:focus-visible { outline: 2px solid #E2925F; outline-offset: 2px; }
+  .lg-card {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    position: relative;
+  }
+  .lg-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 16px; right: 16px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  }
+  .lg-navbar {
+    background: rgba(23,17,14,0.65);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .lg-glassbtn {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+  .lg-btn-primary {
+    background: linear-gradient(155deg, #E58F5E 0%, #C1673A 100%);
+    box-shadow: 0 8px 20px rgba(193,103,58,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+    border: none;
+  }
+  .lg-btn-primary[aria-disabled="true"] { opacity: 0.45; box-shadow: none; cursor: default; }
+  .lg-tabbar {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+  .lg-tab-active { background: rgba(224,138,92,0.22); border: 1px solid rgba(224,138,92,0.32); }
+  .lg-field {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.14);
+  }
+  .lg-pill-active {
+    background: linear-gradient(155deg, #E58F5E 0%, #C1673A 100%);
+    box-shadow: 0 4px 12px rgba(193,103,58,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .lg-segment { background: rgba(255,255,255,0.08); border-radius: 14px; padding: 4px; }
+  .lg-segment-active { background: rgba(255,255,255,0.16); box-shadow: 0 2px 6px rgba(0,0,0,0.35); }
+  .lg-opt-sel { background: rgba(224,138,92,0.12); border: 1px solid rgba(224,138,92,0.6); }
+  .lg-dashed { border: 1.5px dashed rgba(255,255,255,0.28); background: transparent; }
+  .lg-sheet {
+    background: linear-gradient(165deg, #1D1512 0%, #241A15 55%, #170F0C 100%);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
+  }
+
+  .lg-track { background: rgba(255,255,255,0.08); }
+  .lg-fill { background: linear-gradient(155deg, #E58F5E 0%, #C1673A 100%); }
+  .lg-fill-over { background: linear-gradient(90deg, #E39A4C, #FF8F6B); }
+  .lg-banner { background: rgba(255,150,90,0.22); backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%); border: 1px solid rgba(255,150,90,0.3); }
+
+  .lg-sidebar { background: rgba(255,255,255,0.05); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border-right: 1px solid rgba(255,255,255,0.08); }
+  .lg-navitem:hover { background: rgba(255,255,255,0.06); }
+  .lg-navitem-active { background: rgba(224,138,92,0.22); border: 1px solid rgba(224,138,92,0.32); }
+  .lg-panel { background: rgba(40,30,25,0.72); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border-left: 1px solid rgba(255,255,255,0.14); box-shadow: -20px 0 60px rgba(0,0,0,0.5); }
+</style>
+</head>
+<body>
+<div style="width: 1280px; height: 832px; box-sizing: border-box; background: linear-gradient(160deg, #1D1512 0%, #241A15 55%, #170F0C 100%); color: #F3E9DE; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; overflow: hidden; position: relative;">
+<div style="display:flex;height:100%;"><div class="lg-sidebar" style="width:240px;flex-shrink:0;box-sizing:border-box;display:flex;flex-direction:column;padding:24px 16px;"><div style="font-weight:700;font-size:18px;padding:0 8px;margin-bottom:28px;letter-spacing:-0.01em;">budgFam</div><nav aria-label="Navigazione principale"><a href="../02-riepilogo/Desktop-Riepilogo-Dark.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:14px;margin-bottom:4px;color:#F3E9DE;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="12" width="4" height="8" rx="2"></rect><rect x="10" y="7" width="4" height="13" rx="2"></rect><rect x="16" y="3" width="4" height="17" rx="2"></rect></svg>Riepilogo</a><a href="../03-movimenti/Desktop-Movimenti-Dark.html" aria-current="page" class="lg-navitem-active" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:700;font-size:14px;margin-bottom:4px;color:#E2925F;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>Movimenti</a><a href="../09-cose-da-fare/Desktop-Task.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:14px;margin-bottom:4px;color:#F3E9DE;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5"></rect><path d="M8 12l3 3 5-6"></path></svg>Cose da fare</a></nav><div style="flex-grow:1;"></div><nav aria-label="Impostazioni"><a href="../07-impostazioni-budget-categorie/Desktop-Impostazioni-Budget-Dark.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:14px;margin-bottom:4px;color:#F3E9DE;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v2.2M12 18.8V21M4.2 7.5l1.9 1.1M17.9 15.4l1.9 1.1M4.2 16.5l1.9-1.1M17.9 8.6l1.9-1.1"></path></svg>Impostazioni</a></nav><a href="../08-famiglia-e-membri/Desktop-Impostazioni-Famiglia-Dark.html" style="border-top:1px solid rgba(255,255,255,0.10);padding-top:16px;margin-top:8px;display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;"><div style="display:flex;"><div style="width:26px;height:26px;border-radius:999px;background:linear-gradient(155deg, #E58F5E 0%, #C1673A 100%);color:#FFFFFF;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;border:2px solid #241A15;">F</div><div style="width:26px;height:26px;margin-left:-8px;border-radius:999px;background:#8A7A6D;color:#FFFFFF;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;border:2px solid #241A15;">M</div><div style="width:26px;height:26px;margin-left:-8px;border-radius:999px;background:#4A3C33;border:2px solid #241A15;"></div><div style="width:26px;height:26px;margin-left:-8px;border-radius:999px;background:#4A3C33;border:2px solid #241A15;"></div></div><div style="font-size:12px;color:#B4A395;font-weight:600;">4 persone</div></a></div><div style="flex:1;min-width:0;display:flex;flex-direction:column;position:relative;"><div style="display:flex;align-items:center;justify-content:space-between;padding:26px 36px 10px;flex-shrink:0;"><div><h1 style="margin:0;font-size:26px;letter-spacing:-0.02em;">Anteprima import</h1><div style="font-size:13px;color:#B4A395;margin-top:2px;font-weight:600;">Controlla prima di aggiungere i movimenti</div></div><div style="display:flex;align-items:center;gap:10px;"><a href="../03-movimenti/Desktop-Movimenti-Dark.html" class="lg-btn lg-glassbtn" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;color:#F3E9DE;font-weight:700;font-size:13px;text-decoration:none;">Annulla</a><a href="../03-movimenti/Desktop-Movimenti-Dark.html" class="lg-btn lg-btn-primary" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;color:#1D1512;font-weight:700;font-size:13px;text-decoration:none;">Importa 47 movimenti</a></div></div><div style="padding:8px 36px 28px;display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;overflow:hidden;"><div class="lg-card" style="border-radius:22px;padding:14px 18px;display:flex;align-items:center;gap:14px;"><span aria-hidden="true" style="width:40px;height:40px;border-radius:13px;background:rgba(224,138,92,0.16);color:#E2925F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M6 2h9l5 5v15H6z"></path><path d="M15 2v5h5"></path></svg></span><div style="flex:1;"><div style="font-weight:700;font-size:14px;">Revolut_settembre.csv</div><div style="font-size:12px;color:#B4A395;margin-top:2px;">Revolut di Federico · formato Revolut riconosciuto · 1–30 settembre</div></div><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(224,138,92,0.2);color:#E2925F;white-space:nowrap;">Formato confermato</span></div><div style="width:520px;"><div style="display:flex;gap:8px;"><div style="flex:1;border-radius:16px;background:rgba(120,200,140,0.18);padding:10px 6px;text-align:center;"><div style="font-size:21px;font-weight:800;color:#9ED9A8;font-variant-numeric:tabular-nums;">42</div><div style="font-size:10px;font-weight:700;color:#9ED9A8;margin-top:1px;">PRONTI</div></div><div style="flex:1;border-radius:16px;background:rgba(255,150,90,0.22);padding:10px 6px;text-align:center;"><div style="font-size:21px;font-weight:800;color:#FFC9A8;font-variant-numeric:tabular-nums;">5</div><div style="font-size:10px;font-weight:700;color:#FFC9A8;margin-top:1px;">DA RIVEDERE</div></div><div style="flex:1;border-radius:16px;background:rgba(255,255,255,0.08);padding:10px 6px;text-align:center;"><div style="font-size:21px;font-weight:800;color:#B4A395;font-variant-numeric:tabular-nums;">3</div><div style="font-size:10px;font-weight:700;color:#B4A395;margin-top:1px;">DUPLICATI</div></div></div></div><div class="lg-card" style="border-radius:28px;padding:0;overflow:hidden;"><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;padding:12px 26px;font-size:11px;font-weight:700;color:#B4A395;border-bottom:1px solid rgba(255,255,255,0.10);letter-spacing:0.03em;"><span>DATA</span><span>DESCRIZIONE</span><span>CATEGORIA</span><span style="text-align:right;">IMPORTO</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;border-bottom:1px solid rgba(255,255,255,0.10);"><span style="font-size:12px;font-weight:700;color:#B4A395;">24 set</span><span style="font-weight:700;font-size:14px;">Conad Palermo</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);color:#B4A395;white-space:nowrap;">Spesa</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">−42,30&nbsp;€</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;border-bottom:1px solid rgba(255,255,255,0.10);"><span style="font-size:12px;font-weight:700;color:#B4A395;">23 set</span><span style="font-weight:700;font-size:14px;">Bolt</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);color:#B4A395;white-space:nowrap;">Trasporti</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">−6,80&nbsp;€</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;border-bottom:1px solid rgba(255,255,255,0.10);"><span style="font-size:12px;font-weight:700;color:#B4A395;">22 set</span><span style="font-weight:700;font-size:14px;">Netflix</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);color:#B4A395;white-space:nowrap;">Svago</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">−13,99&nbsp;€</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;border-bottom:1px solid rgba(255,255,255,0.10);"><span style="font-size:12px;font-weight:700;color:#B4A395;">22 set</span><span style="font-weight:700;font-size:14px;">POS 4471 SRL</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,150,90,0.22);color:#FFC9A8;white-space:nowrap;">Da rivedere</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">−27,00&nbsp;€</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;border-bottom:1px solid rgba(255,255,255,0.10);"><span style="font-size:12px;font-weight:700;color:#B4A395;">21 set</span><span style="font-weight:700;font-size:14px;">Paghetta Giulia</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(224,138,92,0.2);color:#E2925F;white-space:nowrap;">Trasferimento</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">−100,00&nbsp;€</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;border-bottom:1px solid rgba(255,255,255,0.10);"><span style="font-size:12px;font-weight:700;color:#B4A395;">20 set</span><span style="font-weight:700;font-size:14px;">Stipendio</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(224,138,92,0.2);color:#E2925F;white-space:nowrap;">Stipendio</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">+1.850,00&nbsp;€</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;border-bottom:1px solid rgba(255,255,255,0.10);"><span style="font-size:12px;font-weight:700;color:#B4A395;">19 set</span><span style="font-weight:700;font-size:14px;">Conad Palermo</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);color:#B4A395;white-space:nowrap;">Spesa</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">−18,40&nbsp;€</span></div><div style="display:grid;grid-template-columns:70px 1fr 160px 130px;gap:12px;align-items:center;padding:12px 26px;"><span style="font-size:12px;font-weight:700;color:#B4A395;">18 set</span><span style="font-weight:700;font-size:14px;">Amzn Mktp IT</span><span><span style="display:inline-block;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,150,90,0.22);color:#FFC9A8;white-space:nowrap;">Da rivedere</span></span><span style="text-align:right;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;">−34,99&nbsp;€</span></div></div><div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;line-height:1.4;color:#B4A395;margin-top:0px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg><span>I 3 duplicati sono già nei tuoi movimenti e non vengono aggiunti. Le categorie le ha proposte l’assistente: le puoi cambiare dopo.</span></div></div></div></div>
+</div>
+</body>
+</html>

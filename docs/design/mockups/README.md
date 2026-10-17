@@ -1,37 +1,58 @@
-# Mockup di budgFam — schermate statiche
+# Mockup di budgFam — tutte le schermate
 
-Queste sono esportazioni statiche (HTML autonomo, apribile con un doppio click nel browser) dei mockup costruiti con Claude Design. Sono un **riferimento visivo**, non codice del prodotto: niente di qui va importato o riusato nell'app reale.
+Esportazioni statiche (HTML autonomo, si aprono con un doppio click) dei mockup costruiti con Claude Design. Sono un **riferimento visivo**, non codice del prodotto. Stile "Liquid Glass" sulla palette B1 (ADR-012), testi in italiano, dati inventati. I link tra le schermate funzionano anche tra cartelle.
 
-## Esplorazione dello stile (3 direzioni iniziali)
+## Come è organizzata la cartella
 
-- `Main.html` — direzione A, minimale
-- `Style-B.html` — direzione B, calda (palette scelta)
-- `Style-C.html` — direzione C, dati densi
-- `Style-B1.html` / `Style-B2.html` — due alternative per il font dei titoli sulla palette B (scelta: B1, titoli in sans-serif)
+Prima per dispositivo, poi per funzione:
 
-## Schermate finali — stile "Liquid Glass" sulla palette B1 (ADR-012)
+```
+iphone/   schermate mobile (390 × 844)
+mac/      schermate desktop (1280 × 832)
+  └─ <funzione>/   una cartella per area, uguale nei due dispositivi
+```
 
-Mobile (iPhone):
-- `Mobile-Riepilogo.html`
-- `Mobile-Movimenti.html` (include l'azione "+", vedi ADR-013)
-- `Mobile-Aggiungi.html` (aggiungi movimento: manuale o import file)
-- `Mobile-Task.html` (Cose da fare)
-- `Mobile-Aggiungi-Task.html` (nuova attività)
+Ogni schermata esiste in versione chiara (`Nome.html`) e scura (`Nome-Dark.html`), nella stessa cartella. La mappa dei collegamenti è in `docs/adr/0026-mappa-schermate.md`; le esplorazioni di stile iniziali sono state tolte (esito in ADR-012).
 
-Desktop:
-- `Desktop-Riepilogo.html`
-- `Desktop-Movimenti.html`
-- `Desktop-Aggiungi.html`
-- `Desktop-Task.html`
-- `Desktop-Aggiungi-Task.html`
+## Contenuto
 
-## Modalità scura — campione
+### iPhone
 
-- `Mobile-Riepilogo-Dark.html`
-- `Mobile-Movimenti-Dark.html`
+- `iphone/01-accesso-e-primo-avvio/` — `Mobile-Accedi`, `Mobile-Crea-Famiglia`, `Mobile-Installa`, `Mobile-Invito-Scaduto`, `Mobile-Password-Reset`, `Mobile-Password-Reset-Inviato`, `Mobile-Registrati`, `Mobile-Unisciti`
+- `iphone/02-riepilogo/` — `Mobile-Errore`, `Mobile-Offline`, `Mobile-Riepilogo`, `Mobile-Riepilogo-Personale`, `Mobile-Trasferiti`
+- `iphone/03-movimenti/` — `Mobile-Filtri`, `Mobile-Movimenti`, `Mobile-Movimenti-Vuoto`, `Mobile-Movimento`, `Mobile-Movimento-Categoria`, `Mobile-Movimento-Condiviso`, `Mobile-Movimento-Trasferimento`
+- `iphone/04-aggiungi-e-import/` — `Mobile-Aggiungi`, `Mobile-Aggiungi-Importa`, `Mobile-Aggiungi-Importa-Formato`, `Mobile-Aggiungi-Importa-Nuovo`, `Mobile-Import-Annulla`, `Mobile-Import-Anteprima`, `Mobile-Import-Errore-AI`, `Mobile-Import-Errore-File`, `Mobile-Import-Esito`, `Mobile-Import-Rilevato`
+- `iphone/05-da-rivedere/` — `Mobile-Da-Rivedere`, `Mobile-Da-Rivedere-Vuoto`
+- `iphone/06-conti/` — `Mobile-Conti`, `Mobile-Conti-Vuoto`, `Mobile-Conto-Contanti`, `Mobile-Conto-Modifica`, `Mobile-Conto-Nuovo`
+- `iphone/07-impostazioni-budget-categorie/` — `Mobile-Budget-Famiglia`, `Mobile-Budget-Personale`, `Mobile-Categoria-Nuova`, `Mobile-Categorie`, `Mobile-Impostazioni`
+- `iphone/08-famiglia-e-membri/` — `Mobile-Famiglia`, `Mobile-Invita`, `Mobile-Membro`
+- `iphone/09-cose-da-fare/` — `Mobile-Aggiungi-Task`, `Mobile-Task`
 
-Fissano la palette scura (superfici `#1D1512`→`#170F0C`, vetro `rgba(255,255,255,·)`, accento `#E2925F`); le altre schermate in dark si derivano con lo stesso schema quando si passa al codice.
+### Mac
+
+- `mac/01-accesso-e-primo-avvio/` — `Desktop-Accedi`
+- `mac/02-riepilogo/` — `Desktop-Riepilogo`, `Desktop-Riepilogo-Personale`
+- `mac/03-movimenti/` — `Desktop-Filtro-Conti`, `Desktop-Movimenti`, `Desktop-Movimento`, `Desktop-Movimento-Trasferimento`
+- `mac/04-aggiungi-e-import/` — `Desktop-Aggiungi`, `Desktop-Aggiungi-Importa`, `Desktop-Aggiungi-Importa-Nuovo`, `Desktop-Import-Anteprima`
+- `mac/05-da-rivedere/` — `Desktop-Da-Rivedere`
+- `mac/06-conti/` — `Desktop-Conti`, `Desktop-Conti-Vuoto`, `Desktop-Conto-Modifica`, `Desktop-Conto-Nuovo`
+- `mac/07-impostazioni-budget-categorie/` — `Desktop-Impostazioni-Budget`, `Desktop-Impostazioni-Categorie`
+- `mac/08-famiglia-e-membri/` — `Desktop-Impostazioni-Famiglia`
+- `mac/09-cose-da-fare/` — `Desktop-Aggiungi-Task`, `Desktop-Task`
+
+## Modalità scura
+Superfici `#1D1512`→`#170F0C`, vetro `rgba(255,255,255,·)`, accento `#E2925F`.
 
 ## Dove sono modificabili
+L'originale **modificabile** è l'artifact Claude Design (canvas ordinato per area, chiaro sopra e scuro sotto). Questi file sono un'istantanea del 12 ottobre 2026: per cambiare un mockup si riparte dall'artifact.
 
-L'originale **modificabile** resta l'artifact Claude Design (Design Component, con canvas e riquadri collegabili). Questi file sono un'istantanea congelata al 26 settembre 2026, utile per guardarli senza aprire Claude — per cambiare davvero un mockup si riparte dall'artifact.
+## Differenze note rispetto alla specifica
+I mockup sono un riferimento visivo: dove divergono dal `DESIGN_DOC.md` vale il design doc (decisioni del 17 ottobre 2026, ADR-027…032). Da correggere se si riparte dall'artifact:
+
+- **Categorie**: i nomi (Spesa, Bollette, Ristoranti…) sono esempi, il seed è nel §6.1; «Trasferimento» e «B&B» non sono «di sistema». «Nuova categoria» deve offrire anche il tipo *Trasferimento* (ADR-031).
+- **Link d'invito**: la route è `/invite/<codice>`, non `/invito/…`.
+- **Installa**: niente promessa di notifiche; l'uso offline è solo in lettura (ADR-032).
+- **Attività**: il form e il pannello di modifica hanno anche le note e «Elimina».
+- **Import (task 1.5)**: l'anteprima mostra solo nuovi e duplicati; «pronti / da rivedere» e le categorie proposte arrivano con la Fase 2.
+- **Desktop**: le schermate senza versione Mac usano lo stesso layout responsive.
+- **Formati banca**: il menu cresce con i preset (oggi Revolut e Trade Republic). «Carta Poste» e «Carta spesa» sono nomi inventati.

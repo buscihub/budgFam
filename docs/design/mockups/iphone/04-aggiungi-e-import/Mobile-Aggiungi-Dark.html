@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Aggiungi movimento — Mobile (Liquid Glass) (scuro)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; }
+  .lg-btn { font-family: inherit; cursor: pointer; }
+  .lg-input { font-family: inherit; }
+  .lg-input::placeholder { color: #7E7061; }
+  .lg-field {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.16);
+  }
+  .lg-glassbtn {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: 0 4px 10px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .lg-pill-active {
+    background: linear-gradient(155deg, #E58F5E 0%, #C1673A 100%);
+    box-shadow: 0 4px 12px rgba(193,103,58,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .lg-segment {
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 4px;
+  }
+  .lg-segment-active {
+    background: rgba(255,255,255,0.18);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  }
+  .lg-btn-primary {
+    background: linear-gradient(155deg, #E58F5E 0%, #C1673A 100%);
+    box-shadow: 0 8px 20px rgba(193,103,58,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    border: none;
+  }
+  .lg-dashed { border: 1.5px dashed rgba(255,255,255,0.28); background: transparent; }
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: linear-gradient(165deg, #1D1512 0%, #241A15 55%, #170F0C 100%); color: #F3E9DE; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+  <!-- Grabber -->
+  <div style="display: flex; justify-content: center; padding: 10px 0 2px; flex-shrink: 0;">
+    <div style="width: 36px; height: 5px; border-radius: 999px; background: rgba(255,255,255,0.22);"></div>
+  </div>
+
+  <!-- Header -->
+  <div style="padding: 10px 16px 4px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+    <button aria-label="Chiudi" class="lg-btn lg-glassbtn" style="width: 34px; height: 34px; border-radius: 999px; color: #F3E9DE; display: flex; align-items: center; justify-content: center;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+    <div style="font-weight: 700; font-size: 16px;">Aggiungi movimento</div>
+    <div style="width: 34px;"></div>
+  </div>
+
+  <!-- Segmented tabs -->
+  <div style="padding: 12px 20px 0; flex-shrink: 0;">
+    <div class="lg-segment" style="display: flex; gap: 4px;">
+      <button class="lg-btn lg-segment-active" style="flex: 1; padding: 9px 0; border-radius: 11px; border: none; color: #F3E9DE; font-weight: 700; font-size: 13px;">Manuale</button>
+      <a href="Mobile-Aggiungi-Importa.html" class="lg-btn" style="flex: 1; padding: 9px 0; border-radius: 11px; text-align: center; text-decoration: none; background: none; color: #B4A395; font-weight: 600; font-size: 13px;">Importa file</a>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div style="flex-grow: 1; padding: 18px 20px 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; min-height: 0;">
+
+    <div>
+      <div style="font-size: 12px; font-weight: 600; color: #B4A395; margin-bottom: 8px;">Conto</div>
+      <div style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin:0 -20px;padding:2px 20px 4px;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent);"><button class="lg-btn lg-pill-active" aria-pressed="true" style="white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:999px;border:none;color:#FFFFFF;font-weight:700;font-size:12px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>Revolut di Federico</button><button class="lg-btn lg-glassbtn" aria-pressed="false" style="white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:999px;color:#B4A395;font-weight:700;font-size:12px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>Trade Republic</button><button class="lg-btn lg-glassbtn" aria-pressed="false" style="white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:999px;color:#B4A395;font-weight:700;font-size:12px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>Carta Poste</button><button class="lg-btn lg-glassbtn" aria-pressed="false" style="white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:999px;color:#B4A395;font-weight:700;font-size:12px;">Contanti</button><a href="../06-conti/Mobile-Conto-Nuovo.html" class="lg-btn lg-dashed" style="white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:999px;color:#E2925F;font-weight:700;font-size:12px;text-decoration:none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Nuovo conto</a></div>
+    </div>
+
+    <div>
+      <div style="font-size: 12px; font-weight: 600; color: #B4A395; margin-bottom: 8px;">Tipo</div>
+      <div class="lg-segment" style="display: flex;">
+        <button class="lg-btn lg-segment-active" style="flex: 1; padding: 9px 0; border-radius: 11px; border: none; color: #F3E9DE; font-weight: 700; font-size: 13px;">Uscita</button>
+        <button class="lg-btn" style="flex: 1; padding: 9px 0; border-radius: 11px; border: none; background: none; color: #B4A395; font-weight: 600; font-size: 13px;">Entrata</button>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size: 12px; font-weight: 600; color: #B4A395; margin-bottom: 8px;">Importo</div>
+      <div class="lg-field" style="display: flex; align-items: baseline; gap: 6px; border-radius: 16px; padding: 12px 16px;">
+        <input class="lg-input" type="text" inputmode="decimal" aria-label="Importo" placeholder="0,00" style="border: none; outline: none; background: transparent; font-size: 26px; font-weight: 700; color: #F3E9DE; width: 100%; font-variant-numeric: tabular-nums;">
+        <span style="font-size: 20px; font-weight: 700; color: #B4A395;">€</span>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size: 12px; font-weight: 600; color: #B4A395; margin-bottom: 8px;">Categoria</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="lg-btn lg-pill-active" style="padding: 8px 14px; border-radius: 999px; border: none; color: #FFFFFF; font-weight: 700; font-size: 12px;">Spesa</button>
+        <button class="lg-btn lg-glassbtn" style="padding: 8px 14px; border-radius: 999px; color: #B4A395; font-weight: 700; font-size: 12px;">Bollette</button>
+        <button class="lg-btn lg-glassbtn" style="padding: 8px 14px; border-radius: 999px; color: #B4A395; font-weight: 700; font-size: 12px;">Trasporti</button>
+        <button class="lg-btn lg-glassbtn" style="padding: 8px 14px; border-radius: 999px; color: #B4A395; font-weight: 700; font-size: 12px;">Svago</button>
+        <button class="lg-btn lg-glassbtn" style="padding: 8px 14px; border-radius: 999px; color: #B4A395; font-weight: 700; font-size: 12px;">Altro…</button>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size: 12px; font-weight: 600; color: #B4A395; margin-bottom: 8px;">Descrizione</div>
+      <input class="lg-input lg-field" type="text" aria-label="Descrizione" placeholder="Es. Caffè al bar" style="width: 100%; box-sizing: border-box; outline: none; border-radius: 16px; padding: 12px 16px; font-size: 14px; color: #F3E9DE;">
+    </div>
+
+    <div>
+      <div style="font-size: 12px; font-weight: 600; color: #B4A395; margin-bottom: 8px;">Data</div>
+      <button class="lg-btn lg-field" style="width: 100%; box-sizing: border-box; text-align: left; border-radius: 16px; padding: 12px 16px; font-size: 14px; font-weight: 700; color: #F3E9DE; display: flex; align-items: center; justify-content: space-between;">
+        Oggi · 26 set 2026
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M8 3v4"></path><path d="M16 3v4"></path><path d="M3 10h18"></path></svg>
+      </button>
+    </div>
+
+    <div class="lg-field" style="display: flex; align-items: center; justify-content: space-between; border-radius: 16px; padding: 12px 16px;">
+      <div>
+        <div style="font-size: 13px; font-weight: 700;">Visibile alla famiglia</div>
+        <div style="font-size: 11px; color: #B4A395; margin-top: 1px;">Segue il conto (privato). Attivalo per condividere solo questo movimento.</div>
+      </div>
+      <button role="switch" aria-checked="false" aria-label="Visibile alla famiglia" class="lg-btn" style="width: 42px; height: 24px; flex-shrink: 0; border-radius: 999px; border: none; background: rgba(255,255,255,0.22); padding: 3px; box-sizing: border-box; box-shadow: inset 0 1px 3px rgba(0,0,0,0.15); display: flex; align-items: center;"><span style="display: block; width: 18px; height: 18px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.25);"></span></button>
+    </div>
+
+    <div style="height: 4px;"></div>
+  </div>
+
+  <!-- Save bar -->
+  <div style="flex-shrink: 0; padding: 14px 20px 20px;">
+    <button class="lg-btn lg-btn-primary" style="width: 100%; box-sizing: border-box; padding: 15px 0; border-radius: 18px; color: #FFFFFF; font-weight: 700; font-size: 15px;">Salva movimento</button>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Filtro conti — Desktop (Liquid Glass) (scuro)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; }
+  .lg-btn { font-family: inherit; cursor: pointer; }
+  .lg-input { font-family: inherit; }
+  .lg-input::placeholder { color: #7E7061; }
+  .lg-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.4);
+    position: relative;
+  }
+  .lg-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  }
+  .lg-sidebar {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border-right: 1px solid rgba(255,255,255,0.12);
+  }
+  .lg-navitem:hover { background: rgba(255,255,255,0.06); }
+  .lg-navitem-active { background: rgba(224,138,92,0.22); border: 1px solid rgba(224,138,92,0.32); }
+  .lg-glassbtn {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: 0 4px 10px rgba(255,255,255,0.10), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .lg-btn-primary {
+    background: linear-gradient(155deg, #E58F5E 0%, #C1673A 100%);
+    box-shadow: 0 8px 20px rgba(193,103,58,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    border: none;
+  }
+  .lg-banner {
+    background: rgba(255,150,90,0.22);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid rgba(255,150,90,0.3);
+  }
+</style>
+</head>
+<body>
+<div style="width: 1280px; height: 832px; box-sizing: border-box; background: linear-gradient(160deg, #1D1512 0%, #241A15 55%, #170F0C 100%); color: #F3E9DE; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; display: flex; overflow: hidden;">
+
+  <!-- Sidebar -->
+  <div class="lg-sidebar" style="width: 240px; flex-shrink: 0; box-sizing: border-box; display: flex; flex-direction: column; padding: 24px 16px;">
+    <div style="font-weight: 700; font-size: 18px; padding: 0 8px; margin-bottom: 28px; letter-spacing: -0.01em;">budgFam</div>
+
+    <button class="lg-btn lg-navitem" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; border: none; background: none; color: #F3E9DE; font-weight: 600; font-size: 14px; margin-bottom: 4px; text-align: left;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="12" width="4" height="8" rx="2"></rect><rect x="10" y="7" width="4" height="13" rx="2"></rect><rect x="16" y="3" width="4" height="17" rx="2"></rect></svg>
+      Riepilogo
+    </button>
+    <div class="lg-navitem-active" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #E2925F;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+      Movimenti
+    </div>
+    <button class="lg-btn lg-navitem" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; border: none; background: none; color: #F3E9DE; font-weight: 600; font-size: 14px; margin-bottom: 4px; text-align: left;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5"></rect><path d="M8 12l3 3 5-6"></path></svg>
+      Cose da fare
+    </button>
+
+    <div style="flex-grow: 1;"></div>
+
+    <nav aria-label="Impostazioni"><a href="../07-impostazioni-budget-categorie/Desktop-Impostazioni-Budget.html" class="lg-navitem" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;font-weight:600;font-size:14px;margin-bottom:8px;color:#F3E9DE;text-decoration:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v2.2M12 18.8V21M4.2 7.5l1.9 1.1M17.9 15.4l1.9 1.1M4.2 16.5l1.9-1.1M17.9 8.6l1.9-1.1"></path></svg>Impostazioni</a></nav><div style="border-top: 1px solid rgba(255,255,255,0.10); padding-top: 16px; display: flex; align-items: center; gap: 8px;">
+      <div style="display: flex;">
+        <div style="width: 26px; height: 26px; border-radius: 999px; background: linear-gradient(155deg, #E58F5E 0%, #C1673A 100%); color: #FFFFFF; font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.18);">F</div>
+        <div style="width: 26px; height: 26px; margin-left: -8px; border-radius: 999px; background: #8A7A6D; color: #FFFFFF; font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.18);">M</div>
+        <div style="width: 26px; height: 26px; margin-left: -8px; border-radius: 999px; background: #4A3C33; border: 2px solid rgba(255,255,255,0.18);"></div>
+        <div style="width: 26px; height: 26px; margin-left: -8px; border-radius: 999px; background: #4A3C33; border: 2px solid rgba(255,255,255,0.18);"></div>
+      </div>
+      <div style="font-size: 12px; color: #B4A395; font-weight: 600;">4 persone</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div style="flex-grow: 1; box-sizing: border-box; padding: 32px 40px; display: flex; flex-direction: column; gap: 16px; min-width: 0;">
+
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button aria-label="Mese precedente" class="lg-btn lg-glassbtn" style="width: 40px; height: 40px; border-radius: 999px; color: #F3E9DE; font-size: 18px; display: flex; align-items: center; justify-content: center;">‹</button>
+        <div style="font-weight: 700; font-size: 22px; letter-spacing: -0.01em;">Settembre 2026</div>
+        <button aria-label="Mese successivo" class="lg-btn lg-glassbtn" style="width: 40px; height: 40px; border-radius: 999px; color: #F3E9DE; font-size: 18px; display: flex; align-items: center; justify-content: center;">›</button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="lg-glassbtn" style="display: flex; align-items: center; gap: 8px; border-radius: 999px; padding: 9px 16px; width: 260px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input class="lg-input" type="text" aria-label="Cerca movimento" placeholder="Cerca movimento" style="border: none; outline: none; background: transparent; font-size: 13px; color: #F3E9DE; width: 100%;">
+        </div>
+        <a href="Desktop-Filtro-Conti.html" aria-haspopup="menu" class="lg-btn lg-glassbtn" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px 9px 16px; border-radius: 999px; color: #F3E9DE; font-weight: 700; font-size: 13px; text-decoration: none;">Tutti i conti <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M6 9l6 6 6-6"></path></svg></a>
+        <a href="../04-aggiungi-e-import/Desktop-Aggiungi.html" class="lg-btn lg-btn-primary" style="text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; color: #FFFFFF; font-weight: 700; font-size: 13px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Aggiungi
+        </a>
+      </div>
+    </div>
+
+    <a href="../04-aggiungi-e-import/Desktop-Aggiungi.html" style="text-decoration: none; color: inherit; display: block;">
+      <div class="lg-banner" style="border-radius: 18px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF9B7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><line x1="12" y1="9" x2="12" y2="13"></line><circle cx="12" cy="16.5" r="0.6" fill="#FF9B7A" stroke="none"></circle></svg>
+          <div style="font-weight: 700; font-size: 13px; color: #FFC9A8;">3 movimenti da rivedere</div>
+        </div>
+        <span style="color: #FFC9A8; font-weight: 800; font-size: 13px;">Rivedi →</span>
+      </div>
+    </a>
+
+    <div class="lg-card" style="flex-grow: 1; border-radius: 26px; display: flex; flex-direction: column; overflow: hidden; min-height: 0;">
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; padding: 16px 26px 12px; border-bottom: 1px solid rgba(255,255,255,0.10); font-size: 11px; font-weight: 800; color: #B4A395; text-transform: uppercase; letter-spacing: 0.04em;">
+        <div>Data</div>
+        <div>Descrizione</div>
+        <div>Categoria</div>
+        <div>Conto</div>
+        <div style="text-align: right;">Importo</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <div style="font-size: 13px; color: #B4A395;">24 set</div>
+        <div style="font-weight: 700; font-size: 13px;">Conad Palermo</div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.08); color: #B4A395;">Spesa</span>
+        <div style="font-size: 13px; color: #B4A395;">Revolut di Federico</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;">-42,30&nbsp;€</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <div style="font-size: 13px; color: #B4A395;">23 set</div>
+        <div style="font-weight: 700; font-size: 13px;">Bolletta Enel</div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.08); color: #B4A395;">Bollette</span>
+        <div style="font-size: 13px; color: #B4A395;">Revolut di Mamma</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;">-68,00&nbsp;€</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <div style="font-size: 13px; color: #B4A395;">22 set</div>
+        <div style="font-weight: 700; font-size: 13px;">Stipendio</div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(224,138,92,0.22); color: #E2925F;">Entrata</span>
+        <div style="font-size: 13px; color: #B4A395;">Trade Republic</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums; color: #E2925F;">+1.450,00&nbsp;€</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <div style="font-size: 13px; color: #B4A395;">21 set</div>
+        <div style="font-weight: 700; font-size: 13px;">Bar Centrale</div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; background: rgba(255,150,90,0.22); color: #FFC9A8;">Da rivedere</span>
+        <div style="font-size: 13px; color: #B4A395;">Revolut di Mamma</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;">-3,50&nbsp;€</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <div style="font-size: 13px; color: #B4A395;">20 set</div>
+        <div style="display: flex; align-items: center; gap: 5px; font-weight: 700; font-size: 13px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>
+          Farmacia Nord
+        </div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.08); color: #B4A395;">Salute</span>
+        <div style="font-size: 13px; color: #B4A395;">Contanti</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;">-15,90&nbsp;€</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <div style="font-size: 13px; color: #B4A395;">19 set</div>
+        <div style="font-weight: 700; font-size: 13px;">Trenitalia</div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.08); color: #B4A395;">Trasporti</span>
+        <div title="Pagato da Mamma" style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #B4A395;"><span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:#8A7A6D;color:#FFFFFF;font-weight:700;font-size:9px;flex-shrink:0;">M</span>Mamma</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;">-24,00&nbsp;€</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px; border-bottom: 1px solid rgba(255,255,255,0.10);">
+        <div style="font-size: 13px; color: #B4A395;">15 set</div>
+        <div style="font-weight: 700; font-size: 13px;">Affitto</div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.08); color: #B4A395;">Casa</span>
+        <div style="font-size: 13px; color: #B4A395;">Revolut di Mamma</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;">-650,00&nbsp;€</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 90px 1fr 150px 190px 140px; gap: 12px; align-items: center; padding: 13px 26px;">
+        <div style="font-size: 13px; color: #B4A395;">12 set</div>
+        <div style="font-weight: 700; font-size: 13px;">Palestra</div>
+        <span style="width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.08); color: #B4A395;">Svago</span>
+        <div style="font-size: 13px; color: #B4A395;">Revolut di Federico</div>
+        <div style="text-align: right; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;">-45,00&nbsp;€</div>
+      </div>
+    </div>
+  </div>
+<a href="Desktop-Movimenti.html" aria-label="Chiudi il menu" style="position:absolute;inset:0;background:rgba(0,0,0,0.4);"></a><div role="menu" aria-label="Filtra per conto" style="position:absolute;top:82px;right:174px;width:300px;border-radius:22px;padding:8px;box-sizing:border-box;background:rgba(255,255,255,0.14);backdrop-filter:blur(36px) saturate(180%);-webkit-backdrop-filter:blur(36px) saturate(180%);border:1px solid rgba(255,255,255,0.18);box-shadow:0 22px 54px rgba(255,255,255,0.28), inset 0 1px 0 rgba(255,255,255,0.2);"><button role="menuitemradio" aria-checked="true" class="lg-btn" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:none;border-radius:12px;background:rgba(224,138,92,0.22);color:#F3E9DE;font-weight:700;font-size:13px;text-align:left;background-clip:padding-box;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E2925F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span style="flex:1;">Tutti i conti</span></button><div style="padding:10px 12px 4px;font-size:11px;font-weight:800;color:#B4A395;text-transform:uppercase;letter-spacing:0.04em;">I miei</div><button role="menuitemradio" aria-checked="false" class="lg-btn" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:none;border-radius:12px;background:transparent;color:#F3E9DE;font-weight:600;font-size:13px;text-align:left;background-clip:padding-box;"><span style="width:15px;"></span><span style="flex:1;">Revolut di Federico</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg></button><button role="menuitemradio" aria-checked="false" class="lg-btn" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:none;border-radius:12px;background:transparent;color:#F3E9DE;font-weight:600;font-size:13px;text-align:left;background-clip:padding-box;"><span style="width:15px;"></span><span style="flex:1;">Trade Republic</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg></button><button role="menuitemradio" aria-checked="false" class="lg-btn" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:none;border-radius:12px;background:transparent;color:#F3E9DE;font-weight:600;font-size:13px;text-align:left;background-clip:padding-box;"><span style="width:15px;"></span><span style="flex:1;">Carta Poste</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg></button><button role="menuitemradio" aria-checked="false" class="lg-btn" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:none;border-radius:12px;background:transparent;color:#F3E9DE;font-weight:600;font-size:13px;text-align:left;background-clip:padding-box;"><span style="width:15px;"></span><span style="flex:1;">Contanti</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5"></path><circle cx="17" cy="9" r="2.3"></circle><path d="M16 14c2.6.2 4.2 2 4.6 4.5"></path></svg></button><div style="padding:10px 12px 4px;font-size:11px;font-weight:800;color:#B4A395;text-transform:uppercase;letter-spacing:0.04em;">Della famiglia</div><button role="menuitemradio" aria-checked="false" class="lg-btn" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:none;border-radius:12px;background:transparent;color:#F3E9DE;font-weight:600;font-size:13px;text-align:left;background-clip:padding-box;"><span style="width:15px;"></span><span style="flex:1;">Revolut di Mamma</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5"></path><circle cx="17" cy="9" r="2.3"></circle><path d="M16 14c2.6.2 4.2 2 4.6 4.5"></path></svg></button><button role="menuitemradio" aria-checked="false" class="lg-btn" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border:none;border-radius:12px;background:transparent;color:#F3E9DE;font-weight:600;font-size:13px;text-align:left;background-clip:padding-box;"><span style="width:15px;"></span><span style="flex:1;">Carta spesa</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B4A395" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19c.5-3 2.7-5 5.5-5s5 2 5.5 5"></path><circle cx="17" cy="9" r="2.3"></circle><path d="M16 14c2.6.2 4.2 2 4.6 4.5"></path></svg></button><div style="height:1px;background:rgba(255,255,255,0.10);margin:8px 4px;"></div><a href="../06-conti/Desktop-Conti.html" role="menuitem" class="lg-btn" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:#E2925F;font-weight:700;font-size:13px;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E2925F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M4 7a3 3 0 013-3h11v4"></path><rect x="3" y="7" width="18" height="13" rx="3"></rect><circle cx="16.5" cy="13.5" r="1.2"></circle></svg><span style="flex:1;">Gestisci conti…</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E2925F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M9 6l6 6-6 6"></path></svg></a></div>
+</div>
+</body>
+</html>

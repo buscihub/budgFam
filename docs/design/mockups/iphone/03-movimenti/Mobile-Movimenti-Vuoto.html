@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Movimenti, vuoto — Mobile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; }
+  .lg-btn { font-family: inherit; cursor: pointer; }
+  .lg-input { font-family: inherit; }
+  .lg-input::placeholder { color: #9C8B7C; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+  a:focus-visible, button:focus-visible { outline: 2px solid #B85A30; outline-offset: 2px; }
+  .lg-card {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.75);
+    box-shadow: 0 10px 26px rgba(58,46,39,0.10);
+    position: relative;
+  }
+  .lg-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 16px; right: 16px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+  }
+  .lg-navbar {
+    background: rgba(251,247,241,0.68);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid rgba(58,46,39,0.06);
+  }
+  .lg-glassbtn {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 0 4px 10px rgba(58,46,39,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .lg-btn-primary {
+    background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%);
+    box-shadow: 0 8px 20px rgba(184,90,48,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+    border: none;
+  }
+  .lg-btn-primary[aria-disabled="true"] { opacity: 0.45; box-shadow: none; cursor: default; }
+  .lg-tabbar {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.85);
+    box-shadow: 0 14px 34px rgba(58,46,39,0.18), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .lg-tab-active { background: rgba(193,103,58,0.16); border: 1px solid rgba(193,103,58,0.22); }
+  .lg-field {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.8);
+  }
+  .lg-pill-active {
+    background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%);
+    box-shadow: 0 4px 12px rgba(184,90,48,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .lg-segment { background: rgba(58,46,39,0.06); border-radius: 14px; padding: 4px; }
+  .lg-segment-active { background: rgba(255,255,255,0.9); box-shadow: 0 2px 6px rgba(58,46,39,0.14); }
+  .lg-opt-sel { background: rgba(193,103,58,0.10); border: 1px solid rgba(193,103,58,0.55); }
+  .lg-dashed { border: 1.5px dashed rgba(58,46,39,0.28); background: transparent; }
+  .lg-sheet {
+    background: linear-gradient(165deg, #FCF6EC 0%, #F6E8D6 55%, #EFDBC1 100%);
+    box-shadow: 0 -10px 40px rgba(58,46,39,0.25);
+  }
+
+  .lg-track { background: rgba(58,46,39,0.06); }
+  .lg-fill { background: linear-gradient(155deg, #D3835A 0%, #B85A30 100%); }
+  .lg-fill-over { background: linear-gradient(90deg, #E39A4C, #C8472B); }
+  .lg-banner { background: rgba(230,150,90,0.28); backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%); border: 1px solid rgba(230,150,90,0.35); }
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: linear-gradient(165deg, #FCF6EC 0%, #F6E8D6 55%, #EFDBC1 100%); color: #3A2E27; display: flex; flex-direction: column; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif; overflow: hidden; position: relative;">
+<div class="lg-navbar" style="padding:20px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:2;"><div style="width:36px;"></div><div style="font-weight:700;font-size:17px;">Settembre 2026</div><div style="width:36px;"></div></div><div style="flex-grow:1;min-height:0;overflow:hidden;padding:10px 18px 0;display:flex;flex-direction:column;gap:14px;"><div class="lg-card" style="border-radius:28px;padding:30px 22px 24px;text-align:center;margin-top:30px;"><div aria-hidden="true" style="width:64px;height:64px;border-radius:22px;background:rgba(193,103,58,0.12);color:#B85A30;display:flex;align-items:center;justify-content:center;margin:0 auto;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><line x1="8" y1="6" x2="20" y2="6"></line><line x1="8" y1="12" x2="20" y2="12"></line><line x1="8" y1="18" x2="20" y2="18"></line><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"></circle><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"></circle><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"></circle></svg></div><div style="font-weight:700;font-size:19px;margin-top:14px;letter-spacing:-0.01em;">Nessun movimento</div><div style="font-size:13px;line-height:1.45;color:#7A6A5C;margin:6px auto 0;max-width:260px;">Importa l’estratto conto di un conto oppure aggiungi una spesa a mano.</div><a href="../04-aggiungi-e-import/Mobile-Aggiungi.html" class="lg-btn lg-btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;padding:14px 0;border-radius:16px;color:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M12 16V4"></path><path d="M7 9l5-5 5 5"></path><path d="M4 20h16"></path></svg>Importa un file</a><a href="../04-aggiungi-e-import/Mobile-Aggiungi.html" class="lg-btn lg-glassbtn" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;padding:13px 0;border-radius:16px;color:#3A2E27;font-weight:700;font-size:14px;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Aggiungi a mano</a></div></div><div style="flex-shrink:0;padding:12px 16px 20px;z-index:2;"><nav aria-label="Navigazione principale" class="lg-tabbar" style="border-radius:30px;display:flex;padding:6px;"><a href="../02-riepilogo/Mobile-Riepilogo.html" class="" style="flex:1;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A6A5C" stroke-width="2.1" stroke-linecap="round" aria-hidden="true"><rect x="4" y="12" width="4" height="8" rx="2"></rect><rect x="10" y="7" width="4" height="13" rx="2"></rect><rect x="16" y="3" width="4" height="17" rx="2"></rect></svg><span style="color:#7A6A5C;font-weight:600;font-size:11px;">Riepilogo</span></a><a href="Mobile-Movimenti.html" aria-current="page" class="lg-tab-active" style="flex:1;border-radius:24px;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B85A30" stroke-width="2.3" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg><span style="color:#B85A30;font-weight:700;font-size:11px;">Movimenti</span></a><a href="../09-cose-da-fare/Mobile-Task.html" class="" style="flex:1;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A6A5C" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5"></rect><path d="M8 12l3 3 5-6"></path></svg><span style="color:#7A6A5C;font-weight:600;font-size:11px;">Cose da fare</span></a></nav></div>
+</div>
+</body>
+</html>
