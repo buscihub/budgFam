@@ -8,6 +8,11 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-17 — Incoerenze mockup/specifica risolte (solo decisioni, nessun codice)
+- Decisioni: categorie personalizzabili guidate dal `kind` (ADR-031); nota sul movimento (`transactions.note`); lettura offline (ADR-032); `bank_format` come identificatore di preset (ADR-028); «Annulla import» cancella le righe, stato `undone` (ADR-027); rimozione membro senza cancellazioni (ADR-029); budget valido finché non cambia (ADR-030). ADR-025 e ADR-026 accettate.
+- `DESIGN_DOC.md`: §5.3, §6 (`bank_format`, `imports.status`, `transactions.note`, `categories.kind`), §6.1, §7, §8.1, §13.1 (nuovi 1.5b, 2.5b, 3.5d, 3.5e; 1.5 ridimensionato, 1.5a, 3.2, 3.3, 3.4c precisati), tabella ADR §14.
+- README dei mockup: sezione «Differenze note rispetto alla specifica».
+
 ### 2026-10-12 — Documentazione allineata ai mockup
 - `DESIGN_DOC.md`: §5.3 con tutte le schermate (7 aree), tabella §14 con ADR-025 e ADR-026 (Proposta), nota «da decidere» sul preset di formato in `accounts.bank_format` (§6), nuovi task 1.5a (creazione base dei conti), 3.4c (famiglia e membri), 3.5c (impostazioni e stati vuoti/offline/errore); 1.5 ampliato.
 - ADR-012: nota che il campione dark è superato. ADR-025/026 restano «Proposta» fino a decisione.

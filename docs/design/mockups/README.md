@@ -45,3 +45,14 @@ Superfici `#1D1512`→`#170F0C`, vetro `rgba(255,255,255,·)`, accento `#E2925F`
 
 ## Dove sono modificabili
 L'originale **modificabile** è l'artifact Claude Design (canvas ordinato per area, chiaro sopra e scuro sotto). Questi file sono un'istantanea del 12 ottobre 2026: per cambiare un mockup si riparte dall'artifact.
+
+## Differenze note rispetto alla specifica
+I mockup sono un riferimento visivo: dove divergono dal `DESIGN_DOC.md` vale il design doc (decisioni del 17 ottobre 2026, ADR-027…032). Da correggere se si riparte dall'artifact:
+
+- **Categorie**: i nomi (Spesa, Bollette, Ristoranti…) sono esempi, il seed è nel §6.1; «Trasferimento» e «B&B» non sono «di sistema». «Nuova categoria» deve offrire anche il tipo *Trasferimento* (ADR-031).
+- **Link d'invito**: la route è `/invite/<codice>`, non `/invito/…`.
+- **Installa**: niente promessa di notifiche; l'uso offline è solo in lettura (ADR-032).
+- **Attività**: il form e il pannello di modifica hanno anche le note e «Elimina».
+- **Import (task 1.5)**: l'anteprima mostra solo nuovi e duplicati; «pronti / da rivedere» e le categorie proposte arrivano con la Fase 2.
+- **Desktop**: le schermate senza versione Mac usano lo stesso layout responsive.
+- **Formati banca**: il menu cresce con i preset (oggi Revolut e Trade Republic). «Carta Poste» e «Carta spesa» sono nomi inventati.

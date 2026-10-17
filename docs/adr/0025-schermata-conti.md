@@ -1,7 +1,7 @@
 # ADR-0025: Schermata Conti, accesso da Movimenti e formato banca scelto dall'utente
 
 - **Data:** 2026-10-10
-- **Stato:** Proposta
+- **Stato:** Accettata (2026-10-17)
 - **Task collegato:** §13.1 · 1.5, 3.1, 3.4
 
 ## Contesto
@@ -25,7 +25,7 @@ Una schermata **Conti** con «I miei conti» e «Condivisi dalla famiglia» (que
 - Il **tipo** del conto (`kind`) non si modifica dopo la creazione: un conto con import già fatti non può diventare «contanti». Si modificano nome, visibilità e formato; il formato nuovo vale dal prossimo import.
 - Il **cambio di visibilità** usa l'anteprima dell'ADR-015: solo da ora (preselezionata), da una data, tutto lo storico; i movimenti con `visibility_overridden` non cambiano mai.
 - Un movimento condiviso su un conto privato mostra agli altri solo l'autore: la riga di `accounts` è già nascosta dalla RLS, la UI deve gestire `account` assente e non mostrare né nome né tipo né un segnaposto.
-- **Da decidere:** `accounts.bank_format` è oggi un `jsonb` di mappatura senza nome. Per mostrare e scegliere «Revolut» / «Trade Republic» serve un identificatore di preset (una colonna dedicata o una chiave nel `jsonb`), e un valore esplicito per «automatico» quando arriverà il rilevamento.
+- `accounts.bank_format` diventa l'identificatore del preset («revolut», «trade_republic», «auto»): vedi ADR-028. La migrazione è nel task 1.5a.
 - **Da decidere:** nome unico per proprietario (`unique (owner_id, lower(name))`); nessuna eliminazione di conti nella v1.
 - «Ultimo import» si ricava da `imports` (massimo `created_at` con `status = 'done'` per conto), non è denormalizzato; un indice su `(account_id, created_at)` evita la scansione.
 - Il passo «scegli il conto» del task 1.5 dipende da questa schermata: la creazione di base dei conti va anticipata rispetto a 3.1/3.4.
