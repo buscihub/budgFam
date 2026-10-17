@@ -8,6 +8,13 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-17 — Task 1.5a: creazione ed eliminazione base dei conti
+- Migrazione `supabase/migrations/20261017120000_accounts_creation_deletion.sql`: `accounts.bank_format` da `jsonb` a `text` (identificatore di preset); vincolo «il conto cassa non ha formato»; unique `(owner_id, lower(name))`; `account_id` nullable con `on delete set null` su `transactions` e `imports`; trigger che cancella i movimenti privati del conto eliminato (ADR-033). Tipi rigenerati in `src/data/database.types.ts`.
+- `src/domain/accounts/schemas.ts` (Zod, puro): validazione di nome, tipo, visibilità e formato; test in `schemas.test.ts` (7 casi).
+- `src/data/accounts.ts`: creazione ed eliminazione dei conti, unico accesso al DB per la feature.
+- Pagina `/conti` (`src/app/(app)/conti/`): form «Nuovo conto» e eliminazione con pagina di conferma.
+- `tests/rls/account-deletion.test.ts`: 15 casi RLS sull'eliminazione (movimenti privati cancellati, condivisi conservati senza conto, admin che non distrugge i privati altrui, membro che non può eliminare) e sui vincoli nuovi.
+
 ### 2026-10-17 — Incoerenze mockup/specifica risolte (solo decisioni, nessun codice)
 - Decisioni: categorie personalizzabili guidate dal `kind` (ADR-031); nota sul movimento (`transactions.note`); lettura offline (ADR-032); `bank_format` come identificatore di preset (ADR-028); «Annulla import» cancella le righe, stato `undone` (ADR-027); rimozione membro senza cancellazioni (ADR-029); budget valido finché non cambia (ADR-030). ADR-025 e ADR-026 accettate.
 - `DESIGN_DOC.md`: §5.3, §6 (`bank_format`, `imports.status`, `transactions.note`, `categories.kind`), §6.1, §7, §8.1, §13.1 (nuovi 1.5b, 2.5b, 3.5d, 3.5e; 1.5 ridimensionato, 1.5a, 3.2, 3.3, 3.4c precisati), tabella ADR §14.

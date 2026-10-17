@@ -25,7 +25,7 @@ export type Database = {
     Tables: {
       accounts: {
         Row: {
-          bank_format: Json | null;
+          bank_format: string | null;
           created_at: string;
           household_id: string;
           id: string;
@@ -35,7 +35,7 @@ export type Database = {
           visibility: string;
         };
         Insert: {
-          bank_format?: Json | null;
+          bank_format?: string | null;
           created_at?: string;
           household_id: string;
           id?: string;
@@ -45,7 +45,7 @@ export type Database = {
           visibility?: string;
         };
         Update: {
-          bank_format?: Json | null;
+          bank_format?: string | null;
           created_at?: string;
           household_id?: string;
           id?: string;
@@ -203,7 +203,7 @@ export type Database = {
       };
       imports: {
         Row: {
-          account_id: string;
+          account_id: string | null;
           ai_tokens_in: number;
           ai_tokens_out: number;
           by_ai: number;
@@ -221,7 +221,7 @@ export type Database = {
           uploaded_by: string;
         };
         Insert: {
-          account_id: string;
+          account_id?: string | null;
           ai_tokens_in?: number;
           ai_tokens_out?: number;
           by_ai?: number;
@@ -239,7 +239,7 @@ export type Database = {
           uploaded_by: string;
         };
         Update: {
-          account_id?: string;
+          account_id?: string | null;
           ai_tokens_in?: number;
           ai_tokens_out?: number;
           by_ai?: number;
@@ -398,7 +398,7 @@ export type Database = {
       };
       transactions: {
         Row: {
-          account_id: string;
+          account_id: string | null;
           ai_confidence: number | null;
           amount_cents: number;
           booked_on: string;
@@ -418,7 +418,7 @@ export type Database = {
           visibility_overridden: boolean;
         };
         Insert: {
-          account_id: string;
+          account_id?: string | null;
           ai_confidence?: number | null;
           amount_cents: number;
           booked_on: string;
@@ -438,7 +438,7 @@ export type Database = {
           visibility_overridden?: boolean;
         };
         Update: {
-          account_id?: string;
+          account_id?: string | null;
           ai_confidence?: number | null;
           amount_cents?: number;
           booked_on?: string;
