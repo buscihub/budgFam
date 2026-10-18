@@ -1,0 +1,78 @@
+/* Design tokens (ADR-012, ADR-034): warm "B1" palette, light and dark.
+   The dark values follow the phone setting; there is no in-app switch. */
+:root {
+  --bg: linear-gradient(165deg, #fcf6ec 0%, #f6e8d6 55%, #efdbc1 100%);
+  --bg-solid: #f6e8d6;
+  --text: #3a2e27;
+  --text-muted: #7a6a5c;
+  --placeholder: #9c8b7c;
+  --hairline: rgb(58 46 39 / 0.08);
+
+  --accent: #b85a30;
+  --accent-grad: linear-gradient(155deg, #d3835a 0%, #b85a30 100%);
+  --accent-soft: rgb(193 103 58 / 0.16);
+  --accent-line: rgb(193 103 58 / 0.22);
+  --accent-glow: rgb(184 90 48 / 0.35);
+  --on-accent: #ffffff;
+  --danger: #9e3b1e;
+
+  --glass: rgb(255 255 255 / 0.55);
+  --glass-strong: rgb(255 255 255 / 0.62);
+  --glass-edge: rgb(255 255 255 / 0.78);
+  --glass-shadow: 0 10px 26px rgb(58 46 39 / 0.1);
+  --glass-shine: rgb(255 255 255 / 0.95);
+  --bar: rgb(251 247 241 / 0.68);
+  --tabbar-shadow: 0 14px 34px rgb(58 46 39 / 0.18);
+  --modal-shadow: 0 30px 70px rgb(58 46 39 / 0.32);
+  --scrim: rgb(58 46 39 / 0.22);
+
+  --neutral-soft: rgb(58 46 39 / 0.06);
+  --switch-off: rgb(58 46 39 / 0.18);
+  --segment-active: rgb(255 255 255 / 0.9);
+
+  --banner: rgb(230 150 90 / 0.24);
+  --banner-edge: rgb(230 150 90 / 0.35);
+  --banner-text: #8a3a1e;
+  --review-soft: rgb(230 150 90 / 0.28);
+
+  --radius-card: 24px;
+  --radius-pill: 999px;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: linear-gradient(165deg, #1d1512 0%, #241a15 55%, #170f0c 100%);
+    --bg-solid: #1d1512;
+    --text: #f3e9de;
+    --text-muted: #b4a395;
+    --placeholder: #7e7061;
+    --hairline: rgb(255 255 255 / 0.08);
+
+    --accent: #e2925f;
+    --accent-grad: linear-gradient(155deg, #e58f5e 0%, #c1673a 100%);
+    --accent-soft: rgb(224 138 92 / 0.22);
+    --accent-line: rgb(224 138 92 / 0.32);
+    --accent-glow: rgb(193 103 58 / 0.4);
+    --danger: #ffc9a8;
+
+    --glass: rgb(255 255 255 / 0.07);
+    --glass-strong: rgb(40 30 25 / 0.72);
+    --glass-edge: rgb(255 255 255 / 0.14);
+    --glass-shadow: 0 12px 30px rgb(0 0 0 / 0.45);
+    --glass-shine: rgb(255 255 255 / 0.22);
+    --bar: rgb(23 17 14 / 0.65);
+    --tabbar-shadow: 0 16px 36px rgb(0 0 0 / 0.5);
+    --modal-shadow: 0 30px 70px rgb(0 0 0 / 0.55);
+    --scrim: rgb(0 0 0 / 0.45);
+
+    --neutral-soft: rgb(255 255 255 / 0.07);
+    --switch-off: rgb(255 255 255 / 0.2);
+    --segment-active: rgb(255 255 255 / 0.16);
+
+    --banner: rgb(255 150 90 / 0.12);
+    --banner-edge: rgb(255 150 90 / 0.28);
+    --banner-text: #ffc9a8;
+    --review-soft: rgb(255 150 90 / 0.22);
+  }
+}

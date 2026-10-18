@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCents } from './format-currency';
+import { formatCents, formatSignedCents } from './format-currency';
 
 // Intl.NumberFormat('it-IT') puts a non-breaking space (U+00A0) before "€",
 // and groups thousands only from 5 digits up (CLDR "min2" rule for it-IT):
@@ -29,5 +29,13 @@ describe('formatCents', () => {
 
   it('throws on a non-integer input', () => {
     expect(() => formatCents(10.5)).toThrow(/integer/);
+  });
+});
+
+describe('formatSignedCents', () => {
+  it('adds a plus sign to income only', () => {
+    expect(formatSignedCents(145000)).toMatch(/^\+1450,00/);
+    expect(formatSignedCents(-4230)).toMatch(/^-42,30/);
+    expect(formatSignedCents(0)).toMatch(/^0,00/);
   });
 });

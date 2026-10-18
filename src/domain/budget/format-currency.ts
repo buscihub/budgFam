@@ -10,3 +10,9 @@ export function formatCents(cents: number): string {
   }
   return formatter.format(cents / 100);
 }
+
+// Like formatCents, but money coming in carries an explicit "+": the lists show
+// "+1.450,00 €" next to "-42,30 €".
+export function formatSignedCents(cents: number): string {
+  return cents > 0 ? `+${formatCents(cents)}` : formatCents(cents);
+}

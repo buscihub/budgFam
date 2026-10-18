@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createAccount, deleteAccount } from '@/data/accounts';
+import { safeNextPath } from '@/domain/navigation/safe-next-path';
 import { createAccountSchema, deleteAccountSchema } from '@/domain/accounts/schemas';
 
 export type AccountFormState = { error?: string; created?: boolean };
@@ -29,6 +30,10 @@ export async function createAccountAction(
     };
   }
   revalidatePath('/conti');
+  // A screen that wants to leave after creating says where; only a plain path
+  // of this app is followed (the field is client-controlled).
+  const next = safeNextPath(formData.get('next'));
+  if (next) redirect(next);
   return { created: true };
 }
 

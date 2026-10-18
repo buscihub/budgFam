@@ -112,14 +112,30 @@ describe('updateTransactionSchema', () => {
     );
   });
 
+  it('reads "follow the account" from the form value', () => {
+    expect(updateTransactionSchema.parse(valid).followAccount).toBe(false);
+    expect(updateTransactionSchema.parse({ ...valid, followAccount: '1' }).followAccount).toBe(
+      true,
+    );
+  });
+
   it('rejects an unknown visibility', () => {
     expect(updateTransactionSchema.safeParse({ ...valid, visibility: 'x' }).success).toBe(false);
+  });
+
+  it('accepts no visibility at all (not the owner)', () => {
+    expect(
+      updateTransactionSchema.parse({ ...valid, visibility: undefined }).visibility,
+    ).toBeUndefined();
   });
 });
 
 describe('parseTransactionFilters', () => {
   it('reads valid filters', () => {
-    expect(parseTransactionFilters({ conto: ID, categoria: OTHER_ID, daRivedere: '1' })).toEqual({
+    expect(
+      parseTransactionFilters({ mese: '2026-09', conto: ID, categoria: OTHER_ID, daRivedere: '1' }),
+    ).toEqual({
+      month: { year: 2026, month: 9 },
       accountId: ID,
       categoryId: OTHER_ID,
       onlyToReview: true,
@@ -127,7 +143,10 @@ describe('parseTransactionFilters', () => {
   });
 
   it('drops malformed values instead of failing', () => {
-    expect(parseTransactionFilters({ conto: 'x', categoria: ['y'], daRivedere: 'yes' })).toEqual({
+    expect(
+      parseTransactionFilters({ mese: '2026-13', conto: 'x', categoria: ['y'], daRivedere: 'yes' }),
+    ).toEqual({
+      month: undefined,
       accountId: undefined,
       categoryId: undefined,
       onlyToReview: false,

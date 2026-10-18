@@ -23,3 +23,19 @@ const DISPLAY = new Intl.DateTimeFormat('it-IT', {
 export function formatBookedOn(isoDate: string): string {
   return DISPLAY.format(new Date(`${isoDate}T00:00:00Z`));
 }
+
+// The date `days` days before an ISO date, as an ISO date. Calendar arithmetic
+// on UTC midnights: no zone and no daylight saving can shift the result.
+export function subtractDays(isoDate: string, days: number): string {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() - days);
+  return date.toISOString().slice(0, 10);
+}
+
+const SHORT_MONTH = new Intl.DateTimeFormat('it-IT', { month: 'short', timeZone: 'UTC' });
+
+// "2026-09-24" -> { day: "24", month: "set" }: the date block of a list row.
+export function formatDayMonth(isoDate: string): { day: string; month: string } {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  return { day: String(date.getUTCDate()), month: SHORT_MONTH.format(date).replace('.', '') };
+}
