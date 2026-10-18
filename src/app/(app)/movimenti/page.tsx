@@ -2,109 +2,280 @@ import Link from 'next/link';
 import { listAccounts } from '@/data/accounts';
 import { listCategories } from '@/data/categories';
 import { requireMembership } from '@/data/households';
-import { listTransactions } from '@/data/transactions';
-import { formatCents } from '@/domain/budget/format-currency';
-import { formatBookedOn } from '@/domain/transactions/dates';
+import { getCurrentMonthRome, listTransactions } from '@/data/transactions';
+import { formatSignedCents } from '@/domain/budget/format-currency';
+import { formatDayMonth } from '@/domain/transactions/dates';
+import { humanizeDescription } from '@/domain/transactions/display';
+import { countActiveFilters, transactionsHref } from '@/domain/transactions/filters-url';
+import {
+  compareMonths,
+  formatMonthParam,
+  monthLabel,
+  shiftMonth,
+} from '@/domain/transactions/months';
 import { parseTransactionFilters } from '@/domain/transactions/schemas';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CloseIcon,
+  FiltersIcon,
+  LockIcon,
+  PersonIcon,
+  PlusIcon,
+  WarningIcon,
+} from '../../icons';
+import styles from './movimenti.module.css';
 
 export const metadata = { title: 'Movimenti · budgFam' };
 
-// The list is a Server Component driven by the URL (?conto=…&categoria=…&daRivedere=1):
-// filters are plain links/GET forms, so they work without JavaScript and every
-// filtered view can be bookmarked.
+// The list is a Server Component driven by the URL
+// (?mese=2026-09&conto=…&categoria=…&daRivedere=1): month arrows and filters
+// are plain links and a GET form, so they work without JavaScript and every
+// view can be bookmarked.
 export default async function MovimentiPage({ searchParams }: PageProps<'/movimenti'>) {
   await requireMembership();
   const filters = parseTransactionFilters(await searchParams);
 
-  const [{ items, toReviewCount, truncated }, accounts, categories] = await Promise.all([
+  const [{ month, items, toReviewCount }, accounts, categories] = await Promise.all([
     listTransactions(filters),
     listAccounts(),
     listCategories({ includeHidden: true }),
   ]);
   const allAccounts = [...accounts.mine, ...accounts.sharedByOthers];
-  const hasFilters = Boolean(filters.accountId || filters.categoryId || filters.onlyToReview);
+  const activeFilters = countActiveFilters(filters);
+  const isCurrentMonth = compareMonths(month, getCurrentMonthRome()) >= 0;
+  const withMonth = { ...filters, month };
 
   return (
-    <main className="auth-page">
-      <header className="page-header">
-        <h1>Movimenti</h1>
-        <Link href="/movimenti/nuovo" className="add-button" aria-label="Aggiungi movimento">
-          +
-        </Link>
-      </header>
+    <main className={styles.page}>
+      <h1 className={styles.visuallyHidden}>Movimenti</h1>
+
+      <div className={styles.top}>
+        <div className={`${styles.monthbar} glass-bar`}>
+          <Link
+            href={transactionsHref(withMonth, { month: shiftMonth(month, -1) })}
+            className="glass-btn"
+            aria-label="Mese precedente"
+          >
+            <ChevronLeftIcon />
+          </Link>
+          <span>{monthLabel(month)}</span>
+          <Link
+            href={transactionsHref(withMonth, { month: shiftMonth(month, 1) })}
+            className={`glass-btn ${styles.arrow}`}
+            aria-label="Mese successivo"
+            aria-disabled={isCurrentMonth}
+            tabIndex={isCurrentMonth ? -1 : undefined}
+          >
+            <ChevronRightIcon size={16} />
+          </Link>
+        </div>
+
+        <div className={styles.toolbar}>
+          <button
+            type="button"
+            className={`glass-btn ${styles.filterButton}`}
+            popoverTarget="filters"
+            aria-label="Filtra"
+          >
+            <FiltersIcon />
+            {activeFilters > 0 && <span className={styles.badge}>{activeFilters}</span>}
+          </button>
+          <Link
+            href="/movimenti/nuovo"
+            className={`btn-primary ${styles.addButton}`}
+            aria-label="Aggiungi movimento"
+            style={{ borderRadius: 999 }}
+          >
+            <PlusIcon />
+          </Link>
+        </div>
+      </div>
+
+      <div id="filters" popover="auto" className={`${styles.sheet} glass-sheet`}>
+        <form method="get" action="/movimenti" className={styles.sheetBody}>
+          <input type="hidden" name="mese" value={formatMonthParam(month)} />
+          <div className={styles.sheetHeader}>
+            <span>Filtri</span>
+            <button
+              type="button"
+              className="glass-btn"
+              popoverTarget="filters"
+              popoverTargetAction="hide"
+              aria-label="Chiudi"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+
+          <div>
+            <div className={styles.label}>Conto</div>
+            <div className={styles.chips}>
+              <label className="chip">
+                <input type="radio" name="conto" value="" defaultChecked={!filters.accountId} />
+                Tutti i conti
+              </label>
+              {allAccounts.map((account) => (
+                <label key={account.id} className="chip">
+                  <input
+                    type="radio"
+                    name="conto"
+                    value={account.id}
+                    defaultChecked={filters.accountId === account.id}
+                  />
+                  {account.name}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className={styles.label} htmlFor="categoria" style={{ display: 'block' }}>
+              Categoria
+            </label>
+            <select
+              id="categoria"
+              name="categoria"
+              className={styles.select}
+              defaultValue={filters.categoryId ?? ''}
+            >
+              <option value="">Tutte le categorie</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <label className={styles.switchRow}>
+            Solo da rivedere
+            <input
+              type="checkbox"
+              role="switch"
+              className="switch"
+              name="daRivedere"
+              value="1"
+              defaultChecked={filters.onlyToReview}
+            />
+          </label>
+
+          <Link href="/conti" className={`glass-card ${styles.linkRow}`}>
+            <span>Gestisci conti</span>
+            <ChevronRightIcon />
+          </Link>
+
+          <div className={styles.sheetActions}>
+            <button type="submit" className="btn-primary" style={{ padding: '15px 0' }}>
+              Applica
+            </button>
+            {activeFilters > 0 && (
+              <Link
+                href={transactionsHref({ onlyToReview: false }, { month })}
+                style={{ padding: 12 }}
+              >
+                Azzera i filtri
+              </Link>
+            )}
+          </div>
+        </form>
+      </div>
 
       {toReviewCount > 0 && !filters.onlyToReview && (
-        <p className="banner">
-          <Link href="/movimenti?daRivedere=1">{toReviewCount} movimenti da rivedere</Link>
-        </p>
+        <Link
+          href={transactionsHref(withMonth, { onlyToReview: true })}
+          className={`glass-banner ${styles.banner}`}
+        >
+          <span>
+            <WarningIcon />
+            {toReviewCount} {toReviewCount === 1 ? 'movimento' : 'movimenti'} da rivedere
+          </span>
+          <span>Rivedi</span>
+        </Link>
       )}
-
-      <form method="get" className="filters">
-        <label htmlFor="conto">Conto</label>
-        <select id="conto" name="conto" defaultValue={filters.accountId ?? ''}>
-          <option value="">Tutti i conti</option>
-          {allAccounts.map((account) => (
-            <option key={account.id} value={account.id}>
-              {account.name}
-            </option>
-          ))}
-        </select>
-
-        <label htmlFor="categoria">Categoria</label>
-        <select id="categoria" name="categoria" defaultValue={filters.categoryId ?? ''}>
-          <option value="">Tutte le categorie</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-
-        <label>
-          <input
-            type="checkbox"
-            name="daRivedere"
-            value="1"
-            defaultChecked={filters.onlyToReview}
-          />{' '}
-          Solo da rivedere
-        </label>
-
-        <button type="submit">Filtra</button>
-        {hasFilters && <Link href="/movimenti">Azzera i filtri</Link>}
-      </form>
-      <p>
-        <Link href="/conti">Gestisci conti</Link>
-      </p>
 
       {items.length === 0 ? (
-        <p>
-          {hasFilters
-            ? 'Nessun movimento corrisponde ai filtri.'
-            : 'Non ci sono ancora movimenti. Aggiungine uno con il pulsante «+».'}
-        </p>
-      ) : (
-        <ul className="tx-list">
-          {items.map((tx) => (
-            <li key={tx.id}>
-              <Link href={`/movimenti/${tx.id}`}>
-                <span className="tx-main">
-                  <span>{tx.description}</span>
-                  <span className="tx-meta">
-                    {formatBookedOn(tx.bookedOn)} · {tx.categoryName ?? 'Senza categoria'}
-                    {tx.accountName && ` · ${tx.accountName}`}
-                    {tx.visibility === 'private' && ' · privato'}
-                    {tx.needsReview && ' · da rivedere'}
-                  </span>
+        <section className={`glass-card ${styles.empty}`}>
+          {activeFilters > 0 ? (
+            <>
+              <h2>Nessun risultato</h2>
+              <p>Nessun movimento di {monthLabel(month).toLowerCase()} corrisponde ai filtri.</p>
+              <div className={styles.emptyActions}>
+                <Link
+                  href={transactionsHref({ onlyToReview: false }, { month })}
+                  className="glass-btn"
+                >
+                  Azzera i filtri
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2>Nessun movimento</h2>
+              <p>Importa l’estratto conto di un conto oppure aggiungi una spesa a mano.</p>
+              <div className={styles.emptyActions}>
+                {/* Import arrives with task 1.5 (ADR-013). */}
+                <span className="glass-btn" aria-disabled="true" style={{ opacity: 0.5 }}>
+                  Importa un file (in arrivo)
                 </span>
-                <span className="tx-amount">{formatCents(tx.amountCents)}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-      {truncated && (
-        <p>Sono mostrati i 200 movimenti più recenti: usa i filtri per vedere gli altri.</p>
+                <Link href="/movimenti/nuovo" className="btn-primary">
+                  <PlusIcon /> Aggiungi a mano
+                </Link>
+              </div>
+            </>
+          )}
+        </section>
+      ) : (
+        <section className={`glass-card ${styles.listCard}`}>
+          <div className={styles.head} aria-hidden="true">
+            <span>Data</span>
+            <span>Descrizione</span>
+            <span>Categoria</span>
+            <span>Conto</span>
+            <span>Importo</span>
+          </div>
+          <ul className={styles.list} style={{ listStyle: 'none' }}>
+            {items.map((tx) => {
+              const { day, month: monthShort } = formatDayMonth(tx.bookedOn);
+              return (
+                <li key={tx.id}>
+                  <Link href={`/movimenti/${tx.id}`} className={styles.row}>
+                    <span className={styles.date}>
+                      {day}
+                      <br />
+                      {monthShort}
+                    </span>
+                    <span className={styles.desc}>
+                      {tx.visibility === 'private' && <LockIcon />}
+                      <span>{humanizeDescription(tx.description)}</span>
+                    </span>
+                    <span className={styles.meta}>
+                      {tx.needsReview ? (
+                        <span className="pill pill-review">Da rivedere</span>
+                      ) : (
+                        <span className={tx.amountCents > 0 ? 'pill pill-accent' : 'pill'}>
+                          {tx.categoryName ?? 'Senza categoria'}
+                        </span>
+                      )}
+                      <span>
+                        {tx.accountName ??
+                          (!tx.isMine && tx.ownerName ? (
+                            <>
+                              <PersonIcon />
+                              {tx.ownerName}
+                            </>
+                          ) : null)}
+                      </span>
+                    </span>
+                    <span className={`${styles.amount} ${tx.amountCents > 0 ? styles.income : ''}`}>
+                      {formatSignedCents(tx.amountCents)}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
       )}
     </main>
   );

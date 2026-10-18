@@ -1,0 +1,266 @@
+/* Liquid Glass materials shared by the screens (ADR-012, ADR-034).
+   Screen-specific layout lives in the CSS Modules next to each route. */
+
+.glass-card,
+.glass-btn,
+.glass-field,
+.glass-bar,
+.glass-banner,
+.glass-sheet {
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+}
+
+/* Where blur is not supported the surfaces become opaque, so text stays legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-card,
+  .glass-btn,
+  .glass-field,
+  .glass-bar,
+  .glass-banner,
+  .glass-sheet {
+    background: var(--bg-solid);
+  }
+}
+
+.glass-card {
+  position: relative;
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 16px auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-shine), transparent);
+  pointer-events: none;
+}
+
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  box-shadow: 0 4px 10px rgb(58 46 39 / 0.08);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.glass-field {
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  border-radius: 16px;
+}
+
+.glass-bar {
+  background: var(--bar);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.glass-banner {
+  background: var(--banner);
+  border: 1px solid var(--banner-edge);
+  color: var(--banner-text);
+  border-radius: 20px;
+}
+
+.glass-sheet {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--modal-shadow);
+  color: var(--text);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--accent-grad);
+  box-shadow: 0 8px 20px var(--accent-glow);
+  color: var(--on-accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled='true'] {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: default;
+}
+
+.btn-link-danger {
+  background: none;
+  border: 0;
+  padding: 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--danger);
+  cursor: pointer;
+}
+
+.pill {
+  display: inline-block;
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--neutral-soft);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pill-accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pill-review {
+  background: var(--review-soft);
+  color: var(--banner-text);
+  font-weight: 800;
+}
+
+/* A choice shown as a pill: a visually hidden radio/checkbox inside a label. */
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.chip:has(input:checked),
+.chip[aria-pressed='true'] {
+  background: var(--accent-grad);
+  border-color: transparent;
+  color: var(--on-accent);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.chip:has(input:focus-visible),
+.segmented label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.chip-dashed {
+  background: transparent;
+  border: 1.5px dashed var(--switch-off);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.segmented {
+  display: flex;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--neutral-soft);
+}
+
+.segmented label,
+.segmented a,
+.segmented span {
+  position: relative;
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 11px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+.segmented input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.segmented label:has(input:checked),
+.segmented [aria-current='true'] {
+  background: var(--segment-active);
+  box-shadow: 0 2px 6px rgb(58 46 39 / 0.14);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.segmented [aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* An <input type="checkbox" role="switch"> drawn as the mockups' switch. */
+.switch {
+  appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 46px;
+  height: 28px;
+  margin: 0;
+  border-radius: var(--radius-pill);
+  background: var(--switch-off);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  box-shadow: 0 2px 5px rgb(0 0 0 / 0.3);
+  transition: transform 0.15s;
+}
+
+.switch:checked {
+  background: var(--accent-grad);
+}
+
+.switch:checked::after {
+  transform: translateX(18px);
+}
+
+.switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

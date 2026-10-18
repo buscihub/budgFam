@@ -7,14 +7,13 @@ import {
   type SummaryCategory,
   type SummaryTransaction,
 } from '@/domain/budget/monthly-summary';
+import { monthRange, type MonthKey } from '@/domain/transactions/months';
 import type {
   CreateManualTransactionInput,
   TransactionFilters,
   UpdateTransactionInput,
 } from '@/domain/transactions/schemas';
 import type { TablesUpdate } from './database.types';
-
-export type MonthKey = { year: number; month: number }; // month is 1-12
 
 // `new Date()` + `getFullYear()`/`getMonth()` read the server's local clock,
 // which on Vercel is UTC, not Europe/Rome (CLAUDE.md non-negotiable rule 11).
@@ -30,17 +29,6 @@ export function getCurrentMonthRome(): MonthKey {
   const year = Number(parts.find((p) => p.type === 'year')?.value);
   const month = Number(parts.find((p) => p.type === 'month')?.value);
   return { year, month };
-}
-
-// First day of the month and first day of the next one, as `date` strings
-// (no time part — rule 11): a half-open range avoids DST/timezone edge cases
-// that `<=` on the last day could hit.
-function monthRange({ year, month }: MonthKey): { from: string; to: string } {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  const from = `${year}-${pad(month)}-01`;
-  const nextMonth = month === 12 ? { year: year + 1, month: 1 } : { year, month: month + 1 };
-  const to = `${nextMonth.year}-${pad(nextMonth.month)}-01`;
-  return { from, to };
 }
 
 // Monthly summary for the current household (DESIGN_DOC §13.1 task 1.6).
@@ -107,51 +95,58 @@ export type TransactionListItem = {
   accountName: string | null;
   visibility: 'private' | 'shared';
   needsReview: boolean;
+  // Whose movement it is: the list shows a person chip on other members' shared
+  // movements. Null name = the member left the family (ADR-029).
+  isMine: boolean;
+  ownerName: string | null;
 };
 
 export type TransactionList = {
+  month: MonthKey;
   items: TransactionListItem[];
   // Movements waiting for review among those the caller can see, ignoring the
   // current filters: it feeds the banner at the top (ADR-026).
   toReviewCount: number;
-  // True when the list stops at LIST_LIMIT rows and older ones are not shown.
-  truncated: boolean;
 };
 
-// Plain cap, not pagination: a family month is a few hundred rows at most.
-// Real pagination would be proposed as its own task.
-const LIST_LIMIT = 200;
-
 export async function listTransactions(filters: TransactionFilters): Promise<TransactionList> {
-  const { householdId } = await requireMembership();
+  const { user, householdId } = await requireMembership();
   const supabase = await createClient();
+
+  // One month at a time (§5.3): the list is bounded by the calendar, so no
+  // row cap or pagination is needed.
+  const month = filters.month ?? getCurrentMonthRome();
+  const { from, to } = monthRange(month);
 
   let query = supabase
     .from('transactions')
     .select(
-      'id, booked_on, amount_cents, description, visibility, needs_review, categories(name), accounts(name)',
+      'id, booked_on, amount_cents, description, visibility, needs_review, owner_id, categories(name), accounts(name)',
     )
     .eq('household_id', householdId)
+    .gte('booked_on', from)
+    .lt('booked_on', to)
     .order('booked_on', { ascending: false })
-    .order('created_at', { ascending: false })
-    .limit(LIST_LIMIT + 1);
+    .order('created_at', { ascending: false });
   if (filters.accountId) query = query.eq('account_id', filters.accountId);
   if (filters.categoryId) query = query.eq('category_id', filters.categoryId);
   if (filters.onlyToReview) query = query.eq('needs_review', true);
 
-  const [{ data, error }, { count }] = await Promise.all([
+  const [{ data, error }, { count }, { data: members }] = await Promise.all([
     query,
     supabase
       .from('transactions')
       .select('id', { count: 'exact', head: true })
       .eq('household_id', householdId)
       .eq('needs_review', true),
+    supabase.from('members').select('user_id, display_name').eq('household_id', householdId),
   ]);
   if (error) throw new Error(`failed to load transactions: ${error.message}`);
+  const names = new Map((members ?? []).map((m) => [m.user_id, m.display_name]));
 
-  const rows = data ?? [];
   return {
-    items: rows.slice(0, LIST_LIMIT).map((row) => ({
+    month,
+    items: (data ?? []).map((row) => ({
       id: row.id,
       bookedOn: row.booked_on,
       amountCents: row.amount_cents,
@@ -160,9 +155,10 @@ export async function listTransactions(filters: TransactionFilters): Promise<Tra
       accountName: row.accounts?.name ?? null,
       visibility: row.visibility as TransactionListItem['visibility'],
       needsReview: row.needs_review,
+      isMine: row.owner_id === user.id,
+      ownerName: row.owner_id ? (names.get(row.owner_id) ?? null) : null,
     })),
     toReviewCount: count ?? 0,
-    truncated: rows.length > LIST_LIMIT,
   };
 }
 
@@ -171,6 +167,11 @@ export type TransactionDetail = TransactionListItem & {
   note: string | null;
   categoryId: string | null;
   categorySource: 'rule' | 'ai' | 'user' | null;
+  // What the account would give this movement (ADR-015); null when the account
+  // is not visible to the caller or was deleted (ADR-033): then "follow the
+  // account" cannot be offered.
+  accountVisibility: 'private' | 'shared' | null;
+  visibilityOverridden: boolean;
   // Only the owner may change the visibility or delete (admins can delete
   // shared ones too, but visibility stays with the owner — RLS decides, the UI
   // just doesn't offer what would be refused).
@@ -184,7 +185,7 @@ export async function getTransaction(id: string): Promise<TransactionDetail | nu
   const { data } = await supabase
     .from('transactions')
     .select(
-      'id, booked_on, amount_cents, description, raw_description, note, visibility, needs_review, category_id, category_source, owner_id, categories(name), accounts(name)',
+      'id, booked_on, amount_cents, description, raw_description, note, visibility, visibility_overridden, needs_review, category_id, category_source, owner_id, categories(name), accounts(name, visibility)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -202,8 +203,12 @@ export async function getTransaction(id: string): Promise<TransactionDetail | nu
     categoryName: data.categories?.name ?? null,
     categorySource: data.category_source as TransactionDetail['categorySource'],
     accountName: data.accounts?.name ?? null,
+    accountVisibility: (data.accounts?.visibility as 'private' | 'shared' | undefined) ?? null,
+    visibilityOverridden: data.visibility_overridden,
     visibility: data.visibility as TransactionListItem['visibility'],
     needsReview: data.needs_review,
+    isMine: isOwner,
+    ownerName: null, // the detail never shows the person chip
     isOwner,
     // Same rule as the transactions_delete policy.
     canDelete: isOwner || role === 'admin',
@@ -268,7 +273,8 @@ export async function createManualTransaction(
 }
 
 export type UpdateTransactionResult =
-  { ok: true } | { ok: false; code: 'not_found' | 'category_not_found' | 'failed' };
+  | { ok: true }
+  | { ok: false; code: 'not_found' | 'category_not_found' | 'account_unavailable' | 'failed' };
 
 export async function updateTransaction(
   input: UpdateTransactionInput,
@@ -278,7 +284,7 @@ export async function updateTransaction(
 
   const { data: current } = await supabase
     .from('transactions')
-    .select('category_id, visibility')
+    .select('category_id, visibility, accounts(visibility)')
     .eq('id', input.id)
     .maybeSingle();
   if (!current) return { ok: false, code: 'not_found' };
@@ -305,9 +311,14 @@ export async function updateTransaction(
     }
   }
 
-  // Sent only when it changes: a non-owner editing a shared movement must not
-  // send a visibility at all (RLS would refuse making it private, ADR-015).
-  if (input.visibility !== current.visibility) {
+  if (input.followAccount) {
+    // Back to what the account says, and the manual choice is forgotten (ADR-015).
+    if (!current.accounts) return { ok: false, code: 'account_unavailable' };
+    changes.visibility = current.accounts.visibility;
+    changes.visibility_overridden = false;
+  } else if (input.visibility !== undefined && input.visibility !== current.visibility) {
+    // Only the owner's form sends a visibility (ADR-015); for anybody else RLS
+    // would refuse making a shared movement private, so it is simply left alone.
     changes.visibility = input.visibility;
     changes.visibility_overridden = true; // chosen by hand: the account never overrides it again
   }

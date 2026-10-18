@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { normalizeDescription, parseAmountToCents } from '../import/normalize';
+import { parseMonthParam, type MonthKey } from './months';
 
 export const NOTE_MAX_LENGTH = 500; // same limit as the transactions_note_length check
 
@@ -80,7 +81,14 @@ export const updateTransactionSchema = z.object({
       .max(NOTE_MAX_LENGTH, { error: `La nota può avere al massimo ${NOTE_MAX_LENGTH} caratteri.` })
       .nullable(),
   ),
-  visibility: z.enum(['private', 'shared'], { error: 'Scegli chi può vedere il movimento.' }),
+  // Absent = leave it alone: only the owner decides who sees a movement (ADR-015),
+  // so the form of anyone else does not send it.
+  visibility: z
+    .enum(['private', 'shared'], { error: 'Scegli chi può vedere il movimento.' })
+    .optional(),
+  // "Torna a seguire il conto": the visibility goes back to the account's and
+  // the manual override is cleared (ADR-015). It wins over `visibility`.
+  followAccount: z.preprocess((value) => value === '1', z.boolean()),
 });
 
 export type UpdateTransactionInput = z.output<typeof updateTransactionSchema>;
@@ -90,6 +98,9 @@ export const deleteTransactionSchema = z.object({ id: z.uuid({ error: 'Movimento
 // List filters, read from the URL. Anything malformed is dropped, not an
 // error: a hand-edited link should show the unfiltered list, not a crash.
 export type TransactionFilters = {
+  // Undefined = the current month in Europe/Rome, decided where the clock is
+  // read (src/data), not here.
+  month?: MonthKey;
   accountId?: string;
   categoryId?: string;
   onlyToReview: boolean;
@@ -107,6 +118,7 @@ export function parseTransactionFilters(
     return parsed.success ? parsed.data : undefined;
   };
   return {
+    month: parseMonthParam(first('mese')) ?? undefined,
     accountId: uuid('conto'),
     categoryId: uuid('categoria'),
     onlyToReview: first('daRivedere') === '1',

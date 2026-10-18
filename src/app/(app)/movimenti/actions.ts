@@ -48,7 +48,8 @@ export async function updateTransactionAction(
     id: formData.get('id'),
     categoryId: formData.get('categoryId') ?? '',
     note: formData.get('note') ?? '',
-    visibility: formData.get('visibility'),
+    visibility: formData.get('visibility') ?? undefined,
+    followAccount: formData.get('followAccount'),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
 
@@ -58,7 +59,9 @@ export async function updateTransactionAction(
       error:
         result.code === 'failed'
           ? 'Non è stato possibile salvare le modifiche. Riprova.'
-          : 'Il movimento o la categoria non sono più disponibili. Ricarica la pagina.',
+          : result.code === 'account_unavailable'
+            ? 'Il conto non è più disponibile: scegli la visibilità a mano.'
+            : 'Il movimento o la categoria non sono più disponibili. Ricarica la pagina.',
     };
   }
   revalidatePath('/movimenti');

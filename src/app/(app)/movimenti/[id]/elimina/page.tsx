@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTransaction } from '@/data/transactions';
-import { formatCents } from '@/domain/budget/format-currency';
+import { formatSignedCents } from '@/domain/budget/format-currency';
+import { humanizeDescription } from '@/domain/transactions/display';
 import { deleteTransactionSchema } from '@/domain/transactions/schemas';
+import { CloseIcon } from '../../../../icons';
 import { deleteTransactionAction } from '../../actions';
+import sheet from '../../../sheet-page.module.css';
 
 export const metadata = { title: 'Elimina movimento · budgFam' };
 
@@ -18,18 +21,47 @@ export default async function DeleteTransactionPage({
   if (!tx || !tx.canDelete) notFound();
 
   return (
-    <main className="auth-page">
-      <h1>Elimina il movimento</h1>
-      <p>
-        «{tx.description}», {formatCents(tx.amountCents)}. L’operazione non si può annullare.
-      </p>
-      <form action={deleteTransactionAction} className="auth-form">
-        <input type="hidden" name="id" value={tx.id} />
-        <button type="submit">Elimina</button>
-      </form>
-      <p>
-        <Link href={`/movimenti/${tx.id}`}>Annulla</Link>
-      </p>
-    </main>
+    <div className={sheet.overlay}>
+      <main className={`${sheet.panel} glass-sheet`}>
+        <div className={sheet.header}>
+          <Link href={`/movimenti/${tx.id}`} className="glass-btn" aria-label="Chiudi">
+            <CloseIcon />
+          </Link>
+          <h1 style={{ font: 'inherit' }}>Elimina il movimento</h1>
+          <span className={sheet.spacer} />
+        </div>
+
+        <div className={sheet.scroll}>
+          <div className="glass-card" style={{ padding: 16 }}>
+            <p style={{ fontWeight: 700 }}>{humanizeDescription(tx.description)}</p>
+            <p style={{ color: 'var(--text-muted)', marginTop: 4 }}>
+              {formatSignedCents(tx.amountCents)} · {tx.accountName ?? 'conto non disponibile'}
+            </p>
+          </div>
+          <p style={{ fontSize: 14, lineHeight: 1.45 }}>
+            Il movimento sparirà dai riepiloghi. L’operazione non si può annullare.
+          </p>
+        </div>
+
+        <form action={deleteTransactionAction} className={sheet.footer}>
+          <input type="hidden" name="id" value={tx.id} />
+          <button
+            type="submit"
+            className="btn-primary"
+            style={{
+              padding: '15px 0',
+              background: 'var(--danger)',
+              boxShadow: 'none',
+              color: 'var(--bg-solid)',
+            }}
+          >
+            Elimina
+          </button>
+          <Link href={`/movimenti/${tx.id}`} className="glass-btn" style={{ padding: '0 20px' }}>
+            Annulla
+          </Link>
+        </form>
+      </main>
+    </div>
   );
 }

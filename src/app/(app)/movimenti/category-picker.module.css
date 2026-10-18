@@ -1,0 +1,86 @@
+.sheet {
+  position: fixed;
+  inset: auto 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: 85dvh;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  border-radius: 28px 28px 0 0;
+}
+
+.sheet::backdrop {
+  background: var(--scrim);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.heading {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.group {
+  padding: 0 16px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.group > :last-child {
+  border-bottom: 0;
+}
+
+.option small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.selected {
+  color: var(--accent);
+}
+
+@media (min-width: 768px) {
+  .sheet {
+    inset: 0;
+    width: 28rem;
+    height: fit-content;
+    margin: auto;
+    border-radius: 28px;
+  }
+}

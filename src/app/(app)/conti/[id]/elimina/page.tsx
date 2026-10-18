@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDeletionImpact } from '@/data/accounts';
 import { deleteAccountSchema } from '@/domain/accounts/schemas';
+import { CloseIcon } from '../../../../icons';
+import sheet from '../../../sheet-page.module.css';
 import { deleteAccountAction } from '../../actions';
 
 export const metadata = { title: 'Elimina conto · budgFam' };
@@ -18,26 +20,51 @@ export default async function DeleteAccountPage({ params }: { params: Promise<{ 
   const { account, privateTransactions, sharedTransactions } = impact;
 
   return (
-    <main className="auth-page">
-      <h1>Elimina «{account.name}»</h1>
-      <ul>
-        <li>
-          {privateTransactions} movimenti privati verranno <strong>cancellati</strong>.
-        </li>
-        <li>
-          {sharedTransactions} movimenti condivisi <strong>restano</strong> nei riepiloghi della
-          famiglia, senza più un conto.
-        </li>
-      </ul>
-      <p>L’operazione non si può annullare.</p>
+    <div className={sheet.overlay}>
+      <main className={`${sheet.panel} glass-sheet`}>
+        <div className={sheet.header}>
+          <Link href="/conti" className="glass-btn" aria-label="Chiudi">
+            <CloseIcon />
+          </Link>
+          <h1 style={{ font: 'inherit' }}>Elimina «{account.name}»</h1>
+          <span className={sheet.spacer} />
+        </div>
 
-      <form action={deleteAccountAction} className="auth-form">
-        <input type="hidden" name="id" value={account.id} />
-        <button type="submit">Elimina il conto</button>
-      </form>
-      <p>
-        <Link href="/conti">Annulla</Link>
-      </p>
-    </main>
+        <div className={sheet.scroll}>
+          <div className="glass-card" style={{ padding: '4px 16px' }}>
+            <p
+              style={{ padding: '12px 0', borderBottom: '1px solid var(--hairline)', fontSize: 14 }}
+            >
+              <strong>{privateTransactions}</strong> movimenti privati verranno{' '}
+              <strong>cancellati</strong>.
+            </p>
+            <p style={{ padding: '12px 0', fontSize: 14 }}>
+              <strong>{sharedTransactions}</strong> movimenti condivisi <strong>restano</strong> nei
+              riepiloghi della famiglia, senza più un conto.
+            </p>
+          </div>
+          <p style={{ fontSize: 14 }}>L’operazione non si può annullare.</p>
+        </div>
+
+        <form action={deleteAccountAction} className={sheet.footer}>
+          <input type="hidden" name="id" value={account.id} />
+          <button
+            type="submit"
+            className="btn-primary"
+            style={{
+              padding: '15px 0',
+              background: 'var(--danger)',
+              boxShadow: 'none',
+              color: 'var(--bg-solid)',
+            }}
+          >
+            Elimina il conto
+          </button>
+          <Link href="/conti" className="glass-btn" style={{ padding: '0 20px' }}>
+            Annulla
+          </Link>
+        </form>
+      </main>
+    </div>
   );
 }
