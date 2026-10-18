@@ -411,6 +411,7 @@ export type Database = {
           import_hash: string | null;
           import_id: string | null;
           needs_review: boolean;
+          note: string | null;
           owner_id: string | null;
           raw_description: string;
           transfer_member_id: string | null;
@@ -431,6 +432,7 @@ export type Database = {
           import_hash?: string | null;
           import_id?: string | null;
           needs_review?: boolean;
+          note?: string | null;
           owner_id?: string | null;
           raw_description: string;
           transfer_member_id?: string | null;
@@ -451,6 +453,7 @@ export type Database = {
           import_hash?: string | null;
           import_id?: string | null;
           needs_review?: boolean;
+          note?: string | null;
           owner_id?: string | null;
           raw_description?: string;
           transfer_member_id?: string | null;

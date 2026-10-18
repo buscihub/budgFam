@@ -701,7 +701,7 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 **Fase 3 · Uso in famiglia**
 - [ ] 3.1 Tutti i conti/carte (Revolut, UniCredit, Findomestic, Trade Republic; **Q1**); inserimento manuale rapido per i contanti (**Q2**)
 - [ ] 3.2 Budget familiare per categoria (modificabile dagli admin) e confronto nel riepilogo Famiglia; il budget di un mese è la riga più recente con `month` ≤ quel mese (ADR-030)
-- [ ] 3.2b Budget personale e vista Personale (ADR-018)
+- [ ] 3.2b Budget personale e vista Personale (ADR-018); qui anche la scelta del destinatario (`transfer_member_id`) nel dettaglio movimento per le categorie di tipo trasferimento, rimandata dal 1.5b
 - [ ] 3.2c Gestione categorie: nascondi / aggiungi personalizzate (ADR-017)
 - [ ] 3.4b Trasferimenti ai familiari: destinatario, categorie `transfer`, riga nel riepilogo (ADR-015)
 - [ ] 3.3 Cose da fare: lista, responsabile, scadenza, ricorrenza, note, pannello di modifica/elimina, prossima occorrenza alla chiusura di una ricorrente

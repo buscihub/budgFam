@@ -104,6 +104,36 @@ describe('transactions: updating', () => {
       ),
     ).toBe(1);
   });
+  it('the owner can write a note on their own private transaction', async () => {
+    expect(
+      await affected(USER.member, 'update transactions set note = $2 where id = $1', [
+        TX.memberPrivate,
+        'pagato in contanti',
+      ]),
+    ).toBe(1);
+  });
+  it('a member can write a note on a shared transaction of somebody else', async () => {
+    expect(
+      await affected(USER.member, 'update transactions set note = $2 where id = $1', [
+        TX.ownerShared,
+        'rimborsato',
+      ]),
+    ).toBe(1);
+  });
+  it("a note cannot be written on somebody else's private transaction", async () => {
+    expect(
+      await affected(USER.admin2, 'update transactions set note = $2 where id = $1', [
+        TX.memberPrivate,
+        'x',
+      ]),
+    ).toBe(0);
+  });
+  it('a note longer than 500 characters is refused', async () => {
+    await denied(USER.member, 'check', 'update transactions set note = $2 where id = $1', [
+      TX.memberPrivate,
+      'x'.repeat(501),
+    ]);
+  });
   it('a transfer recipient can be set (ADR-015)', async () => {
     expect(
       await affected(USER.owner, 'update transactions set transfer_member_id = $2 where id = $1', [

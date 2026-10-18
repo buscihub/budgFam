@@ -71,3 +71,85 @@ a {
   min-height: 1.25rem;
   color: #b00020;
 }
+
+.app-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(128 128 128 / 0.3);
+}
+
+.app-nav a[aria-current='page'] {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.app-nav span[aria-disabled='true'] {
+  opacity: 0.5;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.banner {
+  margin: 0.75rem 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgb(128 128 128 / 0.5);
+  border-radius: 0.5rem;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+}
+
+.filters select {
+  font: inherit;
+  padding: 0.5rem;
+}
+
+.tx-list {
+  list-style: none;
+}
+
+.tx-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgb(128 128 128 / 0.25);
+}
+
+.tx-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tx-meta {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.tx-amount {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
