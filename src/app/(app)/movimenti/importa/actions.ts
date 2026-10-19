@@ -160,9 +160,12 @@ export async function undoImportAction(formData: FormData) {
   const from = returnPath(formData.get('da'));
   if (!parsed.success) redirect(from);
 
-  await undoImport(parsed.data.id);
+  const undone = await undoImport(parsed.data.id);
   revalidatePath('/movimenti');
   revalidatePath('/riepilogo');
   revalidatePath('/conti', 'layout');
-  redirect(`/movimenti/importa/${parsed.data.id}?da=${encodeURIComponent(from)}`);
+  // The result page says if the undo did not happen ("annullo=no").
+  redirect(
+    `/movimenti/importa/${parsed.data.id}?da=${encodeURIComponent(from)}${undone.ok ? '' : '&annullo=no'}`,
+  );
 }

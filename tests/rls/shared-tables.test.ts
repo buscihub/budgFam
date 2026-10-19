@@ -70,10 +70,17 @@ describe('imports', () => {
       ),
     ).toBe(1);
   });
-  it('members update a run (the server action acts as the member)', async () => {
+  it('the uploader updates their run (the server action acts as the uploader)', async () => {
     expect(
-      await affected(USER.member, `update imports set status = 'done' where id = $1`, [IMPORT.h1]),
+      await affected(USER.owner, `update imports set status = 'done' where id = $1`, [IMPORT.h1]),
     ).toBe(1);
+  });
+  it("another member, even an admin, cannot update somebody else's run", async () => {
+    for (const actor of [USER.member, USER.admin2]) {
+      expect(
+        await affected(actor, `update imports set status = 'done' where id = $1`, [IMPORT.h1]),
+      ).toBe(0);
+    }
   });
   it('only admins delete log entries', async () => {
     expect(await affected(USER.member, 'delete from imports where id = $1', [IMPORT.h1])).toBe(0);
