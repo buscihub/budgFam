@@ -1,7 +1,7 @@
 # ADR-0025: Schermata Conti, accesso da Movimenti e formato banca scelto dall'utente
 
 - **Data:** 2026-10-10
-- **Stato:** Accettata (2026-10-17); l'accesso da Movimenti è sostituito dall'ADR-035 (Conti nella barra di navigazione)
+- **Stato:** Accettata (2026-10-17); l'accesso da Movimenti è sostituito dall'ADR-035 (Conti nella barra di navigazione) e il formato scelto all'import non si salva sul conto (ADR-036)
 - **Task collegato:** §13.1 · 1.5, 3.1, 3.4
 
 ## Contesto
@@ -27,5 +27,5 @@ Una schermata **Conti** con «I miei conti» e «Condivisi dalla famiglia» (que
 - Un movimento condiviso su un conto privato mostra agli altri solo l'autore: la riga di `accounts` è già nascosta dalla RLS, la UI deve gestire `account` assente e non mostrare né nome né tipo né un segnaposto.
 - `accounts.bank_format` diventa l'identificatore del preset («revolut», «trade_republic», «auto»): vedi ADR-028. La migrazione è nel task 1.5a.
 - **Deciso in 1.5a:** nome unico per proprietario, senza distinguere maiuscole (`unique (owner_id, lower(name))`). L'eliminazione dei conti è decisa nell'ADR-033 (restano solo i movimenti condivisi).
-- «Ultimo import» si ricava da `imports` (massimo `created_at` con `status = 'done'` per conto), non è denormalizzato; un indice su `(account_id, created_at)` evita la scansione.
+- «Ultimo import» si ricaverebbe da `imports` (massimo `created_at` con `status = 'done'` per conto). **Non realizzato nella Fase 1**: nessuna schermata lo mostra, quindi neppure l'indice su `(account_id, created_at)`; si aggiungono insieme se serve.
 - Il passo «scegli il conto» del task 1.5 dipende da questa schermata: la creazione di base dei conti va anticipata rispetto a 3.1/3.4.

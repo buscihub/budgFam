@@ -8,6 +8,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-19 — Manutenzione: Fase 1 chiusa
+
+- Tutti i task 1.1→1.6b chiusi: **Fase 1 · Primo import chiusa**. Aggiornata la riga «Fase corrente» in `docs/DESIGN_DOC.md` §13 e la sezione «Stato» di `CLAUDE.md`.
+- Criterio d'uscita verificato **sulle fixture anonimizzate** (reimport = 0 nuovi in test unitari, test sul database e prova nel browser; totali del Riepilogo uguali all'estratto finto, con la sola differenza dei movimenti privati). **La verifica con un mese reale è rimandata**: estratto vero in un conto condiviso, due volte, confronto dei totali.
+- Revisione di coerenza di fine fase (`spec-reviewer`): nessuna violazione del §4.1. Corretto ADR-033 (reimportare lo stesso file in un conto nuovo duplica i movimenti condivisi rimasti senza conto: limite documentato, avviso nella conferma di eliminazione, test dell'hash), il commento di `computeMonthlySummary`, l'etichetta del formato `auto` («Lo scelgo all'import»), ADR-025 (indice su `imports` non realizzato; formato scelto all'import non salvato, ADR-036), ADR-013 e ADR-019 (note), §5.2, §5.3 e §13.1 (il riconoscimento automatico del formato è del task 2.3) e il testo del criterio d'uscita nel §13.
+
 ### 2026-10-19 — Stile: un solo font per tutti i controlli
 
 - I controlli dei form (`button`, `input`, `select`, `textarea`) non ereditavano il font della pagina: le chip delle categorie in «Aggiungi movimento» erano in Arial a 12px accanto al resto in system-ui. Reset unico in `src/app/globals.css` (`font: inherit`, anche per il pulsante del campo file); le classi dei componenti continuano a impostare dimensione e peso sopra.

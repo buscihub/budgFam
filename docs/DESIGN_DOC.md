@@ -201,13 +201,14 @@ Valgono per tutto il codice. Ogni violazione è un bug.
 budgFam/
 ├─ src/
 │  ├─ domain/        ← logica pura, zero dipendenze da framework
-│  │   ├─ import/    (rilevamento formato, parser, normalizzazione, dedup)
+│  │   ├─ import/    (preset di formato, parser, normalizzazione, dedup; rilevamento via AI dal task 2.3)
 │  │   ├─ classify/  (regole, orchestrazione AI, soglie)
-│  │   └─ budget/    (riepiloghi, confronto con i budget)
+│  │   ├─ budget/    (riepiloghi, confronto con i budget)
+│  │   └─ accounts/, auth/, household/, navigation/, transactions/  (schemi Zod, filtri, mesi, percorsi sicuri)
 │  ├─ data/          ← UNICO punto di accesso al database
 │  └─ app/           ← UI e route Next.js, sottili: chiamano domain/ e data/
 ├─ supabase/migrations/   ← schema versionato
-├─ tests/                 ← unit, integrazione (RLS), e2e
+├─ tests/rls/             ← integrazione RLS e funzioni SQL (i test unitari stanno accanto al codice: src/**/*.test.ts); e2e dalla Fase 3
 ├─ evals/                 ← golden set e script di valutazione
 ├─ fixtures/              ← CSV bancari anonimizzati, uno per formato
 ├─ docs/
@@ -223,7 +224,7 @@ budgFam/
 1. **Riepilogo del mese** (‹ › per cambiare mese, predefinito il mese corrente in Europe/Rome, come in Movimenti), in due viste (ADR-018): **Famiglia** (movimenti condivisi di tutti: entrate, uscite, saldo, categorie confrontate con il budget familiare, riga informativa *Trasferiti ai familiari* per persona) e **Personale** (tutti i movimenti dei **miei conti**, privati e condivisi, confrontati con il mio budget personale). Sono due lenti sugli stessi dati: la spesa di famiglia pagata con la mia carta è un'uscita sia per la famiglia sia per me, ma le due viste non si sommano mai.
 2. **Movimenti** (ADR-035): non è più una voce della barra; si raggiunge da **Conti** → «Tutti i movimenti», oppure per singolo conto dalla pagina del conto (stessa lista, conto fissato). Lista filtrabile (anche per conto), correzione rapida della categoria, banner dei movimenti "da rivedere"; un unico punto d'ingresso ("+") per aggiungere un movimento, manualmente o importando un estratto conto (vedi ADR-013 — non c'è più una schermata "Importa" separata). Dalla pagina del conto il conto è già scelto e l'import usa il suo formato; da «Tutti i movimenti» il conto va scelto. Il **dettaglio movimento** (tocco su una riga) permette di cambiare categoria con «applica sempre questa regola», aggiungere una nota, cambiare la visibilità del singolo movimento, eliminarlo e, per le categorie di tipo trasferimento, scegliere il destinatario. I filtri sono conto, categoria e «solo da rivedere». La lista mostra **un mese alla volta** (‹ › per cambiarlo, predefinito il mese corrente in Europe/Rome). La ricerca testuale dei mockup («Cerca movimento») non è nel perimetro.
 3. **Cose da fare**: lista condivisa con responsabile, scadenza, ricorrenza e note; stesso pattern "+" per aggiungere una nuova attività; il tocco su un'attività apre un pannello di modifica con «Elimina». Completare una ricorrente crea la prossima occorrenza (settimanale o mensile).
-4. **Import** (dentro "+"): scelta del conto, formato riconosciuto da confermare, anteprima con contatori (pronti, da rivedere, duplicati), esito con «Annulla questo import», errori di file e di categorizzazione.
+4. **Import** (dentro "+"): scelta del conto, formato (quello del conto, o da scegliere se il conto non ne ha uno; il riconoscimento automatico arriva con il task 2.3), anteprima con contatori (nuovi e duplicati; «pronti» e «da rivedere» arrivano con 2.4–2.5), esito con «Annulla questo import», errori di file e di categorizzazione.
 5. **Da rivedere**: coda dei movimenti con confidenza bassa o senza categoria.
 6. **Conti** (ADR-025, ADR-035): è la **seconda voce della barra di navigazione**. «I miei conti» e «Condivisi dalla famiglia» (sola lettura), con in cima la riga «Tutti i movimenti»; un «+» in alto crea un conto (nome, tipo, visibilità, formato file). Toccando un conto si apre la sua **pagina**, con i movimenti del mese e il «+» per aggiungerne. Si raggiunge anche dalle Impostazioni. Le schermate senza versione Mac usano lo stesso layout responsive.
 7. **Impostazioni, famiglia e accesso** (ADR-026): budget familiare e personale, categorie, regole di categoria, profilo (nome e password), famiglia e membri (inviti da 24 ore, ruoli), installazione su iPhone, accesso, registrazione, reset password, «crea la famiglia», «unisciti con invito»; stati vuoti, offline ed errore. Punti d'accesso e comportamenti sono nella mappa dell'ADR-026; la navigazione resta a tre voci (ADR-013).
@@ -650,13 +651,13 @@ Oltre a misurare, va documentato cosa si è **cambiato grazie ai dati**. Esempio
 | Fase | Contenuto | Criterio di uscita |
 |---|---|---|
 | **0 · Fondamenta** | Repository, CI, Supabase locale, migrazioni, autenticazione, RLS + test | Due utenti di test correttamente isolati |
-| **1 · Primo import** | Import CSV di **una** banca, normalizzazione, dedup, riepilogo mensile | Un mese reale importato e riepilogato |
+| **1 · Primo import** | Import CSV di **una** banca, normalizzazione, dedup, riepilogo mensile | Un mese reale importato due volte senza doppioni; totali uguali all'estratto conto |
 | **2 · Classificazione** | Regole, AI con output strutturato, revisione, apprendimento dalle correzioni, golden set ed eval | Accuratezza misurata e documentata |
 | **3 · Uso in famiglia** | Tutte le banche/carte, budget per categoria, cose da fare, PWA | Tutte e 4 la usano dal telefono |
 | **4 · Produzione e presentazione** | Osservabilità, backup testati, metriche, ADR, README, demo con dati finti | Repository presentabile |
 | **5 · Estensione (opzionale)** | Bot Telegram per spese e cose da fare al volo | Solo se l'uso reale lo richiede |
 
-**Fase corrente: 1 · Primo import** *(aggiornare questa riga a ogni cambio di fase)*
+**Fase corrente: 2 · Classificazione** *(aggiornare questa riga a ogni cambio di fase)*
 
 ### 13.1 Task per fase
 
@@ -684,8 +685,8 @@ Ogni task è pensato come **una pull request piccola**. Una fase è chiusa quand
 - [x] 1.4 Hash di deduplica con indice di occorrenza + test (due caffè; reimport dello stesso file)
 - [x] 1.5a Creazione ed eliminazione base dei conti (nome, tipo, visibilità, formato) in `/conti`: serve al passo «scegli il conto» dell'import (ADR-025). Eliminando restano solo i movimenti condivisi (ADR-033). Migrazione: `accounts.bank_format` da `jsonb` a `text` (preset, ADR-028); `account_id` nullable su `transactions` e `imports`
 - [x] 1.5b Guscio dell'app a tre voci (ADR-013) nello stile dei mockup (ADR-012, ADR-034), lista Movimenti per mese con filtri, dettaglio movimento (categoria, nota, visibilità, elimina; colonna `transactions.note`) e «+» per l'inserimento manuale: punto d'ingresso dell'import
-- [x] 1.5 Pagina Importa: scelta del conto (con «Nuovo conto» che riusa il form di 1.5a, senza uscire dall'import), upload, formato riconosciuto, anteprima con **nuovi e duplicati** (senza classificazione: «pronti / da rivedere» e categorie proposte arrivano con 2.4–2.5), conferma, movimenti importati senza categoria, esito con «Annulla import» (cancella le righe e porta l'import a `undone`, ADR-027); record in `imports` con i contatori (schermate: ADR-026)
-- [x] 1.5c «Conti» al posto di «Movimenti» nella barra di navigazione (ADR-035): lista dei conti con «Tutti i movimenti», pagina del singolo conto con i suoi movimenti e le sue impostazioni (nome, formato e visibilità con anteprima, ADR-035 e ADR-015), aggiunta di movimenti e import dal conto (conto e formato preimpostati) o da «Tutti i movimenti» (conto da scegliere); migrazione con la funzione `change_account_visibility` (cambio di visibilità atomico, `SECURITY INVOKER`)
+- [x] 1.5 Pagina Importa: scelta del conto (con «Nuovo conto» che riusa il form di 1.5a, senza uscire dall'import), upload, formato (del conto, o scelto all'import: il riconoscimento è del task 2.3), anteprima con **nuovi e duplicati** (senza classificazione: «pronti / da rivedere» e categorie proposte arrivano con 2.4–2.5), conferma, movimenti importati senza categoria, esito con «Annulla import» (cancella le righe e porta l'import a `undone`, ADR-027); record in `imports` con i contatori (schermate: ADR-026)
+- [x] 1.5c «Conti» al posto di «Movimenti» nella barra di navigazione (ADR-035, ADR-036): lista dei conti con «Tutti i movimenti», pagina del singolo conto con i suoi movimenti e le sue impostazioni (nome, formato e visibilità con anteprima, ADR-035 e ADR-015), aggiunta di movimenti e import dal conto (conto e formato preimpostati) o da «Tutti i movimenti» (conto da scegliere); migrazione con la funzione `change_account_visibility` (cambio di visibilità atomico, `SECURITY INVOKER`)
 - [x] 1.6 Riepilogo mensile: entrate, uscite, saldo, per categoria
 - [x] 1.6b Riepilogo: scelta del mese (‹ › e `?mese=`, come in Movimenti), con la barra del mese condivisa tra Riepilogo e lista movimenti; serve a verificare il criterio d'uscita della Fase 1 su un mese passato
 - **Uscita:** un mese reale importato due volte senza doppioni; totali uguali all'estratto conto.

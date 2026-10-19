@@ -221,3 +221,14 @@ describe('computeImportHashes — raw description', () => {
     expect(hashes(A, [tx({ rawDescription: 'Bar  Roma' })])).toEqual(hashes(A, [tx()]));
   });
 });
+
+// ADR-033: deleting an account leaves its shared movements without an account,
+// and the account is part of the hash (ADR-009). So the same file imported
+// into a *new* account yields other hashes: a known limit, documented here so a
+// change of the hash does not slip through unnoticed.
+describe('computeImportHashes — the same file on a new account (ADR-033 limit)', () => {
+  it('gives different hashes, so nothing is recognised as already imported', () => {
+    const file = [tx(), tx({ amountCents: -500 })];
+    expect(hashes(A, file)).not.toEqual(hashes(B, file));
+  });
+});

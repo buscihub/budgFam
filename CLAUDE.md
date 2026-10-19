@@ -87,7 +87,7 @@ Prima di dire che un task è finito: `lint`, `typecheck` e `test` devono passare
 
 ## Stato
 
-Fase corrente: **1 · Primo import** (DESIGN_DOC §13.1). Fase 0 · Fondamenta chiusa (CI verde, isolamento tra nuclei dimostrato dai test RLS).
+Fase corrente: **2 · Classificazione** (DESIGN_DOC §13.1). Fase 0 · Fondamenta chiusa (CI verde, isolamento tra nuclei dimostrato dai test RLS). Fase 1 · Primo import chiusa (import CSV con anteprima, deduplica e annullo; conti; movimenti; riepilogo mensile). La verifica con un mese **reale** è rimandata: va fatta con un estratto vero in un conto condiviso, importato due volte, confrontando i totali del Riepilogo.
 
 *(Questa riga si aggiorna solo quando cambia la fase, non a ogni task — vedi sopra.)*
 

@@ -10,7 +10,7 @@ export type BankFormatId = (typeof BANK_FORMAT_IDS)[number];
 export const BANK_FORMAT_LABELS: Record<BankFormatId, string> = {
   revolut: 'Revolut',
   trade_republic: 'Trade Republic',
-  auto: 'Riconosci dal file',
+  auto: 'Lo scelgo all’import',
 };
 
 export const ACCOUNT_KINDS = ['bank', 'card', 'cash'] as const;

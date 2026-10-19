@@ -1,7 +1,7 @@
 # ADR-0013: Unificazione delle schermate "Movimenti" e "Importa"
 
 - **Data:** 2026-09-26
-- **Stato:** Accettata
+- **Stato:** Accettata; la visibilità di default dell'inserimento manuale è quella del conto (ADR-015), non «condivisa»
 - **Task collegato:** — (lavoro di design/mockup, prima della Fase 0)
 
 ## Contesto
