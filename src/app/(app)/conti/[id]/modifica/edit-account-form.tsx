@@ -205,10 +205,6 @@ export function EditAccountForm({
         <p role="alert" aria-live="polite" className={styles.error}>
           {state.error}
         </p>
-
-        <Link href={`/conti/${account.id}/elimina`} style={{ color: 'var(--danger, #c0392b)' }}>
-          Elimina il conto…
-        </Link>
       </div>
 
       <div className={sheet.footer}>
@@ -222,6 +218,9 @@ export function EditAccountForm({
         </button>
         <Link href={from} className="glass-btn" style={{ padding: '0 20px' }}>
           Annulla
+        </Link>
+        <Link href={`/conti/${account.id}/elimina`} className={styles.danger}>
+          Elimina il conto…
         </Link>
       </div>
     </form>

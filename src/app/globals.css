@@ -35,6 +35,20 @@ a {
   text-decoration: none;
 }
 
+/* Form controls do not inherit the page font by themselves: browsers give
+   them their own (Arial or system-ui at 13px), so a bare <button> or <input>
+   would look like a different typeface next to the text around it. One reset
+   here covers every control, including the button of a file input. Component
+   classes still set their own size and weight on top (they are more specific). */
+button,
+input,
+select,
+textarea,
+input::file-selector-button {
+  font: inherit;
+  letter-spacing: inherit;
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,

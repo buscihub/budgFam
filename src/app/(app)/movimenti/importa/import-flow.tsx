@@ -169,15 +169,22 @@ export function ImportFlow({
           <label className={nuovo.label} htmlFor="file" style={{ display: 'block' }}>
             File dell’estratto conto (CSV)
           </label>
-          <input
-            id="file"
-            name="file"
-            type="file"
-            accept=".csv,text/csv"
-            required
-            className={`glass-field ${nuovo.field}`}
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          />
+          {/* The browser's own file button is grey, in the browser's language and
+              not in the app's type: the real input stays (hidden, focusable) and
+              this label is what the person sees. */}
+          <label htmlFor="file" className={`glass-field ${styles.filePicker}`}>
+            <input
+              id="file"
+              name="file"
+              type="file"
+              accept=".csv,text/csv"
+              required
+              className={styles.fileInput}
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            />
+            <span className="chip">{file ? 'Cambia file' : 'Scegli il file'}</span>
+            <span className={styles.fileName}>{file ? file.name : 'Nessun file scelto'}</span>
+          </label>
         </div>
 
         {previewFresh && preview && (
