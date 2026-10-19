@@ -91,6 +91,8 @@
   min-width: 0;
   font-size: 14px;
   font-weight: 700;
+  color: inherit;
+  text-decoration: none;
 }
 
 .meta {
@@ -184,4 +186,58 @@
   .actions {
     text-align: right;
   }
+}
+
+.allRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 14px 16px;
+  font-weight: 700;
+  text-decoration: none;
+  color: inherit;
+}
+
+.headerAction {
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* The line under the account name on its page: kind, who sees it, format. */
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.info .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+}
+
+.infoIcon {
+  display: inline-flex;
+  color: var(--accent);
+}
+
+.infoIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.actions a {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
 }

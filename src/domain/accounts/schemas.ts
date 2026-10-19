@@ -52,4 +52,17 @@ export const createAccountSchema = z
 
 export type CreateAccountInput = z.infer<typeof createAccountSchema>;
 
+// Editing an account (ADR-035): name and file format. The kind never changes
+// after creation (ADR-025: a bank account with imports cannot become cash) and
+// visibility has its own flow with a preview (ADR-015, task 3.4). Whether the
+// account is cash is not known here: the data layer refuses a format for cash,
+// like the database check does.
+export const updateAccountSchema = z.object({
+  id: z.uuid({ error: 'Conto non valido.' }),
+  name: createAccountSchema.shape.name,
+  bankFormat: createAccountSchema.shape.bankFormat,
+});
+
+export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
+
 export const deleteAccountSchema = z.object({ id: z.uuid({ error: 'Conto non valido.' }) });

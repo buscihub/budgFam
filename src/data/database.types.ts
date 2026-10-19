@@ -497,6 +497,15 @@ export type Database = {
     };
     Functions: {
       accept_invite: { Args: { invite_code: string; member_name: string }; Returns: string };
+      change_account_visibility: {
+        Args: {
+          p_account_id: string;
+          p_apply_to_existing: boolean;
+          p_from_date?: string;
+          p_visibility: string;
+        };
+        Returns: number;
+      };
       create_household: { Args: { household_name: string; member_name: string }; Returns: string };
       is_admin: { Args: { hh: string }; Returns: boolean };
       is_member: { Args: { hh: string }; Returns: boolean };

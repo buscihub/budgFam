@@ -28,11 +28,11 @@ const ICONS = {
       <rect x="16" y="3" width="4" height="17" rx="2" />
     </>,
   ),
-  transactions: svg(
+  accounts: svg(
     <>
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="4" y1="12" x2="20" y2="12" />
-      <line x1="4" y1="18" x2="20" y2="18" />
+      <rect x="3" y="6" width="18" height="13" rx="3" />
+      <path d="M3 10h18" />
+      <path d="M7 15h3" />
     </>,
   ),
   tasks: svg(
@@ -43,26 +43,29 @@ const ICONS = {
   ),
 };
 
+// `also`: other sections that live under the entry. "Tutti i movimenti" and the
+// movement pages are part of Conti (ADR-035), so Conti stays highlighted there.
 const ITEMS = [
-  { href: '/riepilogo', label: 'Riepilogo', icon: ICONS.summary },
-  { href: '/movimenti', label: 'Movimenti', icon: ICONS.transactions },
+  { href: '/riepilogo', label: 'Riepilogo', icon: ICONS.summary, also: [] },
+  { href: '/conti', label: 'Conti', icon: ICONS.accounts, also: ['/movimenti'] },
 ] as const;
 
-// Three entries and no more (ADR-013). Settings and the family row of the
-// desktop mockups arrive with their own tasks (ADR-026).
+// Three entries and no more (ADR-013, ADR-035). Settings and the family row of
+// the desktop mockups arrive with their own tasks (ADR-026).
 export function AppNav() {
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const isEntryActive = (href: string, also: readonly string[]) => [href, ...also].some(isActive);
 
   return (
     <nav aria-label="Navigazione principale" className={styles.nav}>
       <div className={styles.brand}>budgFam</div>
-      {ITEMS.map(({ href, label, icon }) => (
+      {ITEMS.map(({ href, label, icon, also }) => (
         <Link
           key={href}
           href={href}
           className={styles.item}
-          aria-current={isActive(href) ? 'page' : undefined}
+          aria-current={isEntryActive(href, also) ? 'page' : undefined}
         >
           {icon}
           {label}

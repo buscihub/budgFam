@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { getImportAccount, previewImport, runImport, undoImport } from '@/data/imports';
 import { BANK_FORMAT_IDS, BANK_FORMAT_LABELS } from '@/domain/accounts/schemas';
+import { returnPath } from '@/domain/navigation/safe-next-path';
 import { prepareImport } from '@/domain/import/prepare';
 import { getBankFormatPreset, type PresetId } from '@/domain/import/presets';
 import type { HashedTransaction } from '@/domain/import/types';
@@ -146,17 +147,22 @@ export async function confirmImportAction(
 
   revalidatePath('/movimenti');
   revalidatePath('/riepilogo');
-  redirect(`/movimenti/importa/${result.importId}`);
+  revalidatePath('/conti', 'layout');
+  redirect(
+    `/movimenti/importa/${result.importId}?da=${encodeURIComponent(returnPath(formData.get('da')))}`,
+  );
 }
 
 const undoSchema = z.object({ id: z.uuid() });
 
 export async function undoImportAction(formData: FormData) {
   const parsed = undoSchema.safeParse({ id: formData.get('id') });
-  if (!parsed.success) redirect('/movimenti');
+  const from = returnPath(formData.get('da'));
+  if (!parsed.success) redirect(from);
 
   await undoImport(parsed.data.id);
   revalidatePath('/movimenti');
   revalidatePath('/riepilogo');
-  redirect(`/movimenti/importa/${parsed.data.id}`);
+  revalidatePath('/conti', 'layout');
+  redirect(`/movimenti/importa/${parsed.data.id}?da=${encodeURIComponent(from)}`);
 }

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { returnPath, withMonthParam } from '@/domain/navigation/safe-next-path';
 import { createManualTransaction, deleteTransaction, updateTransaction } from '@/data/transactions';
 import {
   createManualTransactionSchema,
@@ -9,7 +10,7 @@ import {
   updateTransactionSchema,
 } from '@/domain/transactions/schemas';
 
-export type TransactionFormState = { error?: string; saved?: boolean };
+export type TransactionFormState = { error?: string };
 
 export async function createTransactionAction(
   _prev: TransactionFormState,
@@ -37,7 +38,10 @@ export async function createTransactionAction(
   }
   revalidatePath('/movimenti');
   revalidatePath('/riepilogo');
-  redirect('/movimenti');
+  revalidatePath('/conti', 'layout');
+  // Back where the person came from, on the month of the movement just
+  // added: a list showing another month would not contain it.
+  redirect(withMonthParam(returnPath(formData.get('da')), parsed.data.bookedOn.slice(0, 7)));
 }
 
 export async function updateTransactionAction(
@@ -66,15 +70,21 @@ export async function updateTransactionAction(
   }
   revalidatePath('/movimenti');
   revalidatePath('/riepilogo');
-  return { saved: true };
+  revalidatePath('/conti', 'layout');
+  // Close the sheet and go back where the person came from. Staying on the
+  // page would leave React 19's post-action form reset out of sync with the
+  // controlled switch (it snaps back to the old value).
+  redirect(returnPath(formData.get('da')));
 }
 
 export async function deleteTransactionAction(formData: FormData) {
   const parsed = deleteTransactionSchema.safeParse({ id: formData.get('id') });
-  if (!parsed.success) redirect('/movimenti');
+  const from = returnPath(formData.get('da'));
+  if (!parsed.success) redirect(from);
 
   await deleteTransaction(parsed.data.id);
   revalidatePath('/movimenti');
   revalidatePath('/riepilogo');
-  redirect('/movimenti');
+  revalidatePath('/conti', 'layout');
+  redirect(from);
 }

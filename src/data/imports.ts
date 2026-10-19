@@ -180,6 +180,9 @@ export type ImportSummary = {
   rowsInserted: number;
   rowsDuplicate: number;
   canUndo: boolean;
+  // Most recent booking date among the rows this import added (null if none
+  // left): the result page links to that month.
+  lastBookedOn: string | null;
 };
 
 export async function getImportSummary(importId: string): Promise<ImportSummary | null> {
@@ -194,6 +197,16 @@ export async function getImportSummary(importId: string): Promise<ImportSummary 
     .maybeSingle();
   if (!data) return null;
   const status = data.status as ImportSummary['status'];
+  let lastBookedOn: string | null = null;
+  if (status === 'done' && data.rows_inserted > 0) {
+    const { data: last } = await supabase
+      .from('transactions')
+      .select('booked_on')
+      .eq('import_id', data.id)
+      .order('booked_on', { ascending: false })
+      .limit(1);
+    lastBookedOn = last?.[0]?.booked_on ?? null;
+  }
   return {
     id: data.id,
     fileName: data.file_name,
@@ -203,6 +216,7 @@ export async function getImportSummary(importId: string): Promise<ImportSummary 
     rowsInserted: data.rows_inserted,
     rowsDuplicate: data.rows_duplicate,
     canUndo: status === 'done' && data.uploaded_by === user.id,
+    lastBookedOn,
   };
 }
 

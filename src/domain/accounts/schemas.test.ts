@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createAccountSchema, deleteAccountSchema } from './schemas';
+import { createAccountSchema, deleteAccountSchema, updateAccountSchema } from './schemas';
 
 const valid = { name: 'Revolut', kind: 'bank', visibility: 'private', bankFormat: 'revolut' };
 
@@ -49,5 +49,43 @@ describe('deleteAccountSchema', () => {
     expect(
       deleteAccountSchema.safeParse({ id: '20000000-0000-4000-8000-000000000001' }).success,
     ).toBe(true);
+  });
+});
+
+describe('updateAccountSchema (ADR-035)', () => {
+  const id = '6f1c2d1e-0000-4000-8000-000000000001';
+
+  it('accepts a new name and format, trimming the name', () => {
+    expect(updateAccountSchema.parse({ id, name: ' Carta ', bankFormat: 'revolut' })).toEqual({
+      id,
+      name: 'Carta',
+      bankFormat: 'revolut',
+    });
+  });
+
+  it('treats an empty format as "choose at import"', () => {
+    expect(updateAccountSchema.parse({ id, name: 'Carta', bankFormat: '' }).bankFormat).toBeNull();
+  });
+
+  it('rejects a blank name, an unknown format and a bad id', () => {
+    expect(updateAccountSchema.safeParse({ id, name: '  ', bankFormat: '' }).success).toBe(false);
+    expect(updateAccountSchema.safeParse({ id, name: 'x', bankFormat: 'intesa' }).success).toBe(
+      false,
+    );
+    expect(updateAccountSchema.safeParse({ id: 'x', name: 'x', bankFormat: '' }).success).toBe(
+      false,
+    );
+  });
+
+  it('does not take the kind or the visibility: those do not change here', () => {
+    const parsed = updateAccountSchema.parse({
+      id,
+      name: 'x',
+      bankFormat: '',
+      kind: 'cash',
+      visibility: 'shared',
+    });
+    expect(parsed).not.toHaveProperty('kind');
+    expect(parsed).not.toHaveProperty('visibility');
   });
 });

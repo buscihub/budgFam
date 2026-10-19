@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getImportSummary } from '@/data/imports';
+import { returnPath, withMonthParam } from '@/domain/navigation/safe-next-path';
 import { z } from 'zod';
 import { CloseIcon } from '../../../../icons';
 import sheet from '../../../sheet-page.module.css';
@@ -9,12 +10,21 @@ import styles from '../importa.module.css';
 
 export const metadata = { title: 'Esito import · budgFam' };
 
-export default async function ImportResultPage({ params }: PageProps<'/movimenti/importa/[id]'>) {
+export default async function ImportResultPage({
+  params,
+  searchParams,
+}: PageProps<'/movimenti/importa/[id]'>) {
   const { id } = await params;
+  const from = returnPath((await searchParams).da);
   if (!z.uuid().safeParse(id).success) notFound();
   const summary = await getImportSummary(id);
   if (!summary) notFound();
 
+  // The movements just imported may be from months before the one the person
+  // came from: open the list on the most recent of them.
+  const listHref = summary.lastBookedOn
+    ? withMonthParam(from, summary.lastBookedOn.slice(0, 7))
+    : from;
   const undone = summary.status === 'undone';
   const failed = summary.status === 'failed';
 
@@ -22,7 +32,7 @@ export default async function ImportResultPage({ params }: PageProps<'/movimenti
     <div className={sheet.overlay}>
       <main className={`${sheet.panel} glass-sheet`}>
         <div className={sheet.header}>
-          <Link href="/movimenti" className="glass-btn" aria-label="Chiudi">
+          <Link href={from} className="glass-btn" aria-label="Chiudi">
             <CloseIcon />
           </Link>
           <h1 style={{ font: 'inherit' }}>Esito dell’import</h1>
@@ -67,12 +77,13 @@ export default async function ImportResultPage({ params }: PageProps<'/movimenti
         </div>
 
         <div className={sheet.footer}>
-          <Link href="/movimenti" className="btn-primary" style={{ padding: '15px 0' }}>
+          <Link href={listHref} className="btn-primary" style={{ padding: '15px 0' }}>
             Vai ai movimenti
           </Link>
           {summary.canUndo && (
             <form action={undoImportAction}>
               <input type="hidden" name="id" value={summary.id} />
+              <input type="hidden" name="da" value={from} />
               <button
                 type="submit"
                 className="glass-btn"

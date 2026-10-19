@@ -1,6 +1,6 @@
 # ADR-026 — Mappa delle schermate e punti d'accesso
 
-**Stato:** Accettata (2026-10-17) · **Data:** 2026-10-11 · **Task coinvolti:** 0.7, 1.5, 2.3, 2.4, 2.5, 3.2, 3.2b, 3.2c, 3.4, 3.5
+**Stato:** Accettata (2026-10-17); la tabella dei punti d'accesso è aggiornata dall'ADR-035 · **Data:** 2026-10-11 · **Task coinvolti:** 0.7, 1.5, 2.3, 2.4, 2.5, 3.2, 3.2b, 3.2c, 3.4, 3.5
 
 ## Contesto
 Dopo le schermate Conti (ADR-025) si è controllato che ogni funzione descritta negli ADR e in `DESIGN_DOC.md` avesse la sua schermata, per avere una visione completa dell'app prima di scrivere l'interfaccia. Mancavano riepilogo personale, dettaglio movimento, import oltre la scelta del conto, coda «Da rivedere», impostazioni, famiglia, accesso, installazione e stati vuoti/errore.
@@ -12,8 +12,8 @@ La navigazione resta a **tre voci** (Riepilogo, Movimenti, Cose da fare; ADR-013
 |---|---|
 | Impostazioni (budget, categorie, conti, famiglia, installazione, esci) | iPhone: avatar in alto a destra nel Riepilogo. Mac: «Impostazioni» in fondo alla barra laterale |
 | Famiglia e membri | Impostazioni → «Famiglia e membri»; su Mac anche la riga «4 persone» della barra laterale |
-| Conti | Filtro di Movimenti → «Gestisci conti» (ADR-025), e Impostazioni → Conti |
-| Da rivedere | Banner «N movimenti da rivedere» in Movimenti e nell'esito dell'import |
+| Conti | Seconda voce della barra di navigazione (ADR-035), e Impostazioni → Conti |
+| Da rivedere | Banner «N movimenti da rivedere» in «Tutti i movimenti», nella pagina del conto e nell'esito dell'import |
 | Dettaglio movimento | Tocco su una riga di Movimenti |
 | Trasferiti ai familiari | Riga sotto Entrate/Uscite nel Riepilogo |
 | Installazione su iPhone | Impostazioni → «Installa su iPhone» |

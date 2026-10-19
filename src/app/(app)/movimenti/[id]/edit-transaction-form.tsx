@@ -31,9 +31,12 @@ function visibilityHint(tx: TransactionDetail, shared: boolean): string {
 export function EditTransactionForm({
   tx,
   categories,
+  from,
 }: {
   tx: TransactionDetail;
   categories: Category[];
+  // The page the person came from (Tutti i movimenti or an account page).
+  from: string;
 }) {
   const [state, formAction, pending] = useActionState<TransactionFormState, FormData>(
     updateTransactionAction,
@@ -46,6 +49,7 @@ export function EditTransactionForm({
   return (
     <form action={formAction} className={sheet.form}>
       <input type="hidden" name="id" value={tx.id} />
+      <input type="hidden" name="da" value={from} />
       <input type="hidden" name="categoryId" value={categoryId ?? ''} />
       {tx.isOwner && (
         <input type="hidden" name="visibility" value={shared ? 'shared' : 'private'} />
@@ -123,7 +127,6 @@ export function EditTransactionForm({
         <p role="alert" aria-live="polite" className={styles.error}>
           {state.error}
         </p>
-        {state.saved && <p className={styles.saved}>Modifiche salvate.</p>}
       </div>
 
       <div className={sheet.footer}>
@@ -136,7 +139,10 @@ export function EditTransactionForm({
           {pending ? 'Attendi…' : 'Salva'}
         </button>
         {tx.canDelete && (
-          <Link href={`/movimenti/${tx.id}/elimina`} className={styles.danger}>
+          <Link
+            href={`/movimenti/${tx.id}/elimina?da=${encodeURIComponent(from)}`}
+            className={styles.danger}
+          >
             Elimina movimento
           </Link>
         )}

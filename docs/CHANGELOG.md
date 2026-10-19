@@ -8,6 +8,24 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-19 — Task 1.5c: «Conti» al posto di «Movimenti» nella barra di navigazione
+
+- Decisione in ADR-035 (sostituisce in parte ADR-025 e ADR-026); §5.3 e §13.1 di `DESIGN_DOC.md` riallineati, nota nel README dei mockup (gli snapshot mostrano ancora la voce Movimenti).
+- Barra: Riepilogo · Conti · Cose da fare; «Conti» resta attiva anche su `/movimenti/*`. L'elenco Conti ha la riga «Tutti i movimenti» (`/movimenti`) e ogni conto apre la sua pagina `/conti/[id]` con i movimenti del mese; la lista mensile è un componente condiviso (`transactions-view.tsx`).
+- Aggiunta di movimenti (a mano o import) dalla pagina del conto, con conto e formato già scelti, o da «Tutti i movimenti», con il conto da scegliere. Dai conti in contanti non si offre l'import. Chiudere, annullare e salvare tornano alla pagina di partenza (`?da=`, controllato da `safeNextPath`/`returnPath`).
+- Dopo aver aggiunto un movimento o importato un file si apre il mese del movimento, non quello da cui si partiva; un mese vuoto propone «Vai a» l'ultimo mese con movimenti (`latestBefore`).
+- Impostazioni del conto (`/conti/[id]/modifica`, solo proprietario): nome, formato del file e visibilità privato/condiviso con anteprima e le tre opzioni di ADR-015 (solo da ora, da una data, tutto lo storico). Il form non perde più i valori digitati quando il salvataggio è rifiutato.
+- Migrazione `20261019120000_change_account_visibility.sql`: funzione `change_account_visibility` (`SECURITY INVOKER`) che cambia conto e movimenti in una sola transazione; tipi rigenerati in `src/data/database.types.ts`.
+- Test: 21 nuovi unitari (`updateAccountSchema`, `visibility`, `transactionsHref` con `basePath`, `returnPath`, `withMonthParam`) e 10 RLS in `tests/rls/account-visibility.test.ts`.
+
+### 2026-10-19 — Task 1.5: pagina Importa con anteprima, deduplica e annullamento
+
+- Migrazione `20261018100000_imports_status_undone.sql`: lo stato `undone` per `imports.status` (ADR-027).
+- Preset dei formati banca in `src/domain/import/presets.ts` (Revolut, Trade Republic; ADR-028), `prepareImport` (parse → normalizza → hash) e `splitNewAndDuplicates` in `src/domain/import/`; `NormalizedTransaction` porta anche `rawDescription` (serve a `transactions.raw_description`, non entra nell'hash).
+- `src/data/imports.ts`: anteprima senza scrivere, import con `upsert … ignoreDuplicates` su `(household_id, import_hash)`, esito e annullamento (cancella le righe dell'import e porta lo stato a `undone`).
+- Flusso `/movimenti/importa`: conto, file, formato riconosciuto, anteprima con nuovi e già presenti, conferma, esito con «Annulla questo import». I movimenti entrano senza categoria. Il file resta selezionato fra anteprima e conferma (i dati si inviano a mano, perché React 19 svuota il form dopo un'azione).
+- Test: unitari per preset, `prepareImport` e `splitNewAndDuplicates` (reimport = tutto già presente); `tests/rls/imports.test.ts` per stato, unicità dell'hash e annullamento.
+
 ### 2026-10-18 — Task 1.5b: guscio a tre voci, Movimenti per mese, dettaglio e inserimento manuale
 
 - Migrazione per la colonna `transactions.note` (nota sul movimento); tipi rigenerati in `src/data/database.types.ts`.

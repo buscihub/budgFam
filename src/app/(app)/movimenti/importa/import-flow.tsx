@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { startTransition, useActionState, useCallback, useEffect, useRef, useState } from 'react';
 import type { Account } from '@/data/accounts';
-import { BANK_FORMAT_LABELS } from '@/domain/accounts/schemas';
+import { ACCOUNT_KIND_LABELS, BANK_FORMAT_LABELS } from '@/domain/accounts/schemas';
 import { formatSignedCents } from '@/domain/budget/format-currency';
 import { getBankFormatPreset, type PresetId } from '@/domain/import/presets';
 import { formatBookedOn } from '@/domain/transactions/dates';
@@ -16,7 +16,18 @@ import styles from './importa.module.css';
 
 const SELECTABLE_FORMATS = ['revolut', 'trade_republic'] as const satisfies readonly PresetId[];
 
-export function ImportFlow({ accounts }: { accounts: Account[] }) {
+export function ImportFlow({
+  accounts,
+  initialAccountId,
+  accountLocked,
+  from,
+}: {
+  accounts: Account[];
+  initialAccountId: string | null;
+  // Coming from an account page: import into that account, no choice asked.
+  accountLocked: boolean;
+  from: string;
+}) {
   const [analyzeState, analyzeAction, analyzing] = useActionState<ImportFlowState, FormData>(
     analyzeImportAction,
     {},
@@ -25,7 +36,7 @@ export function ImportFlow({ accounts }: { accounts: Account[] }) {
     confirmImportAction,
     {},
   );
-  const [accountId, setAccountId] = useState<string | null>(accounts[0]?.id ?? null);
+  const [accountId, setAccountId] = useState<string | null>(initialAccountId);
   const [formatChoice, setFormatChoice] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [creating, setCreating] = useState(false);
@@ -64,6 +75,7 @@ export function ImportFlow({ accounts }: { accounts: Account[] }) {
     data.set('accountId', accountId);
     data.set('formatId', formatId);
     data.set('file', file);
+    data.set('da', from);
     startTransition(() => action(data));
   }
 
@@ -91,30 +103,40 @@ export function ImportFlow({ accounts }: { accounts: Account[] }) {
       }}
     >
       <div className={sheet.scroll}>
-        <div>
-          <div className={nuovo.label}>Conto</div>
-          <div className={nuovo.row}>
-            {accounts.map((a) => (
-              <label key={a.id} className="chip">
-                <input
-                  type="radio"
-                  name="accountId"
-                  value={a.id}
-                  checked={accountId === a.id}
-                  onChange={() => setAccountId(a.id)}
-                />
-                {a.visibility === 'private' && <LockIcon size={11} />}
-                {a.name}
-              </label>
-            ))}
-            <button type="button" className="chip chip-dashed" onClick={() => setCreating(true)}>
-              <PlusIcon size={12} /> Nuovo conto
-            </button>
+        {accountLocked && account ? (
+          <div>
+            <div className={nuovo.label}>Importa in</div>
+            <p>
+              <strong>{account.name}</strong> <small>{ACCOUNT_KIND_LABELS[account.kind]}</small>
+            </p>
           </div>
-          {accounts.length === 0 && (
-            <p className={styles.hint}>Per importare un file serve prima un conto o una carta.</p>
-          )}
-        </div>
+        ) : (
+          <div>
+            <div className={nuovo.label}>Conto</div>
+            <div className={nuovo.row}>
+              {accounts.map((a) => (
+                <label key={a.id} className="chip">
+                  <input
+                    type="radio"
+                    name="accountId"
+                    value={a.id}
+                    checked={accountId === a.id}
+                    onChange={() => setAccountId(a.id)}
+                  />
+                  {a.visibility === 'private' && <LockIcon size={11} />}
+                  {a.name}
+                  <small>{ACCOUNT_KIND_LABELS[a.kind]}</small>
+                </label>
+              ))}
+              <button type="button" className="chip chip-dashed" onClick={() => setCreating(true)}>
+                <PlusIcon size={12} /> Nuovo conto
+              </button>
+            </div>
+            {accounts.length === 0 && (
+              <p className={styles.hint}>Per importare un file serve prima un conto o una carta.</p>
+            )}
+          </div>
+        )}
 
         {account && (
           <div>
@@ -224,7 +246,7 @@ export function ImportFlow({ accounts }: { accounts: Account[] }) {
             {analyzing ? 'Attendi…' : 'Controlla il file'}
           </button>
         )}
-        <Link href="/movimenti" className="glass-btn" style={{ padding: '0 20px' }}>
+        <Link href={from} className="glass-btn" style={{ padding: '0 20px' }}>
           Annulla
         </Link>
       </div>

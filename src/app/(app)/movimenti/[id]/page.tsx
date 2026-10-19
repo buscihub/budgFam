@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { listCategories } from '@/data/categories';
 import { getTransaction } from '@/data/transactions';
+import { returnPath } from '@/domain/navigation/safe-next-path';
 import { formatSignedCents } from '@/domain/budget/format-currency';
 import { formatBookedOn } from '@/domain/transactions/dates';
 import { humanizeDescription } from '@/domain/transactions/display';
@@ -13,8 +14,12 @@ import { EditTransactionForm } from './edit-transaction-form';
 
 export const metadata = { title: 'Movimento · budgFam' };
 
-export default async function TransactionPage({ params }: PageProps<'/movimenti/[id]'>) {
+export default async function TransactionPage({
+  params,
+  searchParams,
+}: PageProps<'/movimenti/[id]'>) {
   const { id } = await params;
+  const from = returnPath((await searchParams).da);
   if (!deleteTransactionSchema.safeParse({ id }).success) notFound();
 
   const [tx, categories] = await Promise.all([
@@ -30,7 +35,7 @@ export default async function TransactionPage({ params }: PageProps<'/movimenti/
     <div className={sheet.overlay}>
       <main className={`${sheet.panel} glass-sheet`}>
         <div className={sheet.header}>
-          <Link href="/movimenti" className="glass-btn" aria-label="Chiudi">
+          <Link href={from} className="glass-btn" aria-label="Chiudi">
             <CloseIcon />
           </Link>
           <span>Movimento</span>
@@ -57,7 +62,7 @@ export default async function TransactionPage({ params }: PageProps<'/movimenti/
           </div>
         </div>
 
-        <EditTransactionForm tx={tx} categories={pickable} />
+        <EditTransactionForm tx={tx} categories={pickable} from={from} />
       </main>
     </div>
   );

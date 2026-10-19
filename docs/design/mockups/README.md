@@ -12,7 +12,7 @@ mac/      schermate desktop (1280 × 832)
   └─ <funzione>/   una cartella per area, uguale nei due dispositivi
 ```
 
-Ogni schermata esiste in versione chiara (`Nome.html`) e scura (`Nome-Dark.html`), nella stessa cartella. La mappa dei collegamenti è in `docs/adr/0026-mappa-schermate.md`; le esplorazioni di stile iniziali sono state tolte (esito in ADR-012).
+**Nota (ADR-035):** gli snapshot mostrano ancora «Movimenti» come voce della barra; nel prodotto la voce è «Conti» e la lista dei movimenti vive dentro di essa. Ogni schermata esiste in versione chiara (`Nome.html`) e scura (`Nome-Dark.html`), nella stessa cartella. La mappa dei collegamenti è in `docs/adr/0026-mappa-schermate.md`; le esplorazioni di stile iniziali sono state tolte (esito in ADR-012).
 
 ## Contenuto
 

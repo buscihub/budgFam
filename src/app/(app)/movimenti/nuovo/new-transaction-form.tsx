@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useActionState, useState } from 'react';
 import type { Account } from '@/data/accounts';
 import type { Category } from '@/data/categories';
+import { ACCOUNT_KIND_LABELS } from '@/domain/accounts/schemas';
 import { pickTopCategories } from '@/domain/transactions/categories';
 import { LockIcon, PlusIcon } from '../../../icons';
 import { createTransactionAction, type TransactionFormState } from '../actions';
@@ -16,25 +17,33 @@ export function NewTransactionForm({
   categories,
   usage,
   today,
+  initialAccountId,
+  accountLocked,
+  from,
 }: {
   accounts: Account[];
   categories: Category[];
   usage: Record<string, number>;
   today: string;
+  // Preselected from the page the person came from; null = they must choose.
+  initialAccountId: string | null;
+  // Coming from an account page: the account is that one, not asked again.
+  accountLocked: boolean;
+  from: string;
 }) {
   const [state, formAction, pending] = useActionState<TransactionFormState, FormData>(
     createTransactionAction,
     {},
   );
-  const [accountId, setAccountId] = useState(accounts[0]!.id);
+  const [accountId, setAccountId] = useState<string | null>(initialAccountId);
   const [direction, setDirection] = useState<'expense' | 'income'>('expense');
   const [categoryId, setCategoryId] = useState<string | null>(null);
   // null = not touched: the switch follows the chosen account (ADR-015). Once
   // the person moves it, their choice stays whatever account they pick next.
   const [sharedChoice, setSharedChoice] = useState<boolean | null>(null);
 
-  const account = accounts.find((a) => a.id === accountId)!;
-  const accountShared = account.visibility === 'shared';
+  const account = accounts.find((a) => a.id === accountId) ?? null;
+  const accountShared = account?.visibility === 'shared';
   const shared = sharedChoice ?? accountShared;
 
   const top = pickTopCategories(categories, usage, direction);
@@ -43,28 +52,40 @@ export function NewTransactionForm({
 
   return (
     <form action={formAction} className={sheet.form}>
+      <input type="hidden" name="da" value={from} />
       <div className={sheet.scroll}>
-        <div>
-          <div className={styles.label}>Conto</div>
-          <div className={styles.row}>
-            {accounts.map((a) => (
-              <label key={a.id} className="chip">
-                <input
-                  type="radio"
-                  name="accountId"
-                  value={a.id}
-                  checked={accountId === a.id}
-                  onChange={() => setAccountId(a.id)}
-                />
-                {a.visibility === 'private' && <LockIcon size={11} />}
-                {a.name}
-              </label>
-            ))}
-            <Link href="/conti" className="chip chip-dashed">
-              <PlusIcon size={12} /> Nuovo conto
-            </Link>
+        {accountLocked && account ? (
+          <div>
+            <div className={styles.label}>Conto</div>
+            <input type="hidden" name="accountId" value={account.id} />
+            <p>
+              <strong>{account.name}</strong> <small>{ACCOUNT_KIND_LABELS[account.kind]}</small>
+            </p>
           </div>
-        </div>
+        ) : (
+          <div>
+            <div className={styles.label}>Conto</div>
+            <div className={styles.row}>
+              {accounts.map((a) => (
+                <label key={a.id} className="chip">
+                  <input
+                    type="radio"
+                    name="accountId"
+                    value={a.id}
+                    checked={accountId === a.id}
+                    onChange={() => setAccountId(a.id)}
+                  />
+                  {a.visibility === 'private' && <LockIcon size={11} />}
+                  {a.name}
+                  <small>{ACCOUNT_KIND_LABELS[a.kind]}</small>
+                </label>
+              ))}
+              <Link href="/conti" className="chip chip-dashed">
+                <PlusIcon size={12} /> Nuovo conto
+              </Link>
+            </div>
+          </div>
+        )}
 
         <div>
           <div className={styles.label}>Tipo</div>
@@ -193,11 +214,11 @@ export function NewTransactionForm({
           type="submit"
           className="btn-primary"
           style={{ padding: '15px 0' }}
-          disabled={pending}
+          disabled={pending || !account}
         >
           {pending ? 'Attendi…' : 'Salva movimento'}
         </button>
-        <Link href="/movimenti" className="glass-btn" style={{ padding: '0 20px' }}>
+        <Link href={from} className="glass-btn" style={{ padding: '0 20px' }}>
           Annulla
         </Link>
       </div>
