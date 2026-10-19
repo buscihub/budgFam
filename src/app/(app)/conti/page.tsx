@@ -99,7 +99,9 @@ export default async function ContiPage() {
           Condivisi dalla famiglia <small>Solo lettura</small>
         </h2>
         {sharedByOthers.length === 0 ? (
-          <p className={`glass-card ${styles.empty}`}>Nessun conto condiviso dagli altri.</p>
+          <div className={`glass-card ${styles.empty}`}>
+            <p>Nessun conto condiviso dagli altri.</p>
+          </div>
         ) : (
           <ul className={`glass-card ${styles.list}`}>
             {sharedByOthers.map((account) => (

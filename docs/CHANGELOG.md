@@ -8,6 +8,13 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-19 — Stile: un solo font per tutti i controlli
+
+- I controlli dei form (`button`, `input`, `select`, `textarea`) non ereditavano il font della pagina: le chip delle categorie in «Aggiungi movimento» erano in Arial a 12px accanto al resto in system-ui. Reset unico in `src/app/globals.css` (`font: inherit`, anche per il pulsante del campo file); le classi dei componenti continuano a impostare dimensione e peso sopra.
+- Import: il campo file non mostra più il pulsante grigio del browser («Choose file», nella lingua del browser): un'etichetta in stile app («Scegli il file» / «Cambia file») con il nome del file; l'input reale resta nel form.
+- «Nessun conto condiviso dagli altri.» (elenco Conti) e «Elimina il conto…» (impostazioni del conto) avevano la dimensione e il colore di default del browser (16px) accanto a testi da 11-13px: il primo ora usa lo stile degli altri stati vuoti, il secondo lo stesso di «Elimina movimento» (13px, grassetto, colore di pericolo) ed è spostato nel piè di pagina come lì.
+- Verificato con uno script che confronta il `font-family` calcolato di ogni elemento con testo su 9 pagine: nessuna differenza.
+
 ### 2026-10-19 — Correzioni di 1.5 dopo la revisione: annullo import solo per chi l'ha caricato, atomico
 
 - ADR-027 rivisto: «Annulla questo import» è consentito solo a chi ha caricato il file (prima anche a un admin, che però non vede i movimenti privati dell'autore: l'import risultava `undone` con le righe ancora dentro).

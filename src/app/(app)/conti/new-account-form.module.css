@@ -108,3 +108,11 @@
   font-size: 13px;
   color: var(--danger);
 }
+
+/* Same look as "Elimina movimento" in the movement detail. */
+.danger {
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--danger);
+}
