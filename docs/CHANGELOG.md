@@ -19,6 +19,12 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 - Test RLS nuovi: scritture su `imports` per ruolo e colonna, `ON CONFLICT DO NOTHING` sull'hash (reimport e reimport dopo annullo), delete senza condizione, parametri nulli e movimenti di altri in `change_account_visibility`; 212 test RLS in tutto.
 - ADR-036 (ritorno alla pagina di partenza, mese dei movimenti, limiti dell'import) e §7 aggiornato.
 
+### 2026-10-19 — Task 1.6b: Riepilogo, scelta del mese
+
+- Il Riepilogo legge `?mese=YYYY-MM` (mese mancante o non valido = mese corrente in Europe/Rome) e ha le frecce ‹ › come la lista movimenti; la freccia avanti si ferma sul mese corrente. Lo stato vuoto dice il mese («Nessun movimento condiviso a gennaio 2025»).
+- Barra del mese condivisa: componente `MonthBar` (`src/app/(app)/month-bar.tsx`) usato da Riepilogo e dalla lista movimenti, al posto di due stili quasi uguali. §5.3 e §13.1 aggiornati.
+- Nessun cambiamento ai totali: restano i movimenti condivisi (vista «Famiglia»; la vista «Personale» è 3.2b). Verificato con le fixture: gennaio 2025 dà entrate 226,88 €; le uscite sono 366,82 € e non 371,82 € perché un movimento da 5,00 € di quel conto è privato per scelta.
+
 ### 2026-10-19 — Task 1.5c: «Conti» al posto di «Movimenti» nella barra di navigazione
 
 - Decisione in ADR-035 (sostituisce in parte ADR-025 e ADR-026); §5.3 e §13.1 di `DESIGN_DOC.md` riallineati, nota nel README dei mockup (gli snapshot mostrano ancora la voce Movimenti).
