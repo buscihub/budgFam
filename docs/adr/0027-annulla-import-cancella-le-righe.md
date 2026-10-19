@@ -21,5 +21,6 @@ Si eliminano le transazioni con quell'`import_id` (mai quelle inserite a mano n�
 
 - Migrazione sul check di `status` (task 1.5). Il tipo `imports.status` in `database.types.ts` si rigenera.
 - Le correzioni fatte dall'utente sulle righe cancellate vanno perse; le regole nate da quelle correzioni restano.
-- La RLS di eliminazione su `transactions` («proprietario o admin») basta; l'annullamento passa dal server e controlla che l'import sia dell'utente o che l'utente sia admin.
+- **Solo chi ha caricato il file può annullare** (rivisto il 2026-10-19, prima era «l'utente o un admin»). Un admin che non ha caricato l'import non vede i movimenti privati dell'autore, quindi non li cancellerebbe, ma l'import risulterebbe `undone` con le righe ancora dentro e il reimport resterebbe bloccato dall'indice unico.
+- L'annullamento è la funzione del database `undo_import` (migrazione `20261019140000`, `SECURITY INVOKER`): cancella le righe e porta l'import a `undone` in una sola transazione, e rifiuta chi non è l'autore. Nessuna policy nuova.
 - Un import già `undone` non si può annullare di nuovo.

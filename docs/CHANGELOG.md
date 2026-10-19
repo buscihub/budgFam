@@ -8,6 +8,13 @@ Una riga per task chiuso (§13.1 di `DESIGN_DOC.md`): data, task, cosa è cambia
 
 ## Fase 1 · Primo import
 
+### 2026-10-19 — Correzioni di 1.5 dopo la revisione: annullo import solo per chi l'ha caricato, atomico
+
+- ADR-027 rivisto: «Annulla questo import» è consentito solo a chi ha caricato il file (prima anche a un admin, che però non vede i movimenti privati dell'autore: l'import risultava `undone` con le righe ancora dentro).
+- Migrazione `20261019140000_undo_import.sql`: funzione `undo_import` (`SECURITY INVOKER`), cancellazione delle righe e stato `undone` in una sola transazione; tipi rigenerati.
+- `runImport`: se l'ultima scrittura fallisce, le righe appena inserite vengono tolte e l'import passa a `failed` (prima restava `processing`). La pagina dell'esito segnala un annullo non riuscito.
+- Test: `tests/rls/undo-import.test.ts` (8 casi: solo l'autore, righe di altri import e manuali intatte, già annullato, stati non annullabili, altro nucleo, utente non autenticato).
+
 ### 2026-10-19 — Task 1.5c: «Conti» al posto di «Movimenti» nella barra di navigazione
 
 - Decisione in ADR-035 (sostituisce in parte ADR-025 e ADR-026); §5.3 e §13.1 di `DESIGN_DOC.md` riallineati, nota nel README dei mockup (gli snapshot mostrano ancora la voce Movimenti).

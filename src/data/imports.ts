@@ -161,7 +161,12 @@ export async function runImport(input: {
       rows_duplicate: rowsRead - rowsInserted,
     })
     .eq('id', imp.id);
-  if (doneError) return { ok: false, code: 'failed' };
+  if (doneError) {
+    // The rows are in but the import could not be closed: take them back, like
+    // a failed chunk, so a retry starts clean instead of finding "processing".
+    await supabase.from('transactions').delete().eq('import_id', imp.id);
+    return fail(doneError.message);
+  }
   return {
     ok: true,
     importId: imp.id,
@@ -225,31 +230,16 @@ export type UndoImportResult =
   | { ok: false; code: 'not_found' | 'not_allowed' | 'already_undone' | 'failed' };
 
 // ADR-027: delete the rows of this import (never manual ones nor other
-// imports') and mark it 'undone', counters untouched. The caller must have
-// uploaded it or be an admin; transactions_delete in RLS says the same.
+// imports') and mark it 'undone', counters untouched. Only the person who
+// uploaded the file can do it. All of it is one database function call, so it
+// either happens completely or not at all.
 export async function undoImport(importId: string): Promise<UndoImportResult> {
-  const { user, role } = await requireMembership();
+  await requireMembership();
   const supabase = await createClient();
-  const { data: imp } = await supabase
-    .from('imports')
-    .select('id, status, uploaded_by')
-    .eq('id', importId)
-    .maybeSingle();
-  if (!imp) return { ok: false, code: 'not_found' };
-  if (imp.status === 'undone') return { ok: false, code: 'already_undone' };
-  if (imp.status !== 'done') return { ok: false, code: 'failed' };
-  if (imp.uploaded_by !== user.id && role !== 'admin') return { ok: false, code: 'not_allowed' };
-
-  const { data: removed, error } = await supabase
-    .from('transactions')
-    .delete()
-    .eq('import_id', imp.id)
-    .select('id');
-  if (error) return { ok: false, code: 'failed' };
-  const { error: updateError } = await supabase
-    .from('imports')
-    .update({ status: 'undone' })
-    .eq('id', imp.id);
-  if (updateError) return { ok: false, code: 'failed' };
-  return { ok: true, removed: removed.length };
+  const { data, error } = await supabase.rpc('undo_import', { p_import_id: importId });
+  if (!error) return { ok: true, removed: data };
+  if (error.code === 'P0002') return { ok: false, code: 'not_found' };
+  if (error.code === '42501') return { ok: false, code: 'not_allowed' };
+  if (error.message.includes('already_undone')) return { ok: false, code: 'already_undone' };
+  return { ok: false, code: 'failed' };
 }

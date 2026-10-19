@@ -15,7 +15,9 @@ export default async function ImportResultPage({
   searchParams,
 }: PageProps<'/movimenti/importa/[id]'>) {
   const { id } = await params;
-  const from = returnPath((await searchParams).da);
+  const query = await searchParams;
+  const from = returnPath(query.da);
+  const undoFailed = query.annullo === 'no';
   if (!z.uuid().safeParse(id).success) notFound();
   const summary = await getImportSummary(id);
   if (!summary) notFound();
@@ -62,6 +64,11 @@ export default async function ImportResultPage({
                 <span>già presenti</span>
               </div>
             </div>
+            {undoFailed && (
+              <p role="alert" className={styles.hint}>
+                Non è stato possibile annullare l’import. Riprova.
+              </p>
+            )}
             {undone && (
               <p className={styles.hint}>
                 I movimenti di questo import sono stati cancellati. Puoi importare di nuovo lo

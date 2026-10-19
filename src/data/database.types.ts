@@ -511,6 +511,7 @@ export type Database = {
       is_member: { Args: { hh: string }; Returns: boolean };
       is_owner: { Args: { hh: string; uid?: string }; Returns: boolean };
       owns_account: { Args: { acc: string; hh: string }; Returns: boolean };
+      undo_import: { Args: { p_import_id: string }; Returns: number };
     };
     Enums: {
       [_ in never]: never;
