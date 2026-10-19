@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { as, failure } from './helpers';
-import { ACCOUNT, TX, USER } from './fixtures';
+import { ACCOUNT, H1, TX, USER } from './fixtures';
 
 // change_account_visibility (ADR-015, ADR-035): changes who sees an account and,
 // in the same transaction, the movements the owner chose to bring along. It runs
@@ -98,6 +98,47 @@ describe('change_account_visibility: who may call it', () => {
     await as('anon', async (db) => {
       const error = await failure(db, call, [ACCOUNT.memberPrivate, 'shared', true, null]);
       expect(error.code).toBe('42501');
+    });
+  });
+});
+
+describe('change_account_visibility: edge cases (review of 1.5c)', () => {
+  it('rejects a NULL visibility or a NULL flag, as invalid parameters', async () => {
+    await as(USER.member, async (db) => {
+      const a = await failure(db, call, [ACCOUNT.memberPrivate, null, true, null]);
+      expect(a.code).toBe('22023');
+      const b = await failure(db, 'select change_account_visibility($1, $2, null, null)', [
+        ACCOUNT.memberPrivate,
+        'shared',
+      ]);
+      expect(b.code).toBe('22023');
+      expect(await visibilityOf(db, 'accounts', ACCOUNT.memberPrivate)).toBe('private');
+    });
+  });
+
+  it("leaves other people's movements on the account, and the owner's other accounts, alone", async () => {
+    await as('service', async (db) => {
+      // A private movement of another member on the same account, and one of the
+      // owner on another account: neither may be moved by this call.
+      await db.query(
+        `insert into transactions (id, household_id, account_id, owner_id, booked_on, amount_cents,
+                                   description, raw_description, visibility)
+         values ('90000000-0000-0000-0000-000000000001', $1, $2, $3, '2026-10-01', -1, 'x', 'x', 'private'),
+                ('90000000-0000-0000-0000-000000000002', $1, $4, $5, '2026-10-01', -1, 'x', 'x', 'private')`,
+        [H1, ACCOUNT.memberPrivate, USER.admin2, ACCOUNT.memberShared, USER.member],
+      );
+      await db.query('set local role authenticated');
+      await db.query(`select set_config('request.jwt.claims', $1, true)`, [
+        JSON.stringify({ sub: USER.member, role: 'authenticated' }),
+      ]);
+      await db.query(call, [ACCOUNT.memberPrivate, 'shared', true, null]);
+      await db.query('reset role');
+      expect(await visibilityOf(db, 'transactions', '90000000-0000-0000-0000-000000000001')).toBe(
+        'private',
+      );
+      expect(await visibilityOf(db, 'transactions', '90000000-0000-0000-0000-000000000002')).toBe(
+        'private',
+      );
     });
   });
 });

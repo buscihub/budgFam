@@ -75,6 +75,10 @@ describe('undo_import', () => {
   });
 });
 
+// The function locks the import row (SELECT ... FOR UPDATE), which the update
+// policy only allows to the uploader: anybody else gets "not found" (P0002)
+// without learning that the import exists. The explicit uploader check inside
+// the function (42501) stays as a second line of defence.
 describe('undo_import: only the uploader', () => {
   it.each([
     ['another member', USER.owner],
@@ -88,7 +92,7 @@ describe('undo_import: only the uploader', () => {
         JSON.stringify({ sub: actor, role: 'authenticated' }),
       ]);
       const error = await failure(db, undo, [id]);
-      expect(error.code).toBe('42501');
+      expect(error.code).toBe('P0002');
       await db.query('reset role');
       expect(await countRows(db, id)).toBe(2);
       expect((await statusOf(db, id)).status).toBe('done');

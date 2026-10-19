@@ -14,16 +14,11 @@ export type ImportAccount = {
   visibility: 'private' | 'shared';
   bankFormat: string | null;
 };
-type OwnedAccount = ImportAccount;
 
 // The account must be one of the caller's own (RLS refuses inserts on other
 // people's accounts anyway; reading first gives a clear answer and the
 // visibility the imported movements inherit, ADR-015).
 export async function getImportAccount(accountId: string): Promise<ImportAccount | null> {
-  return getOwnAccount(accountId);
-}
-
-async function getOwnAccount(accountId: string): Promise<OwnedAccount | null> {
   const { user } = await requireMembership();
   const supabase = await createClient();
   const { data } = await supabase
@@ -35,7 +30,7 @@ async function getOwnAccount(accountId: string): Promise<OwnedAccount | null> {
   return data
     ? {
         id: data.id,
-        visibility: data.visibility as OwnedAccount['visibility'],
+        visibility: data.visibility as ImportAccount['visibility'],
         bankFormat: data.bank_format,
       }
     : null;
@@ -68,7 +63,7 @@ export async function previewImport(
   accountId: string,
   hashed: HashedTransaction[],
 ): Promise<ImportPreview> {
-  if (!(await getOwnAccount(accountId))) return { ok: false, code: 'account_not_found' };
+  if (!(await getImportAccount(accountId))) return { ok: false, code: 'account_not_found' };
   const existing = await findExistingHashes(
     accountId,
     hashed.map((t) => t.importHash),
@@ -93,7 +88,7 @@ export async function runImport(input: {
   hashed: HashedTransaction[];
 }): Promise<ImportResult> {
   const { user, householdId } = await requireMembership();
-  const account = await getOwnAccount(input.accountId);
+  const account = await getImportAccount(input.accountId);
   if (!account) return { ok: false, code: 'account_not_found' };
   const supabase = await createClient();
 

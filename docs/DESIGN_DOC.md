@@ -434,8 +434,8 @@ create policy tx_update on transactions for update using (
 | `categories`, `category_rules` | membri | membri (nascondere = update) | admin |
 | `budgets` familiari (`member_id` null) | membri | admin | admin |
 | `budgets` personali | **solo il proprietario** | proprietario | proprietario |
-| `imports` | membri | membri (tramite il server) | admin |
-| `transactions` | membri: condivisi + i propri privati | membri: stessa regola | proprietario o admin |
+| `imports` | membri | chi carica il file, per un proprio conto; poi solo lo stesso, solo su stato, errore e contatori (ADR-019) | admin |
+| `transactions` | membri: condivisi + i propri privati | membri: stessa regola | proprietario; l'admin solo i condivisi, mai i privati altrui |
 | `tasks` | membri | membri | creatore o admin |
 | `invites` | **solo admin** | admin (vedi sotto per l'accettazione) | admin |
 | Chi non è membro | **niente, su nessuna tabella** | niente | niente |
@@ -766,6 +766,7 @@ Questa tabella è l'**indice**. Ogni riga, quando la decisione viene presa nel m
 | ADR-033 | Eliminando un conto restano solo i movimenti condivisi | I privati si cancellano col conto; i condivisi restano senza conto (`account_id` null) |
 | ADR-034 | Design system in CSS: token, primitivi e CSS Modules | Niente Tailwind né CSS-in-JS; font di sistema, vetro con fallback opaco, tema scuro da `prefers-color-scheme` |
 | ADR-035 | «Conti» al posto di «Movimenti» nella navigazione | Barra: Riepilogo · Conti · Cose da fare; pagina del conto con i suoi movimenti; «Tutti i movimenti» dentro Conti. Sostituisce in parte ADR-025 e ADR-026 |
+| ADR-036 | Ritorno alla pagina di partenza, mese dei movimenti e limiti dell'import | `?da=` controllato da `safeNextPath`; dopo l'inserimento o l'import si apre il mese dei movimenti; file ≤ 1 MB non conservato; formato scelto all'import non salvato sul conto |
 
 ---
 
