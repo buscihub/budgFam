@@ -43,7 +43,10 @@ export default async function DeleteAccountPage({ params }: { params: Promise<{ 
               riepiloghi della famiglia, senza più un conto.
             </p>
           </div>
-          <p style={{ fontSize: 14 }}>L’operazione non si può annullare.</p>
+          <p style={{ fontSize: 14 }}>
+            L’operazione non si può annullare. Se poi importi di nuovo lo stesso file in un conto
+            nuovo, i movimenti condivisi rimasti verranno aggiunti una seconda volta.
+          </p>
         </div>
 
         <form action={deleteAccountAction} className={sheet.footer}>

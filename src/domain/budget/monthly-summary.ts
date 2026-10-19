@@ -42,11 +42,10 @@ const UNCATEGORIZED_NAME = 'Non categorizzato';
  * — they get their own per-recipient line in a later task (3.4b, "Trasferimenti
  * ai familiari"). Building that line here would be scope creep (CLAUDE.md:
  * "non aggiungere funzioni fuori scope"), so for now transfers are simply
- * left out rather than half-shown. The caller already filters out
- * `kind = 'excluded'` at the query level (ADR-017: B&B-style categories stay
- * imported but out of every summary); this function also drops them
- * defensively in case a caller passes them in, so the rule holds regardless
- * of how it's called.
+ * left out rather than half-shown. Categories with `kind = 'excluded'`
+ * (ADR-017: B&B-style categories stay imported but out of every summary) are
+ * dropped here too: the query in src/data does not filter by category kind, so
+ * this function is where the rule lives.
  *
  * Uncategorized transactions (`categoryId: null`, or an id not found in
  * `categories`) are still real money, so they are not dropped: they count

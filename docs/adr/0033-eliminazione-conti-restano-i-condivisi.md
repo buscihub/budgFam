@@ -25,7 +25,7 @@ Implementazione: le due FK diventano nullable con `on delete set null`; un trigg
 
 - `transactions.account_id` e `imports.account_id` nullable; nessuna policy RLS cambia (`owns_account` serve solo all'insert, e un movimento senza conto non si inserisce).
 - La UI gestisce il movimento senza conto (già previsto da ADR-025 per i conti privati altrui): nessun nome del conto, niente segnaposto.
-- Il reimport su un nuovo conto non crea doppioni: `import_hash` è unico per nucleo, non per conto.
+- **Limite noto (rivisto il 2026-10-19):** `import_hash` è unico per nucleo, ma l'`account_id` entra nell'hash (ADR-009: due conti diversi possono avere movimenti identici legittimi). I movimenti condivisi rimasti senza conto hanno quindi hash che nessun conto nuovo riproduce: **reimportare lo stesso file in un nuovo conto li duplica**. Per questo la conferma di eliminazione lo dice, e un test dell'hash documenta il caso. Cambiare la deduplica per cercarli anche tra i movimenti senza conto è stato valutato e scartato per ora: tocca l'hash e rischia falsi duplicati.
 - La conferma di eliminazione mostra quanti movimenti verranno cancellati (privati) e quanti resteranno (condivisi). L'azione non è reversibile.
 - Il «tipo» del conto non si modifica (ADR-025); eliminare e ricreare non è un modo per cambiarlo se ci sono dati privati.
 - Caso residuo: privati del proprietario rimasti orfani dopo l'eliminazione da parte di un admin; il proprietario può cancellarli a mano dalla lista Movimenti.

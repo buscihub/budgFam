@@ -20,6 +20,8 @@ Per ogni tabella con colonne di identità/proprietà si toglie `UPDATE` al ruolo
 
 ## Conseguenze
 
+- **Estensioni successive** (stessa regola, nuove migrazioni): `transactions.note` (`20261017130000`), `imports` con update ristretto a stato, errore e contatori (`20261019150000`, con policy di update e insert legate a chi carica), e la policy di cancellazione dei movimenti (`20261019160000`: l'admin cancella solo i condivisi).
+
 - Aggiungere una colonna modificabile a queste tabelle richiede di aggiornare anche il `grant`, altrimenti l'`UPDATE` su quella colonna fallisce con *permission denied*: va ricordato nelle migrazioni future.
 - I test RLS (0.6) devono coprire i tentativi di cambiare le colonne protette, controllando anche il tipo di errore.
 - Il service role non è toccato: onboarding e funzioni di sistema continuano a funzionare.
