@@ -383,3 +383,17 @@
     border-radius: 28px;
   }
 }
+
+/* On the page of one account the account is the page itself: no column. */
+.noAccount .head > .accountCell,
+.noAccount .meta > .accountCell {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .noAccount .head,
+  .noAccount .row {
+    grid-template-columns: 56px minmax(0, 1fr) 150px 110px;
+    grid-template-areas: 'date desc cat amount';
+  }
+}

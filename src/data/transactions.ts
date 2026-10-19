@@ -7,7 +7,7 @@ import {
   type SummaryCategory,
   type SummaryTransaction,
 } from '@/domain/budget/monthly-summary';
-import { monthRange, type MonthKey } from '@/domain/transactions/months';
+import { monthRange, parseMonthParam, type MonthKey } from '@/domain/transactions/months';
 import type {
   CreateManualTransactionInput,
   TransactionFilters,
@@ -107,6 +107,9 @@ export type TransactionList = {
   // Movements waiting for review among those the caller can see, ignoring the
   // current filters: it feeds the banner at the top (ADR-026).
   toReviewCount: number;
+  // When this month shows nothing: the most recent earlier month that has
+  // movements under the same filters, so the empty page can point to it.
+  latestBefore: MonthKey | null;
 };
 
 export async function listTransactions(filters: TransactionFilters): Promise<TransactionList> {
@@ -144,6 +147,24 @@ export async function listTransactions(filters: TransactionFilters): Promise<Tra
   if (error) throw new Error(`failed to load transactions: ${error.message}`);
   const names = new Map((members ?? []).map((m) => [m.user_id, m.display_name]));
 
+  // Only worth a query when there is nothing to show: a list that opens on an
+  // empty current month (all movements are from earlier) is the usual case.
+  let latestBefore: MonthKey | null = null;
+  if ((data ?? []).length === 0) {
+    let earlier = supabase
+      .from('transactions')
+      .select('booked_on')
+      .eq('household_id', householdId)
+      .lt('booked_on', from)
+      .order('booked_on', { ascending: false })
+      .limit(1);
+    if (filters.accountId) earlier = earlier.eq('account_id', filters.accountId);
+    if (filters.categoryId) earlier = earlier.eq('category_id', filters.categoryId);
+    if (filters.onlyToReview) earlier = earlier.eq('needs_review', true);
+    const { data: last } = await earlier;
+    latestBefore = parseMonthParam(last?.[0]?.booked_on.slice(0, 7));
+  }
+
   return {
     month,
     items: (data ?? []).map((row) => ({
@@ -159,6 +180,7 @@ export async function listTransactions(filters: TransactionFilters): Promise<Tra
       ownerName: row.owner_id ? (names.get(row.owner_id) ?? null) : null,
     })),
     toReviewCount: count ?? 0,
+    latestBefore,
   };
 }
 

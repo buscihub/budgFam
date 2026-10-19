@@ -1,7 +1,7 @@
 # ADR-0025: Schermata Conti, accesso da Movimenti e formato banca scelto dall'utente
 
 - **Data:** 2026-10-10
-- **Stato:** Accettata (2026-10-17)
+- **Stato:** Accettata (2026-10-17); l'accesso da Movimenti è sostituito dall'ADR-035 (Conti nella barra di navigazione)
 - **Task collegato:** §13.1 · 1.5, 3.1, 3.4
 
 ## Contesto

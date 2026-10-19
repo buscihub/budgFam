@@ -132,7 +132,14 @@ describe('normalizeTransactions', () => {
       normalizeTransactions([
         { bookedOn: '2025-01-02', rawDescription: 'Tabacchi  Rotolo', amountCents: -620 },
       ]),
-    ).toEqual([{ bookedOn: '2025-01-02', description: 'TABACCHI ROTOLO', amountCents: -620 }]);
+    ).toEqual([
+      {
+        bookedOn: '2025-01-02',
+        description: 'TABACCHI ROTOLO',
+        rawDescription: 'Tabacchi  Rotolo',
+        amountCents: -620,
+      },
+    ]);
   });
 });
 

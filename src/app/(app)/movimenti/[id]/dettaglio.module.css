@@ -167,13 +167,6 @@ button.line {
   text-align: center;
 }
 
-.saved {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-  text-align: center;
-}
-
 .danger {
   color: var(--danger);
   font-size: 13px;

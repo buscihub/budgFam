@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import {
   ACCOUNT_KIND_LABELS,
   ACCOUNT_VISIBILITY_LABELS,
@@ -19,13 +19,18 @@ const VISIBILITY_HINTS = {
 } as const;
 
 // `next`: where to go after creating. The import flow (task 1.5) reuses this
-// form without it and stays on its own screen, reading `state.created`.
-export function NewAccountForm({ next }: { next?: string }) {
+// form without it and stays on its own screen: `onCreated` tells it when the
+// account exists.
+export function NewAccountForm({ next, onCreated }: { next?: string; onCreated?: () => void }) {
   const [state, formAction, pending] = useActionState<AccountFormState, FormData>(
     createAccountAction,
     {},
   );
   const [kind, setKind] = useState<AccountKind>('bank');
+
+  useEffect(() => {
+    if (state.created) onCreated?.();
+  }, [state.created, onCreated]);
 
   return (
     <form action={formAction} className={sheet.form}>
@@ -118,7 +123,7 @@ export function NewAccountForm({ next }: { next?: string }) {
         <p role="alert" aria-live="polite" className={styles.error}>
           {state.error}
         </p>
-        {state.created && !next && <p>Conto creato.</p>}
+        {state.created && !next && !onCreated && <p>Conto creato.</p>}
       </div>
 
       <div className={sheet.footer}>

@@ -10,7 +10,7 @@ import {
   BankIcon,
   CardIcon,
   CashIcon,
-  ChevronLeftIcon,
+  ChevronRightIcon,
   InfoIcon,
   LockIcon,
   PersonIcon,
@@ -44,14 +44,16 @@ export default async function ContiPage() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <Link href="/movimenti" className="glass-btn" aria-label="Indietro, a Movimenti">
-          <ChevronLeftIcon />
-        </Link>
         <h1>Conti</h1>
         <Link href="/conti/nuovo" className={`btn-primary ${styles.add}`} aria-label="Nuovo conto">
           <PlusIcon />
         </Link>
       </header>
+
+      <Link href="/movimenti" className={`glass-card ${styles.allRow}`}>
+        <span>Tutti i movimenti</span>
+        <ChevronRightIcon />
+      </Link>
 
       <section aria-label="I miei conti">
         <h2 className={styles.section}>
@@ -73,15 +75,17 @@ export default async function ContiPage() {
             {mine.map((account) => (
               <li key={account.id} className={styles.row}>
                 <span className={styles.icon}>{KIND_ICONS[account.kind]}</span>
-                <span className={styles.name}>{account.name}</span>
+                <Link href={`/conti/${account.id}`} className={styles.name}>
+                  {account.name}
+                </Link>
                 <span className={styles.meta}>
                   <span>{ACCOUNT_KIND_LABELS[account.kind]}</span>
                   <VisibilityPill visibility={account.visibility} />
                   <span>{formatLabel(account)}</span>
                 </span>
                 <span className={styles.actions}>
-                  <Link href={`/conti/${account.id}/elimina`} className={styles.delete}>
-                    Elimina
+                  <Link href={`/conti/${account.id}/modifica?da=${encodeURIComponent('/conti')}`}>
+                    Impostazioni
                   </Link>
                 </span>
               </li>
@@ -101,7 +105,9 @@ export default async function ContiPage() {
             {sharedByOthers.map((account) => (
               <li key={account.id} className={styles.row}>
                 <span className={styles.icon}>{KIND_ICONS[account.kind]}</span>
-                <span className={styles.name}>{account.name}</span>
+                <Link href={`/conti/${account.id}`} className={styles.name}>
+                  {account.name}
+                </Link>
                 <span className={styles.meta}>
                   <span>{ACCOUNT_KIND_LABELS[account.kind]}</span>
                   <VisibilityPill visibility={account.visibility} />

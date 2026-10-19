@@ -42,6 +42,7 @@ export type ParseResult =
 export type NormalizedTransaction = {
   bookedOn: string; // ISO YYYY-MM-DD (a `date`, no time of day: rule 11)
   description: string;
+  rawDescription: string; // as in the file; stored in transactions.raw_description, never hashed
   amountCents: number; // signed, integer cents
   externalId?: string;
   kind?: string;

@@ -45,3 +45,20 @@ export function computeImportHashes(
     };
   });
 }
+
+// Splits a hashed file into rows to insert and rows already in the database
+// (§8.3). `existingHashes` are the import_hash values already stored for this
+// account. The occurrence index is part of the hash, so two identical coffees
+// in one file are never marked duplicates of each other; they are duplicates
+// only when a previous import already stored them. File order is preserved.
+export function splitNewAndDuplicates(
+  hashed: HashedTransaction[],
+  existingHashes: ReadonlySet<string>,
+): { fresh: HashedTransaction[]; duplicates: HashedTransaction[] } {
+  const fresh: HashedTransaction[] = [];
+  const duplicates: HashedTransaction[] = [];
+  for (const tx of hashed) {
+    (existingHashes.has(tx.importHash) ? duplicates : fresh).push(tx);
+  }
+  return { fresh, duplicates };
+}

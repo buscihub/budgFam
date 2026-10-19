@@ -43,3 +43,21 @@ describe('countActiveFilters', () => {
     expect(countActiveFilters({ accountId: 'a', onlyToReview: true })).toBe(2);
   });
 });
+
+describe('transactionsHref — on an account page', () => {
+  const basePath = '/conti/abc';
+
+  it('uses the account path and keeps month and other filters', () => {
+    expect(
+      transactionsHref(
+        { month: { year: 2026, month: 9 }, categoryId: 'c', onlyToReview: true },
+        { month: { year: 2026, month: 8 } },
+        basePath,
+      ),
+    ).toBe('/conti/abc?mese=2026-08&categoria=c&daRivedere=1');
+  });
+
+  it('never puts the account in the query: the path already says which', () => {
+    expect(transactionsHref({ ...base, accountId: 'a' }, {}, basePath)).toBe('/conti/abc');
+  });
+});

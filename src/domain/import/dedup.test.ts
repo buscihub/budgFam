@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { computeImportHashes } from './dedup';
+import { computeImportHashes, splitNewAndDuplicates } from './dedup';
 import { normalizeTransactions } from './normalize';
 import { parseBankCsv } from './parse';
 import type { BankFormat, NormalizedTransaction } from './types';
@@ -10,7 +10,13 @@ const A = 'account-a';
 const B = 'account-b';
 
 function tx(over: Partial<NormalizedTransaction> = {}): NormalizedTransaction {
-  return { bookedOn: '2025-01-10', description: 'BAR ROMA', amountCents: -120, ...over };
+  return {
+    bookedOn: '2025-01-10',
+    description: 'BAR ROMA',
+    rawDescription: 'Bar Roma',
+    amountCents: -120,
+    ...over,
+  };
 }
 
 const hashes = (account: string, txs: NormalizedTransaction[]) =>
@@ -172,5 +178,46 @@ describe('computeImportHashes — fixtures end to end', () => {
     expect(first.length).toBeGreaterThan(0);
     expect(new Set(first).size).toBe(first.length);
     expect(hashes(A, load(file, format))).toEqual(first);
+  });
+});
+
+describe('splitNewAndDuplicates', () => {
+  const file = () => computeImportHashes(A, [tx(), tx(), tx({ amountCents: -500 })]);
+
+  it('treats everything as new on a first import', () => {
+    const { fresh, duplicates } = splitNewAndDuplicates(file(), new Set());
+    expect(fresh).toHaveLength(3);
+    expect(duplicates).toHaveLength(0);
+  });
+
+  it('treats everything as duplicate when the same file is imported again', () => {
+    const stored = new Set(file().map((t) => t.importHash));
+    const { fresh, duplicates } = splitNewAndDuplicates(file(), stored);
+    expect(fresh).toHaveLength(0);
+    expect(duplicates).toHaveLength(3);
+  });
+
+  it('keeps two identical coffees as two new rows (they do not dedupe each other)', () => {
+    const { fresh } = splitNewAndDuplicates(computeImportHashes(A, [tx(), tx()]), new Set());
+    expect(fresh).toHaveLength(2);
+  });
+
+  it('splits a partial overlap and keeps file order', () => {
+    const all = file();
+    const stored = new Set([all[0]!.importHash, all[2]!.importHash]);
+    const { fresh, duplicates } = splitNewAndDuplicates(all, stored);
+    expect(fresh).toEqual([all[1]]);
+    expect(duplicates).toEqual([all[0], all[2]]);
+  });
+
+  it('a hash stored for another account is not a duplicate here', () => {
+    const stored = new Set(computeImportHashes(B, [tx()]).map((t) => t.importHash));
+    expect(splitNewAndDuplicates(computeImportHashes(A, [tx()]), stored).fresh).toHaveLength(1);
+  });
+});
+
+describe('computeImportHashes — raw description', () => {
+  it('ignores rawDescription: only the normalized description is hashed', () => {
+    expect(hashes(A, [tx({ rawDescription: 'Bar  Roma' })])).toEqual(hashes(A, [tx()]));
   });
 });
