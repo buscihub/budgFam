@@ -27,12 +27,9 @@ export default async function NewTransactionPage() {
         </div>
 
         <div className={sheet.scroll} style={{ flex: 'none', paddingBottom: 0 }}>
-          {/* Import joins this screen with task 1.5 (ADR-013). */}
           <div className="segmented" role="tablist" aria-label="Modo di inserimento">
             <span aria-current="true">Manuale</span>
-            <span aria-disabled="true" title="In arrivo">
-              Importa file
-            </span>
+            <Link href="/movimenti/importa">Importa file</Link>
           </div>
         </div>
 

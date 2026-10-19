@@ -80,6 +80,7 @@ export function normalizeTransactions(parsed: ParsedTransaction[]): NormalizedTr
   return parsed.map((t) => ({
     bookedOn: t.bookedOn,
     description: normalizeDescription(t.rawDescription),
+    rawDescription: t.rawDescription,
     amountCents: t.amountCents,
     ...(t.externalId !== undefined && { externalId: t.externalId }),
     ...(t.kind !== undefined && { kind: t.kind }),

@@ -3,18 +3,9 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { BankFormat } from './types';
 import { parseBankCsv } from './parse';
+import { BANK_FORMAT_PRESETS } from './presets';
 
-const revolutFormat: BankFormat = {
-  encoding: 'utf-8',
-  delimiter: ',',
-  skipRows: 5,
-  dateColumn: 'Date',
-  dateFormat: 'MMM D, YYYY',
-  descriptionColumns: ['Description'],
-  amount: { mode: 'signed', column: 'Money in/out' },
-  decimalSeparator: '.',
-  thousandsSeparator: ',',
-};
+const revolutFormat: BankFormat = BANK_FORMAT_PRESETS.revolut;
 
 const fixturePath = join(
   import.meta.dirname,
@@ -130,20 +121,7 @@ describe('parseBankCsv — CSV quoting and malformed rows', () => {
 });
 
 describe('parseBankCsv — Trade Republic fixture (ADR-024)', () => {
-  const tradeFormat: BankFormat = {
-    encoding: 'utf-8',
-    delimiter: ',',
-    skipRows: 0,
-    dateColumn: 'datetime',
-    dateFormat: 'ISO_DATETIME_UTC',
-    descriptionColumns: ['name', 'description'],
-    descriptionMode: 'firstNonEmpty',
-    amount: { mode: 'sum', columns: ['amount', 'fee', 'tax'] },
-    decimalSeparator: '.',
-    thousandsSeparator: '',
-    externalIdColumn: 'transaction_id',
-    kindColumn: 'type',
-  };
+  const tradeFormat: BankFormat = BANK_FORMAT_PRESETS.trade_republic;
   const tradeFixture = readFileSync(
     join(import.meta.dirname, '..', '..', '..', 'fixtures', 'trade-republic-2026.csv'),
     'utf-8',

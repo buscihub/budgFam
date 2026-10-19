@@ -30,6 +30,7 @@ export async function createAccountAction(
     };
   }
   revalidatePath('/conti');
+  revalidatePath('/movimenti/importa'); // the import flow lists accounts too
   // A screen that wants to leave after creating says where; only a plain path
   // of this app is followed (the field is client-controlled).
   const next = safeNextPath(formData.get('next'));
