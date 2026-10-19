@@ -6,23 +6,10 @@ import { formatSignedCents } from '@/domain/budget/format-currency';
 import { formatDayMonth } from '@/domain/transactions/dates';
 import { humanizeDescription } from '@/domain/transactions/display';
 import { countActiveFilters, transactionsHref } from '@/domain/transactions/filters-url';
-import {
-  compareMonths,
-  formatMonthParam,
-  monthLabel,
-  shiftMonth,
-} from '@/domain/transactions/months';
+import { formatMonthParam, monthLabel } from '@/domain/transactions/months';
 import type { TransactionFilters } from '@/domain/transactions/schemas';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CloseIcon,
-  FiltersIcon,
-  LockIcon,
-  PersonIcon,
-  PlusIcon,
-  WarningIcon,
-} from '../../icons';
+import { CloseIcon, FiltersIcon, LockIcon, PersonIcon, PlusIcon, WarningIcon } from '../../icons';
+import { MonthBar } from '../month-bar';
 import styles from './movimenti.module.css';
 
 // The monthly list of movements, shared by "Tutti i movimenti" (/movimenti) and
@@ -55,7 +42,6 @@ export async function TransactionsView({
   ]);
   const allAccounts = [...accounts.mine, ...accounts.sharedByOthers];
   const activeFilters = countActiveFilters(filters);
-  const isCurrentMonth = compareMonths(month, getCurrentMonthRome()) >= 0;
   const withMonth = { ...filters, month };
   const href = (patch: Partial<TransactionFilters> = {}) =>
     transactionsHref(withMonth, patch, basePath);
@@ -67,25 +53,11 @@ export async function TransactionsView({
   return (
     <>
       <div className={styles.top}>
-        <div className={`${styles.monthbar} glass-bar`}>
-          <Link
-            href={href({ month: shiftMonth(month, -1) })}
-            className="glass-btn"
-            aria-label="Mese precedente"
-          >
-            <ChevronLeftIcon />
-          </Link>
-          <span>{monthLabel(month)}</span>
-          <Link
-            href={href({ month: shiftMonth(month, 1) })}
-            className={`glass-btn ${styles.arrow}`}
-            aria-label="Mese successivo"
-            aria-disabled={isCurrentMonth}
-            tabIndex={isCurrentMonth ? -1 : undefined}
-          >
-            <ChevronRightIcon size={16} />
-          </Link>
-        </div>
+        <MonthBar
+          month={month}
+          current={getCurrentMonthRome()}
+          hrefFor={(m) => href({ month: m })}
+        />
 
         <div className={styles.toolbar}>
           <button

@@ -1,0 +1,32 @@
+.monthbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -18px;
+  padding: 20px 20px 10px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.arrow[aria-disabled='true'] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .monthbar {
+    position: static;
+    margin: 0;
+    padding: 20px 0 10px;
+    background: none;
+    border: 0;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+}
